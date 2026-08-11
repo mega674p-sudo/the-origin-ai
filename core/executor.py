@@ -9,9 +9,10 @@ class CommandExecutor:
     Secure subprocess wrapper optimized for mobile Termux and Ubuntu environments.
     Executes system bash commands, captures stdout/stderr, and handles exit codes.
     """
-    def __init__(self, timeout: int = 60, shell_path: str = "/bin/bash"):
+    def __init__(self, timeout: int = 60, shell_path: str = "/bin/bash", max_retries: int = 3):
         self.timeout = timeout
         self.shell_path = shell_path if os.path.exists(shell_path) else "/bin/sh"
+        self.max_retries = max_retries
 
     def run_command(self, command: str) -> tuple[int, str, str]:
         """
