@@ -1,0 +1,12 @@
+{
+  "agent_name": "GIGA PHONE AI",
+  "environment": "termux-ubuntu",
+  "telegram": {
+    "bot_token": "YOUR_BOT_TOKEN_HERE",
+    "chat_id": "YOUR_CHAT_ID_HERE"
+  },
+  "execution": {
+    "max_retries": 3,
+    "timeout": 60
+  }
+}
