@@ -1,0 +1,208 @@
+GIGA PHONE AI — Gemini Review Bundle
+Generated from the current lightweight Redmi 10a codebase.
+
+--- START OF config/settings.json ---
+{
+  "agent_name": "GIGA PHONE AI",
+  "environment": "termux-ubuntu-redmi10a",
+  "ai_provider": "gemini",
+  "gemini": {
+    "api_key": "YOUR_GEMINI_API_KEY_HERE",
+    "model": "gemini-3.5-flash"
+  },
+  "telegram": {
+    "bot_token": "YOUR_TELEGRAM_BOT_TOKEN_HERE",
+    "chat_id": "YOUR_TELEGRAM_CHAT_ID_HERE",
+    "allowed_user_id": "YOUR_ALLOWED_USER_ID_HERE"
+  },
+  "execution": {
+    "max_retries": 3,
+    "timeout": 30,
+    "shell": "/bin/bash"
+  },
+  "logging": {
+    "level": "INFO",
+    "file": "logs/execution.log"
+  }
+}
+--- END OF config/settings.json ---
+
+--- START OF core/ai_brain.py ---
+import os
+import logging
+import requests
+
+logger = logging.getLogger("GigaAIBrain")
+
+class GeminiBrain:
+    """
+    Hyper-optimized Gemini API wrapper for Redmi 10a.
+    Uses stateless HTTP requests to minimize RAM usage.
+    """
+    def __init__(self, api_key: str = None, model: str = "gemini-3.5-flash"):
+        self.api_key = api_key or os.getenv("GEMINI_API_KEY", "YOUR_GEMINI_API_KEY_HERE")
+        self.model = model
+        self.url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.model}:generateContent"
+
+    def analyze_error(self, command: str, stderr: str) -> str:
+        if not self.api_key or "YOUR" in self.api_key:
+            return command
+
+        prompt = f"Fix this bash command. Error: {stderr}\nCommand: {command}\nReturn ONLY the fixed command."
+        
+        try:
+            resp = requests.post(
+                self.url,
+                params={"key": self.api_key},
+                json={"contents": [{"parts": [{"text": prompt}]}]},
+                timeout=15
+            )
+            if resp.status_code == 200:
+                text = resp.json()['candidates'][0]['content']['parts'][0]['text']
+                return text.strip().replace("```bash", "").replace("```", "").strip()
+        except Exception as e:
+            logger.error(f"Gemini Error: {e}")
+        
+        return command
+--- END OF core/ai_brain.py ---
+
+--- START OF core/executor.py ---
+import subprocess
+import logging
+import os
+
+logger = logging.getLogger("GigaExecutor")
+
+class CommandExecutor:
+    """Minimal subprocess wrapper with strict resource controls."""
+    def __init__(self, timeout: int = 30, max_retries: int = 3):
+        self.timeout = timeout
+        self.max_retries = max_retries
+        self.shell = "/bin/bash" if os.path.exists("/bin/bash") else "/bin/sh"
+
+    def run(self, cmd: str) -> tuple[int, str, str]:
+        try:
+            res = subprocess.run(
+                cmd, shell=True, capture_output=True, text=True,
+                executable=self.shell, timeout=self.timeout
+            )
+            return res.returncode, res.stdout.strip(), res.stderr.strip()
+        except subprocess.TimeoutExpired:
+            return -1, "", "Timeout"
+        except Exception as e:
+            return -1, "", str(e)
+--- END OF core/executor.py ---
+
+--- START OF core/notifier.py ---
+import requests
+import logging
+
+logger = logging.getLogger("GigaNotifier")
+
+class TelegramNotifier:
+    """Minimal Telegram bridge for resource-constrained devices."""
+    def __init__(self, token: str, chat_id: str):
+        self.url = f"https://api.telegram.org/bot{token}/sendMessage"
+        self.chat_id = chat_id
+
+    def notify(self, text: str):
+        if not self.chat_id or "YOUR" in self.chat_id:
+            return
+        try:
+            requests.post(
+                self.url,
+                json={"chat_id": self.chat_id, "text": text, "parse_mode": "Markdown"},
+                timeout=10
+            )
+        except Exception as e:
+            logger.error(f"Notify Error: {e}")
+--- END OF core/notifier.py ---
+
+--- START OF core/self_corrector.py ---
+import logging
+from core.executor import CommandExecutor
+from core.ai_brain import GeminiBrain
+
+logger = logging.getLogger("GigaSelfCorrector")
+
+class SelfCorrector:
+    def __init__(self, executor: CommandExecutor, api_key: str = None):
+        self.executor = executor
+        self.brain = GeminiBrain(api_key=api_key)
+
+    def execute(self, cmd: str) -> tuple[bool, str, str]:
+        current_cmd = cmd
+        for i in range(self.executor.max_retries):
+            code, out, err = self.executor.run(current_cmd)
+            if code == 0:
+                return True, out, err
+
+            logger.warning(f"Retry {i + 1} for: {current_cmd}")
+            current_cmd = self.brain.analyze_error(current_cmd, err)
+
+        return False, "", "Max retries reached."
+--- END OF core/self_corrector.py ---
+
+--- START OF main.py ---
+import logging
+import sys
+import json
+import os
+from core.executor import CommandExecutor
+from core.notifier import TelegramNotifier
+
+# Setup logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
+logger = logging.getLogger("GigaMain")
+
+def load_settings():
+    settings_path = os.path.join(os.path.dirname(__file__), "config", "settings.json")
+    if os.path.exists(settings_path):
+        with open(settings_path, "r") as f:
+            return json.load(f)
+    return {}
+
+def main():
+    logger.info("Initializing GIGA PHONE AI Agent Core Modules...")
+
+    # Load configuration
+    settings = load_settings()
+    tg_settings = settings.get("telegram", {})
+    bot_token = tg_settings.get("bot_token", "YOUR_TELEGRAM_BOT_TOKEN_HERE")
+    chat_id = tg_settings.get("chat_id", "YOUR_CHAT_ID_HERE")
+
+    # 1. Initialize Executor
+    executor = CommandExecutor(timeout=30)
+
+    # 2. Test Safe Execution (correct method name: .run())
+    code, stdout, stderr = executor.run("uname -a && python3 --version")
+    logger.info(f"Execution Result - Code: {code}")
+    if code == 0:
+        logger.info(f"STDOUT:\n{stdout}")
+    else:
+        logger.error(f"STDERR:\n{stderr}")
+
+    # 3. Initialize Notifier and send startup message
+    notifier = TelegramNotifier(token=bot_token, chat_id=chat_id)
+    logger.info("Telegram Notifier initialized successfully.")
+    notifier.notify("✅ GIGA PHONE AI Agent core initialized successfully!")
+    logger.info("Startup notification sent to Telegram.")
+
+    logger.info("GIGA PHONE AI initialization test completed successfully.")
+
+if __name__ == "__main__":
+    main()
+--- END OF main.py ---
+
+--- START OF requirements.txt ---
+requests>=2.31.0
+python-dotenv>=1.0.0
+--- END OF requirements.txt ---
+
+--- GEMINI REVIEW REQUEST ---
+Review this low-resource Termux/Ubuntu agent for a Xiaomi Redmi 10a. Focus on correctness, security boundaries for shell execution, Telegram authorization using allowed_user_id, API failure/backoff behavior, RAM efficiency, and concrete code fixes. Do not expose or request real secrets; preserve placeholder values.
+--- END OF GEMINI REVIEW REQUEST ---
