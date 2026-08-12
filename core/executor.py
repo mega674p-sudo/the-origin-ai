@@ -5,35 +5,20 @@ import os
 logger = logging.getLogger("GigaExecutor")
 
 class CommandExecutor:
-    """
-    Secure subprocess wrapper optimized for mobile Termux and Ubuntu environments.
-    Executes system bash commands, captures stdout/stderr, and handles exit codes.
-    """
-    def __init__(self, timeout: int = 60, shell_path: str = "/bin/bash", max_retries: int = 3):
+    """Minimal subprocess wrapper with strict resource controls."""
+    def __init__(self, timeout: int = 30, max_retries: int = 3):
         self.timeout = timeout
-        self.shell_path = shell_path if os.path.exists(shell_path) else "/bin/sh"
         self.max_retries = max_retries
+        self.shell = "/bin/bash" if os.path.exists("/bin/bash") else "/bin/sh"
 
-    def run_command(self, command: str) -> tuple[int, str, str]:
-        """
-        Executes a bash command securely and returns a tuple of (exit_code, stdout, stderr).
-        """
-        logger.info(f"Executing command: {command}")
+    def run(self, cmd: str) -> tuple[int, str, str]:
         try:
-            result = subprocess.run(
-                command,
-                shell=True,
-                capture_output=True,
-                text=True,
-                executable=self.shell_path,
-                timeout=self.timeout
+            res = subprocess.run(
+                cmd, shell=True, capture_output=True, text=True, 
+                executable=self.shell, timeout=self.timeout
             )
-            return result.returncode, result.stdout.strip(), result.stderr.strip()
+            return res.returncode, res.stdout.strip(), res.stderr.strip()
         except subprocess.TimeoutExpired:
-            error_msg = f"Command execution timed out after {self.timeout} seconds: {command}"
-            logger.error(error_msg)
-            return -1, "", error_msg
+            return -1, "", "Timeout"
         except Exception as e:
-            error_msg = f"Exception during command execution: {str(e)}"
-            logger.error(error_msg)
-            return -1, "", error_msg
+            return -1, "", str(e)

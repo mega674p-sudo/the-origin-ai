@@ -4,11 +4,12 @@
   "ai_provider": "gemini",
   "gemini": {
     "api_key": "YOUR_GEMINI_API_KEY_HERE",
-    "model": "gemini-1.5-flash"
+    "model": "gemini-3.5-flash"
   },
   "telegram": {
     "bot_token": "YOUR_TELEGRAM_BOT_TOKEN_HERE",
-    "chat_id": "YOUR_TELEGRAM_CHAT_ID_HERE"
+    "chat_id": "YOUR_TELEGRAM_CHAT_ID_HERE",
+    "allowed_user_id": "YOUR_ALLOWED_USER_ID_HERE"
   },
   "execution": {
     "max_retries": 3,
