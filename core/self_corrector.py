@@ -1,33 +1,17 @@
 import logging
 from core.executor import CommandExecutor
+from core.ai_brain import GeminiBrain
 
 logger = logging.getLogger("GigaSelfCorrector")
 
 class SelfCorrector:
-    def __init__(self, executor: CommandExecutor):
+    """
+    Self-correction loop integrated with GeminiBrain for intelligent error fixing
+    on resource-constrained mobile devices.
+    """
+    def __init__(self, executor: CommandExecutor, gemini_api_key: str = None):
         self.executor = executor
-
-    def suggest_fix(self, command: str, stderr: str) -> str:
-        """
-        Analyzes stderr and applies heuristics or local LLM prompt refinement 
-        to fix common Termux/Ubuntu CLI errors (e.g., missing packages, permission denied).
-        """
-        stderr_lower = stderr.lower()
-        
-        if "command not found" in stderr_lower:
-            pkg = command.split()[0]
-            logger.warning(f"Missing dependency detected: {pkg}. Attempting auto-install...")
-            return f"pkg install -y {pkg} || apt-get install -y {pkg} && {command}"
-        
-        if "permission denied" in stderr_lower:
-            logger.warning("Permission denied detected. Prepending sudo/su...")
-            return f"sudo {command}"
-            
-        if "no such file or directory" in stderr_lower:
-            logger.warning("Path error detected. Inspecting directory structure...")
-            return f"mkdir -p $(dirname {command.split()[-1]}) && {command}"
-
-        return command
+        self.brain = GeminiBrain(api_key=gemini_api_key)
 
     def execute_with_correction(self, command: str) -> tuple[bool, str, str]:
         current_cmd = command
@@ -37,6 +21,8 @@ class SelfCorrector:
                 return True, stdout, stderr
             
             logger.error(f"Attempt {attempt + 1} failed for: {current_cmd}. Error: {stderr}")
-            current_cmd = self.suggest_fix(current_cmd, stderr)
             
-        return False, "", f"Failed after {self.executor.max_retries} attempts."
+            # Consult Gemini Brain for intelligent fix
+            current_cmd = self.brain.analyze_error(current_cmd, stderr)
+            
+        return False, "", f"Command failed after {self.executor.max_retries} attempts."

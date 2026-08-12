@@ -1,13 +1,18 @@
 {
   "agent_name": "GIGA PHONE AI",
-  "environment": "termux-ubuntu",
+  "environment": "termux-ubuntu-redmi10a",
+  "ai_provider": "gemini",
+  "gemini": {
+    "api_key": "YOUR_GEMINI_API_KEY_HERE",
+    "model": "gemini-1.5-flash"
+  },
   "telegram": {
     "bot_token": "YOUR_TELEGRAM_BOT_TOKEN_HERE",
     "chat_id": "YOUR_TELEGRAM_CHAT_ID_HERE"
   },
   "execution": {
     "max_retries": 3,
-    "timeout": 60,
+    "timeout": 30,
     "shell": "/bin/bash"
   },
   "logging": {
