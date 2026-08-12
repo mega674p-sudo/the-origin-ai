@@ -46,6 +46,7 @@ class CommandParsingTests(unittest.TestCase):
         self.assertEqual(command_from_text("/run uname -a"), "uname -a")
         self.assertEqual(command_from_text("/help"), "__HELP__")
         self.assertIsNone(command_from_text("  "))
+        self.assertIsNone(command_from_text("uname -a"))
 
 
 if __name__ == "__main__":

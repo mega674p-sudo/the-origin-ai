@@ -228,15 +228,13 @@ def load_settings():
 
 
 def command_from_text(text: str):
-    """Accept `/run <bash command>` or a non-empty raw command from the owner."""
+    """Accept only explicit `/run <bash command>` requests from the owner."""
     text = (text or "").strip()
-    if not text:
-        return None
     if text in {"/start", "/help"}:
         return "__HELP__"
     if text.startswith("/run "):
         return text[5:].strip() or None
-    return text
+    return None
 
 
 def main():
