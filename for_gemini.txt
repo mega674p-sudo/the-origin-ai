@@ -25,6 +25,7 @@ Generated from the current lightweight Redmi 10a codebase.
     "file": "logs/execution.log"
   }
 }
+
 --- END OF config/settings.json ---
 
 --- START OF core/ai_brain.py ---
@@ -64,6 +65,7 @@ class GeminiBrain:
             logger.error(f"Gemini Error: {e}")
         
         return command
+
 --- END OF core/ai_brain.py ---
 
 --- START OF core/executor.py ---
@@ -83,7 +85,7 @@ class CommandExecutor:
     def run(self, cmd: str) -> tuple[int, str, str]:
         try:
             res = subprocess.run(
-                cmd, shell=True, capture_output=True, text=True,
+                cmd, shell=True, capture_output=True, text=True, 
                 executable=self.shell, timeout=self.timeout
             )
             return res.returncode, res.stdout.strip(), res.stderr.strip()
@@ -91,31 +93,84 @@ class CommandExecutor:
             return -1, "", "Timeout"
         except Exception as e:
             return -1, "", str(e)
+
 --- END OF core/executor.py ---
 
 --- START OF core/notifier.py ---
-import requests
 import logging
+
+import requests
 
 logger = logging.getLogger("GigaNotifier")
 
-class TelegramNotifier:
-    """Minimal Telegram bridge for resource-constrained devices."""
-    def __init__(self, token: str, chat_id: str):
-        self.url = f"https://api.telegram.org/bot{token}/sendMessage"
-        self.chat_id = chat_id
 
-    def notify(self, text: str):
-        if not self.chat_id or "YOUR" in self.chat_id:
-            return
+class TelegramNotifier:
+    """Minimal Telegram API client using blocking long polling and no heavy SDK."""
+
+    def __init__(self, token: str, chat_id: str):
+        self.chat_id = str(chat_id or "")
+        self.enabled = bool(token and "YOUR_" not in token and self.chat_id and "YOUR_" not in self.chat_id)
+        base_url = f"https://api.telegram.org/bot{token}"
+        self.send_url = f"{base_url}/sendMessage"
+        self.updates_url = f"{base_url}/getUpdates"
+
+    def notify(self, text: str) -> bool:
+        """Send a bounded plain-text message to the configured operator chat."""
+        if not self.enabled:
+            logger.warning("Telegram notifier is not configured; message was not sent.")
+            return False
+
+        text = str(text)
+        if len(text) > 4000:
+            text = f"{text[:3960]}\n...[output truncated]"
+
         try:
-            requests.post(
-                self.url,
-                json={"chat_id": self.chat_id, "text": text, "parse_mode": "Markdown"},
-                timeout=10
+            response = requests.post(
+                self.send_url,
+                json={
+                    "chat_id": self.chat_id,
+                    "text": text,
+                    "disable_web_page_preview": True,
+                },
+                timeout=10,
             )
-        except Exception as e:
-            logger.error(f"Notify Error: {e}")
+            response.raise_for_status()
+            return bool(response.json().get("ok"))
+        except (requests.RequestException, ValueError) as error:
+            logger.error("Telegram sendMessage failed: %s", error)
+            return False
+
+    def get_updates(self, offset=None, timeout: int = 30):
+        """
+        Return pending Telegram updates, or None when a network/API error occurs.
+
+        Telegram holds the request for 25 seconds while the HTTP client uses a
+        strict 30-second timeout. This keeps idle CPU usage close to zero while
+        still allowing the caller to back off after connection failures.
+        """
+        if not self.enabled:
+            logger.error("Telegram listener is not configured.")
+            return None
+
+        request_timeout = max(10, min(int(timeout), 30))
+        poll_timeout = max(1, min(request_timeout - 5, 25))
+        params = {"timeout": poll_timeout}
+        if offset is not None:
+            params["offset"] = int(offset)
+
+        try:
+            response = requests.get(self.updates_url, params=params, timeout=request_timeout)
+            response.raise_for_status()
+            payload = response.json()
+            if not payload.get("ok"):
+                logger.error("Telegram getUpdates returned an unsuccessful response.")
+                return None
+            updates = payload.get("result", [])
+            return updates if isinstance(updates, list) else None
+        except (requests.RequestException, ValueError, TypeError) as error:
+            logger.warning("Telegram getUpdates failed: %s", error)
+            return None
+
 --- END OF core/notifier.py ---
 
 --- START OF core/self_corrector.py ---
@@ -136,73 +191,143 @@ class SelfCorrector:
             code, out, err = self.executor.run(current_cmd)
             if code == 0:
                 return True, out, err
-
-            logger.warning(f"Retry {i + 1} for: {current_cmd}")
+            
+            logger.warning(f"Retry {i+1} for: {current_cmd}")
             current_cmd = self.brain.analyze_error(current_cmd, err)
-
+            
         return False, "", "Max retries reached."
+
 --- END OF core/self_corrector.py ---
 
 --- START OF main.py ---
-import logging
-import sys
 import json
+import logging
 import os
+import sys
+import time
+
 from core.executor import CommandExecutor
 from core.notifier import TelegramNotifier
 
-# Setup logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-    handlers=[logging.StreamHandler(sys.stdout)]
+    handlers=[logging.StreamHandler(sys.stdout)],
 )
 logger = logging.getLogger("GigaMain")
 
+
 def load_settings():
     settings_path = os.path.join(os.path.dirname(__file__), "config", "settings.json")
-    if os.path.exists(settings_path):
-        with open(settings_path, "r") as f:
-            return json.load(f)
-    return {}
+    try:
+        with open(settings_path, "r", encoding="utf-8") as settings_file:
+            return json.load(settings_file)
+    except (OSError, json.JSONDecodeError) as error:
+        logger.error("Unable to load settings.json: %s", error)
+        return {}
+
+
+def command_from_text(text: str):
+    """Accept `/run <bash command>` or a non-empty raw command from the owner."""
+    text = (text or "").strip()
+    if not text:
+        return None
+    if text in {"/start", "/help"}:
+        return "__HELP__"
+    if text.startswith("/run "):
+        return text[5:].strip() or None
+    return text
+
 
 def main():
     logger.info("Initializing GIGA PHONE AI Agent Core Modules...")
-
-    # Load configuration
     settings = load_settings()
-    tg_settings = settings.get("telegram", {})
-    bot_token = tg_settings.get("bot_token", "YOUR_TELEGRAM_BOT_TOKEN_HERE")
-    chat_id = tg_settings.get("chat_id", "YOUR_CHAT_ID_HERE")
+    telegram = settings.get("telegram", {})
+    execution = settings.get("execution", {})
 
-    # 1. Initialize Executor
-    executor = CommandExecutor(timeout=30)
+    bot_token = telegram.get("bot_token", "YOUR_TELEGRAM_BOT_TOKEN_HERE")
+    chat_id = telegram.get("chat_id", "YOUR_TELEGRAM_CHAT_ID_HERE")
+    allowed_user_id = str(telegram.get("allowed_user_id", "YOUR_ALLOWED_USER_ID_HERE"))
 
-    # 2. Test Safe Execution (correct method name: .run())
-    code, stdout, stderr = executor.run("uname -a && python3 --version")
-    logger.info(f"Execution Result - Code: {code}")
-    if code == 0:
-        logger.info(f"STDOUT:\n{stdout}")
-    else:
-        logger.error(f"STDERR:\n{stderr}")
+    if "YOUR_" in allowed_user_id:
+        logger.error("Telegram allowed_user_id is not configured; listener will not start.")
+        return
 
-    # 3. Initialize Notifier and send startup message
+    executor = CommandExecutor(
+        timeout=int(execution.get("timeout", 30)),
+        max_retries=int(execution.get("max_retries", 3)),
+    )
     notifier = TelegramNotifier(token=bot_token, chat_id=chat_id)
-    logger.info("Telegram Notifier initialized successfully.")
-    notifier.notify("✅ GIGA PHONE AI Agent core initialized successfully!")
-    logger.info("Startup notification sent to Telegram.")
 
-    logger.info("GIGA PHONE AI initialization test completed successfully.")
+    if not notifier.enabled:
+        logger.error("Telegram bot_token or chat_id is not configured; listener will not start.")
+        return
+
+    notifier.notify("GIGA PHONE AI listener is online. Send /run <bash command>.")
+    logger.info("Telegram long-polling listener started for authorized user %s.", allowed_user_id)
+
+    offset = None
+    while True:
+        try:
+            updates = notifier.get_updates(offset=offset, timeout=30)
+            if updates is None:
+                time.sleep(2)
+                continue
+
+            for update in updates:
+                update_id = update.get("update_id")
+                if isinstance(update_id, int):
+                    offset = update_id + 1
+
+                message = update.get("message") or {}
+                sender = message.get("from") or {}
+                user_id = sender.get("id")
+                text = message.get("text")
+
+                if str(user_id) != allowed_user_id:
+                    if user_id is not None:
+                        logger.warning("Ignored command from unauthorized Telegram user %s.", user_id)
+                    continue
+
+                command = command_from_text(text)
+                if command is None:
+                    continue
+                if command == "__HELP__":
+                    notifier.notify("Usage: /run <bash command>")
+                    continue
+
+                if len(command) > 1000:
+                    notifier.notify("Command rejected: maximum command length is 1000 characters.")
+                    continue
+
+                logger.info("Executing authorized Telegram command.")
+                code, stdout, stderr = executor.run(command)
+                result = stdout if code == 0 else stderr
+                if not result:
+                    result = "(command completed with no output)" if code == 0 else "(command failed with no error output)"
+
+                status = "SUCCESS" if code == 0 else f"FAILED (exit code {code})"
+                notifier.notify(f"{status}\n$ {command}\n\n{result}")
+
+        except KeyboardInterrupt:
+            logger.info("GIGA PHONE AI listener stopped by user.")
+            break
+        except Exception as error:
+            logger.exception("Unexpected listener error: %s", error)
+            time.sleep(2)
+
 
 if __name__ == "__main__":
     main()
+
 --- END OF main.py ---
 
 --- START OF requirements.txt ---
 requests>=2.31.0
 python-dotenv>=1.0.0
+
 --- END OF requirements.txt ---
 
 --- GEMINI REVIEW REQUEST ---
-Review this low-resource Termux/Ubuntu agent for a Xiaomi Redmi 10a. Focus on correctness, security boundaries for shell execution, Telegram authorization using allowed_user_id, API failure/backoff behavior, RAM efficiency, and concrete code fixes. Do not expose or request real secrets; preserve placeholder values.
+Review this low-resource Termux/Ubuntu agent for a Xiaomi Redmi 10a. Focus on correctness, shell-execution security boundaries, Telegram authorization using allowed_user_id, long-polling behavior, API failure/backoff behavior, RAM efficiency, and concrete code fixes. Preserve placeholder values and do not request real secrets.
 --- END OF GEMINI REVIEW REQUEST ---
