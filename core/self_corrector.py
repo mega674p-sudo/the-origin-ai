@@ -20,3 +20,7 @@ class SelfCorrector:
             current_cmd = self.brain.analyze_error(current_cmd, err)
             
         return False, "", "Max retries reached."
+
+    def execute_with_correction(self, cmd: str) -> tuple[bool, str, str]:
+        """Alias for execute to maintain compatibility with older GigaAgent versions."""
+        return self.execute(cmd)

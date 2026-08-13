@@ -1,0 +1,68 @@
+{
+  "name": "AI Video Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "generate-video",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        100,
+        300
+      ],
+      "webhookId": "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d"
+    },
+    {
+      "parameters": {
+        "command": "export GEMINI_API_KEY={{ $node[\"Webhook\"].json[\"api_key\"] || $env[\"GEMINI_API_KEY\"] }}; python3 /home/ubuntu/the-origin-ai/services/yt_pipeline.py \"{{ $node[\"Webhook\"].json[\"topic\"] }}\""
+      },
+      "name": "Execute Pipeline",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        350,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        600,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Execute Pipeline",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Pipeline": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
