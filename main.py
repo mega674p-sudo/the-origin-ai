@@ -6,6 +6,7 @@ import time
 
 from core.executor import CommandExecutor
 from core.notifier import TelegramNotifier
+from core.self_corrector import SelfCorrector
 
 logging.basicConfig(
     level=logging.INFO,
@@ -39,6 +40,7 @@ def main():
     logger.info("Initializing GIGA PHONE AI Agent Core Modules...")
     settings = load_settings()
     telegram = settings.get("telegram", {})
+    gemini = settings.get("gemini", {})
     execution = settings.get("execution", {})
 
     bot_token = telegram.get("bot_token", "YOUR_TELEGRAM_BOT_TOKEN_HERE")
@@ -53,6 +55,7 @@ def main():
         timeout=int(execution.get("timeout", 30)),
         max_retries=int(execution.get("max_retries", 3)),
     )
+    corrector = SelfCorrector(executor, api_key=gemini.get("api_key"))
     notifier = TelegramNotifier(token=bot_token, chat_id=chat_id)
 
     if not notifier.enabled:
@@ -96,13 +99,13 @@ def main():
                     notifier.notify("Command rejected: maximum command length is 1000 characters.")
                     continue
 
-                logger.info("Executing authorized Telegram command.")
-                code, stdout, stderr = executor.run(command)
-                result = stdout if code == 0 else stderr
+                logger.info("Executing authorized Telegram command through self-correction.")
+                success, stdout, stderr = corrector.execute(command)
+                result = stdout if success else stderr
                 if not result:
-                    result = "(command completed with no output)" if code == 0 else "(command failed with no error output)"
+                    result = "(command completed with no output)" if success else "(command failed with no error output)"
 
-                status = "SUCCESS" if code == 0 else f"FAILED (exit code {code})"
+                status = "SUCCESS" if success else "FAILED AFTER SELF-CORRECTION"
                 notifier.notify(f"{status}\n$ {command}\n\n{result}")
 
         except KeyboardInterrupt:
