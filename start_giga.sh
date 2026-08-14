@@ -14,4 +14,10 @@ if command -v termux-wake-lock >/dev/null 2>&1; then
     termux-wake-lock
 fi
 
-exec python main.py
+PYTHON_BIN="$(command -v python3 || command -v python || true)"
+if [ -z "$PYTHON_BIN" ]; then
+    printf 'Python was not found. Run the platform setup script again.\n' >&2
+    exit 1
+fi
+
+exec "$PYTHON_BIN" main.py
