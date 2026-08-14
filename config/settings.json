@@ -1,6 +1,6 @@
 {
   "agent_name": "GIGA PHONE AI",
-  "environment": "termux-ubuntu-redmi10a",
+  "environment": "termux-redmi10a",
   "ai_provider": "gemini",
   "gemini": {
     "api_key": "YOUR_GEMINI_API_KEY_HERE",
@@ -14,7 +14,7 @@
   "execution": {
     "max_retries": 3,
     "timeout": 30,
-    "shell": "/bin/bash"
+    "shell": "auto"
   },
   "logging": {
     "level": "INFO",

@@ -1,68 +1,87 @@
-#!/usr/bin/env bash
-# ==============================================================================
-# GIGA PHONE AI - Termux Auto-Installer Script
-# Author: Senior AI Systems Architect / Giga Agent
-# Description: Automates the setup of Ubuntu PRoot, Ollama, Qwen 2.5-Coder 1.5B,
-#              and clones the GIGA PHONE AI repository in Termux.
-# ==============================================================================
+#!/data/data/com.termux/files/usr/bin/bash
+# Fresh-Termux bootstrap for GIGA PHONE AI. Run with: bash setup_termux.sh
+set -euo pipefail
 
-set -e
+REPO_URL="https://github.com/mega674p-sudo/the-origin-ai.git"
+PROJECT_DIR="$HOME/the-origin-ai"
 
-echo "=== [1/5] Updating Termux packages and installing dependencies ==="
-pkg update -y && pkg upgrade -y
-pkg install -y proot-distro git curl wget python
+say() {
+    printf '\n==> %s\n' "$1"
+}
 
-echo "=== [2/5] Setting up Ubuntu PRoot Environment ==="
-if [ ! -d "$PREFIX/var/lib/proot-distro/installed-rootfs/ubuntu" ]; then
-    proot-distro install ubuntu
-    echo "Ubuntu PRoot installed successfully."
+require_value() {
+    local prompt="$1"
+    local value=""
+    while [ -z "$value" ]; do
+        read -r -s -p "$prompt" value
+        printf '\n'
+    done
+    printf '%s' "$value"
+}
+
+say "Updating Termux and installing lightweight runtime packages"
+pkg update -y
+pkg upgrade -y
+pkg install -y git python python-requests
+
+say "Downloading the GIGA PHONE AI project"
+if [ -d "$PROJECT_DIR/.git" ]; then
+    git -C "$PROJECT_DIR" pull --ff-only origin main
+elif [ -e "$PROJECT_DIR" ]; then
+    printf 'Cannot use %s because it already exists and is not a Git repository.\n' "$PROJECT_DIR" >&2
+    exit 1
 else
-    echo "Ubuntu PRoot is already installed."
+    git clone --depth 1 "$REPO_URL" "$PROJECT_DIR"
 fi
 
-echo "=== [3/5] Configuring Ubuntu & Installing Ollama / Python Tools ==="
-proot-distro login ubuntu -- bash -c "
-    export DEBIAN_FRONTEND=noninteractive
-    apt update && apt upgrade -y
-    apt install -y curl wget git python3 python3-pip python3-venv zstd build-essential
+cd "$PROJECT_DIR"
 
-    # Install Ollama
-    if ! command -v ollama &> /dev/null; then
-        echo 'Installing Ollama...'
-        curl -fsSL https://ollama.com/install.sh | sh
-    else
-        echo 'Ollama already installed.'
-    fi
-"
+if ! python -c 'import requests' >/dev/null 2>&1; then
+    say "Installing the minimal Python dependency"
+    python -m pip install --no-cache-dir -r requirements.txt
+fi
 
-echo "=== [4/5] Pulling Qwen2.5-Coder:1.5b Model ==="
-echo "Starting Ollama service temporarily to pull model..."
-proot-distro login ubuntu -- bash -c "
-    nohup ollama serve > /tmp/ollama.log 2>&1 &
-    sleep 3
-    echo 'Pulling qwen2.5-coder:1.5b (this may take a few minutes depending on connection)...'
-    ollama pull qwen2.5-coder:1.5b
-    pkill ollama || true
-"
+say "Telegram setup"
+printf 'Open your Telegram bot, send it /start, then paste its values below.\n'
+GEMINI_API_KEY="$(require_value 'Gemini API key: ')"
+TELEGRAM_BOT_TOKEN="$(require_value 'Telegram bot token: ')"
+printf 'Telegram chat ID (private chat: usually your numeric user ID): '
+read -r TELEGRAM_CHAT_ID
+printf 'Allowed Telegram user ID (your numeric user ID): '
+read -r ALLOWED_USER_ID
 
-echo "=== [5/5] Cloning GIGA PHONE AI Repository ==="
-proot-distro login ubuntu -- bash -c "
-    cd ~
-    if [ -d 'the-origin-ai' ]; then
-        cd the-origin-ai
-        git pull origin main
-    else
-        git clone https://github.com/mega674p-sudo/the-origin-ai.git
-        cd the-origin-ai
-    fi
-    pip3 install -r requirements.txt --break-system-packages
-"
+if [ -z "$TELEGRAM_CHAT_ID" ] || [ -z "$ALLOWED_USER_ID" ]; then
+    printf 'Chat ID and allowed user ID cannot be empty.\n' >&2
+    exit 1
+fi
 
-echo "=============================================================================="
-echo " SETUP COMPLETED SUCCESSFULLY!"
-echo "=============================================================================="
-echo "To start your GIGA PHONE AI inside Ubuntu PRoot, run:"
-echo "  proot-distro login ubuntu"
-echo "  cd ~/the-origin-ai"
-echo "  python3 test_agent.py"
-echo "=============================================================================="
+export GEMINI_API_KEY TELEGRAM_BOT_TOKEN TELEGRAM_CHAT_ID ALLOWED_USER_ID
+python - <<'PY'
+import json
+import os
+
+path = "config/settings.local.json"
+settings = {
+    "gemini": {"api_key": os.environ["GEMINI_API_KEY"]},
+    "telegram": {
+        "bot_token": os.environ["TELEGRAM_BOT_TOKEN"],
+        "chat_id": os.environ["TELEGRAM_CHAT_ID"],
+        "allowed_user_id": os.environ["ALLOWED_USER_ID"],
+    },
+}
+with open(path, "w", encoding="utf-8") as output:
+    json.dump(settings, output, ensure_ascii=False, indent=2)
+    output.write("\n")
+PY
+unset GEMINI_API_KEY TELEGRAM_BOT_TOKEN TELEGRAM_CHAT_ID ALLOWED_USER_ID
+chmod 600 config/settings.local.json
+
+say "Checking the local code before startup"
+python -m unittest test_long_polling.py test_self_correction.py test_task_agent.py
+
+if command -v termux-wake-lock >/dev/null 2>&1; then
+    termux-wake-lock
+fi
+
+say "Installation complete. Starting GIGA PHONE AI"
+exec bash start_giga.sh

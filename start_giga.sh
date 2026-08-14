@@ -1,13 +1,17 @@
-#!/usr/bin/env bash
-# ==============================================================================
-# GIGA PHONE AI - Mobile Startup Script
-# Description: Starts Ollama background service and runs the autonomous agent.
-# ==============================================================================
+#!/data/data/com.termux/files/usr/bin/bash
+# Start GIGA PHONE AI directly in Termux.
+set -eu
 
-echo "Starting Ollama background service..."
-nohup ollama serve > /tmp/ollama.log 2>&1 &
-sleep 3
+PROJECT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+cd "$PROJECT_DIR"
 
-echo "Ollama is running. Launching GIGA PHONE AI Agent..."
-cd "$(dirname "$0")"
-python3 test_agent.py
+if [ ! -f "config/settings.local.json" ]; then
+    printf 'Missing config/settings.local.json. Run: bash setup_termux.sh\n' >&2
+    exit 1
+fi
+
+if command -v termux-wake-lock >/dev/null 2>&1; then
+    termux-wake-lock
+fi
+
+exec python main.py

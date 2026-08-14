@@ -3,3 +3,4 @@ __pycache__/
 data/*.json
 logs/*.log
 .env
+config/settings.local.json

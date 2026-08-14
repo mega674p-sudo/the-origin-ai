@@ -29,13 +29,32 @@ HELP_TEXT = (
 
 
 def load_settings():
-    settings_path = os.path.join(os.path.dirname(__file__), "config", "settings.json")
+    """Load the tracked template and merge optional local secrets safely."""
+    config_dir = os.path.join(os.path.dirname(__file__), "config")
+    settings_path = os.path.join(config_dir, "settings.json")
+    local_settings_path = os.path.join(config_dir, "settings.local.json")
+
     try:
         with open(settings_path, "r", encoding="utf-8") as settings_file:
-            return json.load(settings_file)
+            settings = json.load(settings_file)
     except (OSError, json.JSONDecodeError) as error:
         logger.error("Unable to load settings.json: %s", error)
         return {}
+
+    try:
+        with open(local_settings_path, "r", encoding="utf-8") as local_file:
+            local_settings = json.load(local_file)
+        for section, values in local_settings.items():
+            if isinstance(values, dict) and isinstance(settings.get(section), dict):
+                settings[section].update(values)
+            else:
+                settings[section] = values
+    except FileNotFoundError:
+        pass
+    except (OSError, json.JSONDecodeError) as error:
+        logger.error("Unable to load settings.local.json: %s", error)
+
+    return settings
 
 
 def command_from_text(text: str):

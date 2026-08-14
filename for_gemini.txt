@@ -1,10 +1,10 @@
 GIGA PHONE AI — Gemini Review Bundle
-Generated from the reconciled lightweight Redmi 10a codebase.
+Generated from the direct-Termux Redmi 10a codebase.
 
 --- START OF config/settings.json ---
 {
   "agent_name": "GIGA PHONE AI",
-  "environment": "termux-ubuntu-redmi10a",
+  "environment": "termux-redmi10a",
   "ai_provider": "gemini",
   "gemini": {
     "api_key": "YOUR_GEMINI_API_KEY_HERE",
@@ -18,7 +18,7 @@ Generated from the reconciled lightweight Redmi 10a codebase.
   "execution": {
     "max_retries": 3,
     "timeout": 30,
-    "shell": "/bin/bash"
+    "shell": "auto"
   },
   "logging": {
     "level": "INFO",
@@ -126,30 +126,55 @@ Rules:
 --- END OF core/ai_brain.py ---
 
 --- START OF core/executor.py ---
-import subprocess
 import logging
 import os
+import shutil
+import subprocess
 
 logger = logging.getLogger("GigaExecutor")
 
+
 class CommandExecutor:
-    """Minimal subprocess wrapper with strict resource controls."""
+    """Minimal subprocess wrapper with strict timeouts and Termux shell support."""
+
     def __init__(self, timeout: int = 30, max_retries: int = 3):
-        self.timeout = timeout
-        self.max_retries = max_retries
-        self.shell = "/bin/bash" if os.path.exists("/bin/bash") else "/bin/sh"
+        self.timeout = max(1, int(timeout))
+        self.max_retries = max(1, int(max_retries))
+        self.shell = self._find_shell()
+
+    @staticmethod
+    def _find_shell():
+        """Prefer the active Termux shell, then portable bash/sh locations."""
+        candidates = [
+            os.environ.get("SHELL", ""),
+            shutil.which("bash") or "",
+            shutil.which("sh") or "",
+            "/bin/bash",
+            "/bin/sh",
+        ]
+        for candidate in candidates:
+            if candidate and os.path.isfile(candidate) and os.access(candidate, os.X_OK):
+                return candidate
+        return None
 
     def run(self, cmd: str) -> tuple[int, str, str]:
+        if not self.shell:
+            return -1, "", "No executable shell was found."
         try:
-            res = subprocess.run(
-                cmd, shell=True, capture_output=True, text=True, 
-                executable=self.shell, timeout=self.timeout
+            result = subprocess.run(
+                cmd,
+                shell=True,
+                capture_output=True,
+                text=True,
+                executable=self.shell,
+                timeout=self.timeout,
             )
-            return res.returncode, res.stdout.strip(), res.stderr.strip()
+            return result.returncode, result.stdout.strip(), result.stderr.strip()
         except subprocess.TimeoutExpired:
             return -1, "", "Timeout"
-        except Exception as e:
-            return -1, "", str(e)
+        except OSError as error:
+            logger.error("Command execution failed: %s", error)
+            return -1, "", str(error)
 
 --- END OF core/executor.py ---
 
@@ -473,13 +498,32 @@ HELP_TEXT = (
 
 
 def load_settings():
-    settings_path = os.path.join(os.path.dirname(__file__), "config", "settings.json")
+    """Load the tracked template and merge optional local secrets safely."""
+    config_dir = os.path.join(os.path.dirname(__file__), "config")
+    settings_path = os.path.join(config_dir, "settings.json")
+    local_settings_path = os.path.join(config_dir, "settings.local.json")
+
     try:
         with open(settings_path, "r", encoding="utf-8") as settings_file:
-            return json.load(settings_file)
+            settings = json.load(settings_file)
     except (OSError, json.JSONDecodeError) as error:
         logger.error("Unable to load settings.json: %s", error)
         return {}
+
+    try:
+        with open(local_settings_path, "r", encoding="utf-8") as local_file:
+            local_settings = json.load(local_file)
+        for section, values in local_settings.items():
+            if isinstance(values, dict) and isinstance(settings.get(section), dict):
+                settings[section].update(values)
+            else:
+                settings[section] = values
+    except FileNotFoundError:
+        pass
+    except (OSError, json.JSONDecodeError) as error:
+        logger.error("Unable to load settings.local.json: %s", error)
+
+    return settings
 
 
 def command_from_text(text: str):
@@ -614,176 +658,123 @@ if __name__ == "__main__":
 
 --- END OF main.py ---
 
---- START OF services/yt_pipeline.py ---
-import os
-import json
-import requests
-import subprocess
-import time
-import logging
+--- START OF setup_termux.sh ---
+#!/data/data/com.termux/files/usr/bin/bash
+# Fresh-Termux bootstrap for GIGA PHONE AI. Run with: bash setup_termux.sh
+set -euo pipefail
 
-logger = logging.getLogger("YTPipeline")
+REPO_URL="https://github.com/mega674p-sudo/the-origin-ai.git"
+PROJECT_DIR="$HOME/the-origin-ai"
 
-class YTPipeline:
-    def __init__(self, api_key, output_dir="output"):
-        self.api_key = api_key
-        self.output_dir = output_dir
-        self.gemini_url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent"
-        os.makedirs(output_dir, exist_ok=True)
-
-    def generate_script(self, topic):
-        logger.info(f"Generating script for topic: {topic}")
-        prompt = (
-            f"Create a short viral video script about '{topic}'. "
-            "Return ONLY a JSON object with the following structure: "
-            "{'title': '...', 'scenes': [{'text': '...', 'image_prompt': '...'}]}. "
-            "Keep it to 3-5 scenes. Each image_prompt should be descriptive for an AI image generator."
-        )
-        
-        payload = {"contents": [{"parts": [{"text": prompt}]}]}
-        response = requests.post(f"{self.gemini_url}?key={self.api_key}", json=payload)
-        
-        if response.status_code == 200:
-            content = response.json()["candidates"][0]["content"]["parts"][0]["text"]
-            # Clean markdown if present
-            content = content.strip().replace("```json", "").replace("```", "").strip()
-            return json.loads(content)
-        else:
-            raise Exception(f"Gemini API error: {response.text}")
-
-    def generate_image(self, prompt, index):
-        logger.info(f"Generating image {index} for prompt: {prompt}")
-        # Using a reliable placeholder for testing assembly
-        url = f"https://picsum.photos/seed/{index}/{1080}/{1920}"
-        response = requests.get(url, allow_redirects=True)
-        if response.status_code == 200:
-            path = os.path.join(self.output_dir, f"scene_{index}.jpg")
-            with open(path, "wb") as f:
-                f.write(response.content)
-            return path
-        else:
-            raise Exception("Image generation failed")
-
-    def create_video(self, script_data):
-        logger.info("Assembling video...")
-        scenes = script_data["scenes"]
-        image_paths = []
-        
-        for i, scene in enumerate(scenes):
-            img_path = self.generate_image(scene["image_prompt"], i)
-            image_paths.append(img_path)
-            
-        # Create a simple video using ffmpeg
-        # For a real production, we'd add audio and transitions
-        # Here we create a 15-second video (3 seconds per image)
-        
-        input_file = os.path.join(self.output_dir, "input.txt")
-        with open(input_file, "w") as f:
-            for path in image_paths:
-                f.write(f"file '{os.path.abspath(path)}'\nduration 3\n")
-            # Last file needs to be repeated or ffmpeg might cut it
-            f.write(f"file '{os.path.abspath(image_paths[-1])}'\n")
-
-        output_video = os.path.join(self.output_dir, "final_video.mp4")
-        cmd = [
-            "ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", input_file,
-            "-vsync", "vfr", "-pix_fmt", "yuv420p", output_video
-        ]
-        
-        subprocess.run(cmd, check=True)
-        return output_video
-
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    import sys
-    topic = sys.argv[1] if len(sys.argv) > 1 else "Future of AI"
-    api_key = os.getenv("GEMINI_API_KEY")
-    
-    pipeline = YTPipeline(api_key)
-    script = pipeline.generate_script(topic)
-    video = pipeline.create_video(script)
-    print(f"Video created at: {video}")
-
---- END OF services/yt_pipeline.py ---
-
---- START OF workflows/ai_video_automation.json ---
-{
-  "name": "AI Video Automation",
-  "nodes": [
-    {
-      "parameters": {
-        "httpMethod": "POST",
-        "path": "generate-video",
-        "options": {}
-      },
-      "name": "Webhook",
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 1,
-      "position": [
-        100,
-        300
-      ],
-      "webhookId": "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d"
-    },
-    {
-      "parameters": {
-        "command": "export GEMINI_API_KEY={{ $node[\"Webhook\"].json[\"api_key\"] || $env[\"GEMINI_API_KEY\"] }}; python3 /home/ubuntu/the-origin-ai/services/yt_pipeline.py \"{{ $node[\"Webhook\"].json[\"topic\"] }}\""
-      },
-      "name": "Execute Pipeline",
-      "type": "n8n-nodes-base.executeCommand",
-      "typeVersion": 1,
-      "position": [
-        350,
-        300
-      ]
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "name": "Respond to Webhook",
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1,
-      "position": [
-        600,
-        300
-      ]
-    }
-  ],
-  "connections": {
-    "Webhook": {
-      "main": [
-        [
-          {
-            "node": "Execute Pipeline",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Execute Pipeline": {
-      "main": [
-        [
-          {
-            "node": "Respond to Webhook",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    }
-  }
+say() {
+    printf '\n==> %s\n' "$1"
 }
 
---- END OF workflows/ai_video_automation.json ---
+require_value() {
+    local prompt="$1"
+    local value=""
+    while [ -z "$value" ]; do
+        read -r -s -p "$prompt" value
+        printf '\n'
+    done
+    printf '%s' "$value"
+}
+
+say "Updating Termux and installing lightweight runtime packages"
+pkg update -y
+pkg upgrade -y
+pkg install -y git python python-requests
+
+say "Downloading the GIGA PHONE AI project"
+if [ -d "$PROJECT_DIR/.git" ]; then
+    git -C "$PROJECT_DIR" pull --ff-only origin main
+elif [ -e "$PROJECT_DIR" ]; then
+    printf 'Cannot use %s because it already exists and is not a Git repository.\n' "$PROJECT_DIR" >&2
+    exit 1
+else
+    git clone --depth 1 "$REPO_URL" "$PROJECT_DIR"
+fi
+
+cd "$PROJECT_DIR"
+
+if ! python -c 'import requests' >/dev/null 2>&1; then
+    say "Installing the minimal Python dependency"
+    python -m pip install --no-cache-dir -r requirements.txt
+fi
+
+say "Telegram setup"
+printf 'Open your Telegram bot, send it /start, then paste its values below.\n'
+GEMINI_API_KEY="$(require_value 'Gemini API key: ')"
+TELEGRAM_BOT_TOKEN="$(require_value 'Telegram bot token: ')"
+printf 'Telegram chat ID (private chat: usually your numeric user ID): '
+read -r TELEGRAM_CHAT_ID
+printf 'Allowed Telegram user ID (your numeric user ID): '
+read -r ALLOWED_USER_ID
+
+if [ -z "$TELEGRAM_CHAT_ID" ] || [ -z "$ALLOWED_USER_ID" ]; then
+    printf 'Chat ID and allowed user ID cannot be empty.\n' >&2
+    exit 1
+fi
+
+export GEMINI_API_KEY TELEGRAM_BOT_TOKEN TELEGRAM_CHAT_ID ALLOWED_USER_ID
+python - <<'PY'
+import json
+import os
+
+path = "config/settings.local.json"
+settings = {
+    "gemini": {"api_key": os.environ["GEMINI_API_KEY"]},
+    "telegram": {
+        "bot_token": os.environ["TELEGRAM_BOT_TOKEN"],
+        "chat_id": os.environ["TELEGRAM_CHAT_ID"],
+        "allowed_user_id": os.environ["ALLOWED_USER_ID"],
+    },
+}
+with open(path, "w", encoding="utf-8") as output:
+    json.dump(settings, output, ensure_ascii=False, indent=2)
+    output.write("\n")
+PY
+unset GEMINI_API_KEY TELEGRAM_BOT_TOKEN TELEGRAM_CHAT_ID ALLOWED_USER_ID
+chmod 600 config/settings.local.json
+
+say "Checking the local code before startup"
+python -m unittest test_long_polling.py test_self_correction.py test_task_agent.py
+
+if command -v termux-wake-lock >/dev/null 2>&1; then
+    termux-wake-lock
+fi
+
+say "Installation complete. Starting GIGA PHONE AI"
+exec bash start_giga.sh
+
+--- END OF setup_termux.sh ---
+
+--- START OF start_giga.sh ---
+#!/data/data/com.termux/files/usr/bin/bash
+# Start GIGA PHONE AI directly in Termux.
+set -eu
+
+PROJECT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+cd "$PROJECT_DIR"
+
+if [ ! -f "config/settings.local.json" ]; then
+    printf 'Missing config/settings.local.json. Run: bash setup_termux.sh\n' >&2
+    exit 1
+fi
+
+if command -v termux-wake-lock >/dev/null 2>&1; then
+    termux-wake-lock
+fi
+
+exec python main.py
+
+--- END OF start_giga.sh ---
 
 --- START OF requirements.txt ---
 requests>=2.31.0
-python-dotenv>=1.0.0
 
 --- END OF requirements.txt ---
 
 --- GEMINI REVIEW REQUEST ---
-Review this low-resource Termux/Ubuntu Gemini tool-calling agent for a Xiaomi Redmi 10a. Verify the /task -> plan -> /approve execution gate, JSON-plan validation, forbidden-command filtering, persisted pending-task state, self-correction routing, Gemini transient failure backoff, Telegram authorization, RAM efficiency, and compatibility with the included n8n/YouTube automation assets. Preserve placeholder values and do not request real secrets.
+Review this direct-Termux deployment for a Redmi 10a. Verify that no PRoot or local LLM is required, setup_termux.sh handles a fresh device safely, local secrets are written only to ignored config/settings.local.json, the Termux shell resolves correctly, Telegram authorization and /task approval gates remain intact, and RAM usage remains minimal. Preserve placeholders and do not request real secrets.
 --- END OF GEMINI REVIEW REQUEST ---
