@@ -29,6 +29,7 @@ Generated from the current lightweight Redmi 10a codebase.
 --- END OF config/settings.json ---
 
 --- START OF core/ai_brain.py ---
+import json
 import logging
 import os
 import time
@@ -46,37 +47,32 @@ class GeminiBrain:
         self.model = model
         self.url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.model}:generateContent"
 
-    def analyze_error(self, command: str, stderr: str) -> str:
-        """Return Gemini's corrected command, or the original command on failure."""
+    def generate(self, prompt: str) -> str:
+        """Return Gemini text with bounded retry behavior, or an empty string."""
         if not self.api_key or "YOUR_" in self.api_key:
-            return command
+            logger.error("Gemini API key is not configured.")
+            return ""
 
-        prompt = (
-            "Fix this bash command for Termux/Ubuntu. Return ONLY one corrected raw "
-            "bash command, with no Markdown or explanation.\n"
-            f"Error: {stderr}\nCommand: {command}"
-        )
         payload = {"contents": [{"parts": [{"text": prompt}]}]}
 
-        # Three total attempts with 1s then 2s bounded backoff on rate limits.
+        # Three total attempts with 1s then 2s bounded backoff on transient API failures.
         for attempt in range(3):
             try:
                 response = requests.post(
                     self.url,
                     params={"key": self.api_key},
                     json=payload,
-                    timeout=15,
+                    timeout=20,
                 )
 
                 if response.status_code == 200:
-                    text = response.json()["candidates"][0]["content"]["parts"][0]["text"]
-                    fixed_command = text.strip().replace("```bash", "").replace("```", "").strip()
-                    return fixed_command or command
+                    return response.json()["candidates"][0]["content"]["parts"][0]["text"].strip()
 
-                if response.status_code == 429 and attempt < 2:
+                if response.status_code in {429, 500, 502, 503, 504} and attempt < 2:
                     delay = 2 ** attempt
                     logger.warning(
-                        "Gemini API rate-limited request; retrying in %s second(s) [%s/3].",
+                        "Gemini API transient HTTP %s; retrying in %s second(s) [%s/3].",
+                        response.status_code,
                         delay,
                         attempt + 1,
                     )
@@ -84,13 +80,48 @@ class GeminiBrain:
                     continue
 
                 logger.error("Gemini API returned HTTP %s.", response.status_code)
-                return command
+                return ""
 
             except (requests.RequestException, KeyError, IndexError, TypeError, ValueError) as error:
                 logger.error("Gemini API request failed: %s", error)
-                return command
+                return ""
 
-        return command
+        return ""
+
+    def analyze_error(self, command: str, stderr: str) -> str:
+        """Return Gemini's corrected command, or the original command on failure."""
+        prompt = (
+            "Fix this bash command for Termux/Ubuntu. Return ONLY one corrected raw "
+            "bash command, with no Markdown or explanation.\n"
+            f"Error: {stderr}\nCommand: {command}"
+        )
+        fixed_command = self.generate(prompt)
+        return fixed_command.replace("```bash", "").replace("```", "").strip() or command
+
+    def plan_task(self, goal: str) -> dict:
+        """Request a short, strict JSON plan for tools available on the device."""
+        prompt = f"""You are the planning component of GIGA PHONE AI on a low-resource Termux device.
+Create a safe, concise plan for this user goal: {goal}
+
+Return ONLY valid JSON with this exact structure:
+{{"summary":"short summary","steps":[{{"tool":"run_bash","command":"command","purpose":"reason"}}]}}
+
+Rules:
+- Use only the tool name "run_bash".
+- Include 1 to 5 steps, each command no more than 1000 characters.
+- Prefer read-only diagnostics and actions in the current user workspace.
+- Never propose sudo, su, rm -rf, mkfs, dd, reboot, shutdown, poweroff, fork bombs, curl/wget piped to a shell, credential access, or destructive commands.
+- If the goal would require a forbidden action, return an empty steps array and explain why in summary.
+"""
+        raw_plan = self.generate(prompt)
+        if not raw_plan:
+            return {}
+
+        try:
+            return json.loads(raw_plan.replace("```json", "").replace("```", "").strip())
+        except json.JSONDecodeError:
+            logger.error("Gemini returned a non-JSON task plan.")
+            return {}
 
 --- END OF core/ai_brain.py ---
 
@@ -201,29 +232,210 @@ class TelegramNotifier:
 
 --- START OF core/self_corrector.py ---
 import logging
-from core.executor import CommandExecutor
+
 from core.ai_brain import GeminiBrain
+from core.executor import CommandExecutor
 
 logger = logging.getLogger("GigaSelfCorrector")
 
+
 class SelfCorrector:
-    def __init__(self, executor: CommandExecutor, api_key: str = None):
+    """Retry failed commands after requesting a bounded Gemini correction."""
+
+    def __init__(self, executor: CommandExecutor, api_key: str = None, brain: GeminiBrain = None):
         self.executor = executor
-        self.brain = GeminiBrain(api_key=api_key)
+        self.brain = brain or GeminiBrain(api_key=api_key)
 
     def execute(self, cmd: str) -> tuple[bool, str, str]:
         current_cmd = cmd
-        for i in range(self.executor.max_retries):
-            code, out, err = self.executor.run(current_cmd)
+        for attempt in range(self.executor.max_retries):
+            code, stdout, stderr = self.executor.run(current_cmd)
             if code == 0:
-                return True, out, err
-            
-            logger.warning(f"Retry {i+1} for: {current_cmd}")
-            current_cmd = self.brain.analyze_error(current_cmd, err)
-            
-        return False, "", "Max retries reached."
+                return True, stdout, stderr
+
+            logger.warning("Retry %s for a failed command.", attempt + 1)
+            corrected_cmd = self.brain.analyze_error(current_cmd, stderr)
+            if corrected_cmd == current_cmd:
+                break
+            current_cmd = corrected_cmd
+
+        return False, "", "Max retries reached or no safe correction was returned."
 
 --- END OF core/self_corrector.py ---
+
+--- START OF core/task_agent.py ---
+import json
+import logging
+import os
+import re
+import tempfile
+
+logger = logging.getLogger("GigaTaskAgent")
+
+
+class TaskAgent:
+    """Gemini-planned task runner with one persisted, approval-gated task."""
+
+    MAX_STEPS = 5
+    MAX_COMMAND_LENGTH = 1000
+    MAX_RESULT_LENGTH = 1200
+    FORBIDDEN_PATTERNS = (
+        "rm -rf",
+        "mkfs",
+        "dd if=",
+        "reboot",
+        "shutdown",
+        "poweroff",
+        ":(){",
+        "sudo ",
+        "su -",
+        "termux-wipe",
+    )
+
+    def __init__(self, brain, state_path):
+        self.brain = brain
+        self.state_path = state_path
+
+    def _load(self):
+        try:
+            with open(self.state_path, "r", encoding="utf-8") as state_file:
+                state = json.load(state_file)
+                return state if isinstance(state, dict) else {}
+        except (OSError, json.JSONDecodeError):
+            return {}
+
+    def _save(self, state):
+        directory = os.path.dirname(self.state_path)
+        os.makedirs(directory, exist_ok=True)
+        file_descriptor, temporary_path = tempfile.mkstemp(prefix="task_", suffix=".json", dir=directory)
+        try:
+            with os.fdopen(file_descriptor, "w", encoding="utf-8") as state_file:
+                json.dump(state, state_file, ensure_ascii=False, separators=(",", ":"))
+            os.replace(temporary_path, self.state_path)
+        except OSError as error:
+            logger.error("Unable to save task state: %s", error)
+            try:
+                os.unlink(temporary_path)
+            except OSError:
+                pass
+            return False
+        return True
+
+    def _is_safe_command(self, command):
+        lowered = command.lower()
+        if not command or len(command) > self.MAX_COMMAND_LENGTH:
+            return False
+        if any(pattern in lowered for pattern in self.FORBIDDEN_PATTERNS):
+            return False
+        if re.search(r"\b(curl|wget)\b[^\n]*\|\s*(sh|bash)\b", lowered):
+            return False
+        return True
+
+    def _validate_plan(self, plan):
+        if not isinstance(plan, dict):
+            return []
+        raw_steps = plan.get("steps")
+        if not isinstance(raw_steps, list):
+            return []
+
+        steps = []
+        for raw_step in raw_steps[: self.MAX_STEPS]:
+            if not isinstance(raw_step, dict) or raw_step.get("tool") != "run_bash":
+                return []
+            command = str(raw_step.get("command", "")).strip()
+            purpose = str(raw_step.get("purpose", "")).strip()[:240]
+            if not self._is_safe_command(command):
+                return []
+            steps.append({"tool": "run_bash", "command": command, "purpose": purpose})
+        return steps
+
+    def create_task(self, goal):
+        """Ask Gemini for a plan and persist it until the owner approves or cancels."""
+        goal = str(goal or "").strip()
+        if not goal or len(goal) > 2000:
+            return {}, "Task must contain between 1 and 2000 characters."
+
+        plan = self.brain.plan_task(goal)
+        steps = self._validate_plan(plan)
+        if not steps:
+            summary = str(plan.get("summary", "Gemini did not return a safe executable plan."))[:500] if plan else "Gemini planning failed."
+            return {}, summary
+
+        state = {
+            "status": "awaiting_approval",
+            "goal": goal,
+            "summary": str(plan.get("summary", "Task plan ready."))[:500],
+            "steps": steps,
+            "results": [],
+        }
+        if not self._save(state):
+            return {}, "Unable to save the pending task."
+        return state, ""
+
+    def get_status(self):
+        return self._load()
+
+    def cancel(self):
+        state = self._load()
+        if state.get("status") != "awaiting_approval":
+            return False
+        try:
+            os.unlink(self.state_path)
+            return True
+        except OSError as error:
+            logger.error("Unable to cancel task: %s", error)
+            return False
+
+    def approve_and_execute(self, corrector):
+        """Execute the pending plan sequentially through the Gemini self-corrector."""
+        state = self._load()
+        if state.get("status") != "awaiting_approval":
+            return {}, "There is no pending task awaiting approval."
+
+        state["status"] = "running"
+        state["results"] = []
+        if not self._save(state):
+            return {}, "Unable to mark the task as running."
+
+        for index, step in enumerate(state["steps"], start=1):
+            command = step["command"]
+            success, stdout, stderr = corrector.execute(command)
+            output = stdout if success else stderr
+            output = (output or "(no output)")[: self.MAX_RESULT_LENGTH]
+            result = {
+                "step": index,
+                "command": command,
+                "success": success,
+                "output": output,
+            }
+            state["results"].append(result)
+            if not success:
+                state["status"] = "failed"
+                self._save(state)
+                return state, "Task stopped after the first failed step."
+
+        state["status"] = "completed"
+        self._save(state)
+        return state, "Task completed."
+
+    @staticmethod
+    def format_plan(state):
+        lines = [f"TASK PLAN\n{state.get('summary', '')}"]
+        for index, step in enumerate(state.get("steps", []), start=1):
+            purpose = f" — {step['purpose']}" if step.get("purpose") else ""
+            lines.append(f"{index}. $ {step['command']}{purpose}")
+        lines.append("Reply /approve to execute, or /cancel to discard.")
+        return "\n".join(lines)
+
+    @staticmethod
+    def format_result(state, message):
+        lines = [message]
+        for result in state.get("results", []):
+            label = "SUCCESS" if result.get("success") else "FAILED"
+            lines.append(f"\nStep {result.get('step')} {label}\n$ {result.get('command')}\n{result.get('output')}")
+        return "\n".join(lines)
+
+--- END OF core/task_agent.py ---
 
 --- START OF main.py ---
 import json
@@ -232,9 +444,11 @@ import os
 import sys
 import time
 
+from core.ai_brain import GeminiBrain
 from core.executor import CommandExecutor
 from core.notifier import TelegramNotifier
 from core.self_corrector import SelfCorrector
+from core.task_agent import TaskAgent
 
 logging.basicConfig(
     level=logging.INFO,
@@ -242,6 +456,16 @@ logging.basicConfig(
     handlers=[logging.StreamHandler(sys.stdout)],
 )
 logger = logging.getLogger("GigaMain")
+
+HELP_TEXT = (
+    "GIGA PHONE AI commands:\n"
+    "/run <bash command> — run one command immediately\n"
+    "/task <goal> — ask Gemini for a plan; no command runs yet\n"
+    "/approve — execute the pending approved plan\n"
+    "/cancel — discard the pending plan\n"
+    "/status — show task status\n"
+    "/help — show this message"
+)
 
 
 def load_settings():
@@ -255,13 +479,29 @@ def load_settings():
 
 
 def command_from_text(text: str):
-    """Accept only explicit `/run <bash command>` requests from the owner."""
+    """Parse only explicit Telegram commands from the authorized operator."""
     text = (text or "").strip()
     if text in {"/start", "/help"}:
-        return "__HELP__"
+        return "help", ""
+    if text == "/approve":
+        return "approve", ""
+    if text == "/cancel":
+        return "cancel", ""
+    if text == "/status":
+        return "status", ""
     if text.startswith("/run "):
-        return text[5:].strip() or None
-    return None
+        return "run", text[5:].strip()
+    if text.startswith("/task "):
+        return "task", text[6:].strip()
+    return None, ""
+
+
+def send_command_result(notifier, command, success, stdout, stderr):
+    result = stdout if success else stderr
+    if not result:
+        result = "(command completed with no output)" if success else "(command failed with no error output)"
+    status = "SUCCESS" if success else "FAILED AFTER SELF-CORRECTION"
+    notifier.notify(f"{status}\n$ {command}\n\n{result}")
 
 
 def main():
@@ -283,15 +523,18 @@ def main():
         timeout=int(execution.get("timeout", 30)),
         max_retries=int(execution.get("max_retries", 3)),
     )
-    corrector = SelfCorrector(executor, api_key=gemini.get("api_key"))
+    brain = GeminiBrain(api_key=gemini.get("api_key"), model=gemini.get("model", "gemini-3.5-flash"))
+    corrector = SelfCorrector(executor, brain=brain)
     notifier = TelegramNotifier(token=bot_token, chat_id=chat_id)
+    task_state_path = os.path.join(os.path.dirname(__file__), "data", "pending_task.json")
+    task_agent = TaskAgent(brain, task_state_path)
 
     if not notifier.enabled:
         logger.error("Telegram bot_token or chat_id is not configured; listener will not start.")
         return
 
-    notifier.notify("GIGA PHONE AI listener is online. Send /run <bash command>.")
-    logger.info("Telegram long-polling listener started for authorized user %s.", allowed_user_id)
+    notifier.notify("GIGA PHONE AI tool-calling agent is online. Send /help for commands.")
+    logger.info("Telegram listener started for authorized user %s.", allowed_user_id)
 
     offset = None
     while True:
@@ -316,25 +559,43 @@ def main():
                         logger.warning("Ignored command from unauthorized Telegram user %s.", user_id)
                     continue
 
-                command = command_from_text(text)
-                if command is None:
+                action, value = command_from_text(text)
+                if action is None:
                     continue
-                if command == "__HELP__":
-                    notifier.notify("Usage: /run <bash command>")
+                if action == "help":
+                    notifier.notify(HELP_TEXT)
+                    continue
+                if action == "status":
+                    state = task_agent.get_status()
+                    if not state:
+                        notifier.notify("No pending or recorded task.")
+                    else:
+                        notifier.notify(f"Task status: {state.get('status', 'unknown')}\nGoal: {state.get('goal', '')}")
+                    continue
+                if action == "cancel":
+                    notifier.notify("Pending task cancelled." if task_agent.cancel() else "No task was available to cancel.")
+                    continue
+                if action == "task":
+                    state, error = task_agent.create_task(value)
+                    notifier.notify(TaskAgent.format_plan(state) if state else f"Task plan not created: {error}")
+                    continue
+                if action == "approve":
+                    notifier.notify("Approved task is running; this may take several minutes.")
+                    state, message_text = task_agent.approve_and_execute(corrector)
+                    notifier.notify(TaskAgent.format_result(state, message_text) if state else message_text)
                     continue
 
+                command = value
+                if not command:
+                    notifier.notify("Usage: /run <bash command>")
+                    continue
                 if len(command) > 1000:
                     notifier.notify("Command rejected: maximum command length is 1000 characters.")
                     continue
 
                 logger.info("Executing authorized Telegram command through self-correction.")
                 success, stdout, stderr = corrector.execute(command)
-                result = stdout if success else stderr
-                if not result:
-                    result = "(command completed with no output)" if success else "(command failed with no error output)"
-
-                status = "SUCCESS" if success else "FAILED AFTER SELF-CORRECTION"
-                notifier.notify(f"{status}\n$ {command}\n\n{result}")
+                send_command_result(notifier, command, success, stdout, stderr)
 
         except KeyboardInterrupt:
             logger.info("GIGA PHONE AI listener stopped by user.")
@@ -356,5 +617,5 @@ python-dotenv>=1.0.0
 --- END OF requirements.txt ---
 
 --- GEMINI REVIEW REQUEST ---
-Review this low-resource Termux/Ubuntu agent for a Xiaomi Redmi 10a. Confirm that Telegram commands pass through SelfCorrector, Gemini rate limits use bounded exponential backoff, shell-execution security boundaries are appropriate, and the listener remains RAM-efficient. Preserve placeholder values and do not request real secrets.
+Review this low-resource Termux/Ubuntu Gemini tool-calling agent for a Xiaomi Redmi 10a. Verify the /task -> plan -> /approve execution gate, JSON-plan validation, forbidden-command filtering, persisted pending-task state, self-correction routing, Gemini transient failure backoff, Telegram authorization, and RAM efficiency. Preserve placeholder values and do not request real secrets.
 --- END OF GEMINI REVIEW REQUEST ---

@@ -45,6 +45,23 @@ class GeminiBackoffTests(unittest.TestCase):
         self.assertEqual(mock_post.call_count, 3)
         self.assertEqual([call.args[0] for call in mock_sleep.call_args_list], [1, 2])
 
+    @patch("core.ai_brain.time.sleep")
+    @patch("core.ai_brain.requests.post")
+    def test_transient_server_error_is_retried(self, mock_post, mock_sleep):
+        mock_post.side_effect = [
+            FakeResponse(503),
+            FakeResponse(200, {
+                "candidates": [{"content": {"parts": [{"text": "echo recovered"}]}}]
+            }),
+        ]
+        brain = GeminiBrain(api_key="test-key")
+
+        fixed = brain.analyze_error("bad-command", "temporary service unavailable")
+
+        self.assertEqual(fixed, "echo recovered")
+        self.assertEqual(mock_post.call_count, 2)
+        self.assertEqual([call.args[0] for call in mock_sleep.call_args_list], [1])
+
 
 class SelfCorrectionTests(unittest.TestCase):
     def test_failed_command_is_retried_with_gemini_suggestion(self):

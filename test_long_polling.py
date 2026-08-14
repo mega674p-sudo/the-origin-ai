@@ -43,10 +43,14 @@ class TelegramNotifierTests(unittest.TestCase):
 
 class CommandParsingTests(unittest.TestCase):
     def test_command_from_text(self):
-        self.assertEqual(command_from_text("/run uname -a"), "uname -a")
-        self.assertEqual(command_from_text("/help"), "__HELP__")
-        self.assertIsNone(command_from_text("  "))
-        self.assertIsNone(command_from_text("uname -a"))
+        self.assertEqual(command_from_text("/run uname -a"), ("run", "uname -a"))
+        self.assertEqual(command_from_text("/task inspect disk space"), ("task", "inspect disk space"))
+        self.assertEqual(command_from_text("/approve"), ("approve", ""))
+        self.assertEqual(command_from_text("/cancel"), ("cancel", ""))
+        self.assertEqual(command_from_text("/status"), ("status", ""))
+        self.assertEqual(command_from_text("/help"), ("help", ""))
+        self.assertEqual(command_from_text("  "), (None, ""))
+        self.assertEqual(command_from_text("uname -a"), (None, ""))
 
 
 if __name__ == "__main__":
