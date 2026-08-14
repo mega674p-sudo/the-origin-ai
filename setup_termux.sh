@@ -42,20 +42,54 @@ if ! python -c 'import requests' >/dev/null 2>&1; then
 fi
 
 say "Telegram setup"
-printf 'Open your Telegram bot, send it /start, then paste its values below.\n'
 GEMINI_API_KEY="$(require_value 'Gemini API key: ')"
 TELEGRAM_BOT_TOKEN="$(require_value 'Telegram bot token: ')"
-printf 'Telegram chat ID (private chat: usually your numeric user ID): '
-read -r TELEGRAM_CHAT_ID
-printf 'Allowed Telegram user ID (your numeric user ID): '
-read -r ALLOWED_USER_ID
+export GEMINI_API_KEY TELEGRAM_BOT_TOKEN
 
-if [ -z "$TELEGRAM_CHAT_ID" ] || [ -z "$ALLOWED_USER_ID" ]; then
-    printf 'Chat ID and allowed user ID cannot be empty.\n' >&2
-    exit 1
-fi
+BOT_USERNAME="$(python - <<'PY'
+import json
+import os
+import urllib.request
 
-export GEMINI_API_KEY TELEGRAM_BOT_TOKEN TELEGRAM_CHAT_ID ALLOWED_USER_ID
+url = f"https://api.telegram.org/bot{os.environ['TELEGRAM_BOT_TOKEN']}/getMe"
+with urllib.request.urlopen(url, timeout=15) as response:
+    payload = json.load(response)
+if not payload.get("ok") or not payload.get("result", {}).get("username"):
+    raise SystemExit("The Telegram bot token was rejected.")
+print(payload["result"]["username"])
+PY
+)"
+
+printf '\nOpen https://t.me/%s, send /start in a private chat, then press Enter here.\n' "$BOT_USERNAME"
+read -r _
+
+TELEGRAM_IDENTITY="$(python - <<'PY'
+import json
+import os
+import urllib.parse
+import urllib.request
+
+base = f"https://api.telegram.org/bot{os.environ['TELEGRAM_BOT_TOKEN']}/getUpdates"
+query = urllib.parse.urlencode({"timeout": 20})
+with urllib.request.urlopen(f"{base}?{query}", timeout=30) as response:
+    updates = json.load(response)
+
+for update in reversed(updates.get("result", [])):
+    message = update.get("message") or {}
+    chat = message.get("chat") or {}
+    sender = message.get("from") or {}
+    if chat.get("type") == "private" and chat.get("id") and sender.get("id"):
+        print(f"{chat['id']}:{sender['id']}")
+        break
+else:
+    raise SystemExit("No new private /start message was received. Run the installer again and send /start before pressing Enter.")
+PY
+)"
+IFS=':' read -r TELEGRAM_CHAT_ID ALLOWED_USER_ID <<EOF
+$TELEGRAM_IDENTITY
+EOF
+
+export TELEGRAM_CHAT_ID ALLOWED_USER_ID
 python - <<'PY'
 import json
 import os
