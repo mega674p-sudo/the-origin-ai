@@ -1,10 +1,71 @@
-GIGA PHONE AI — Gemini Review Bundle
-Generated from the direct-Termux and Ubuntu bootstrap codebase.
+
+--- START OF README.md ---
+# GIGA PHONE AI
+
+**GIGA PHONE AI** is a lightweight hybrid coding agent for heavy workloads. The **Redmi 10a is the Telegram control and approval console**, while an always-on **Ubuntu worker** performs code analysis, shell execution, testing, verification, and Git workflows. Gemini supplies remote reasoning; no local LLM is required on the phone.
+
+---
+
+## Core Architecture & Capabilities
+
+The runtime follows a sequential **planner → security reviewer → executor → verifier** pipeline. `/task` creates a bounded plan without executing commands, stores it with a unique task ID, and sends it to Telegram. The operator must reply with the exact `/approve <task-id>` before execution begins. The policy engine runs locally before every shell call and classifies commands as `allow`, `review`, or `deny`.
+
+The Ubuntu worker executes inside a configured project workspace with timeouts and bounded output capture. Failed commands may be sent to Gemini for correction, but every corrected command is checked by the local policy again. Declared read-only verification commands provide concrete evidence after each important step. `/explore` and `/inspect` are read-only paths that cannot execute mutation-sensitive commands.
+
+The worker records a bounded append-only JSONL audit trail and a compact recent-task memory. These records are intentionally capped and redact common token/key formats. Review-sensitive operations such as package installation and Git push are not permitted through direct `/run`; they must be represented in an approved task plan and remain visible in the plan report.
+
+---
+
+## Project Structure
+
+```text
+~/the-origin-ai/
+├── config/
+│   ├── settings.json          # Tracked safe defaults and worker configuration
+│   └── settings.local.json    # Gitignored Telegram/Gemini secrets
+├── core/
+│   ├── ai_brain.py            # Gemini planner, security reviewer, verifier, backoff
+│   ├── audit_log.py           # Bounded append-only audit records
+│   ├── executor.py            # Workspace-bound subprocess executor
+│   ├── memory.py              # Bounded recent-task memory
+│   ├── notifier.py            # Lightweight Telegram long polling
+│   ├── policy.py              # Deterministic allow/review/deny boundary
+│   ├── self_corrector.py      # Gemini correction loop with policy re-checks
+│   ├── task_agent.py          # Task IDs, approval, role pipeline, results
+│   └── verifier.py            # Read-only verification evidence runner
+├── data/                      # Runtime state; ignored by Git
+├── main.py                    # Ubuntu worker and Telegram relay entrypoint
+├── start_worker.sh            # Portable Ubuntu/Termux worker launcher
+├── start_giga.sh              # Compatibility launcher with Termux wake lock
+├── setup_ubuntu.sh            # Ubuntu bootstrap and test runner
+├── setup_termux.sh            # Lightweight Termux bootstrap
+├── requirements.txt           # Requests-only dependency set
+└── README.md                  # Project documentation
+```
+
+---
+
+## Getting Started
+
+For heavy use, install the bot on an always-on Ubuntu machine. The Redmi 10a only needs the Telegram app; it does not need to run a local LLM or perform the heavy work.
+
+```bash
+git clone https://github.com/mega674p-sudo/the-origin-ai.git
+cd the-origin-ai
+bash setup_ubuntu.sh
+```
+
+The setup script asks for the Gemini API key and Telegram bot token, discovers the authorized Telegram user after `/start`, writes secrets to the Gitignored `config/settings.local.json`, runs the full unit suite, and starts the worker. From Telegram, use `/task <goal>`, inspect the returned plan, and execute only with `/approve <task-id>`. Use `/explore pwd` or `/explore git status` for safe diagnostics.
+
+Before running heavy tasks, review the workspace configured in `config/settings.local.json` or the tracked `execution.workspace` default. Do not place secrets in `settings.json`, task goals, shell commands, or Git commits.
+
+--- END OF README.md ---
 
 --- START OF config/settings.json ---
 {
   "agent_name": "GIGA PHONE AI",
-  "environment": "termux-redmi10a",
+  "environment": "ubuntu-worker-with-telegram-control",
+  "worker_mode": "hybrid",
   "ai_provider": "gemini",
   "gemini": {
     "api_key": "YOUR_GEMINI_API_KEY_HERE",
@@ -18,6 +79,8 @@ Generated from the direct-Termux and Ubuntu bootstrap codebase.
   "execution": {
     "max_retries": 3,
     "timeout": 30,
+    "max_output": 8000,
+    "workspace": ".",
     "shell": "auto"
   },
   "logging": {
@@ -40,7 +103,7 @@ logger = logging.getLogger("GigaAIBrain")
 
 
 class GeminiBrain:
-    """Stateless Gemini API wrapper optimized for low-memory mobile devices."""
+    """Stateless Gemini API wrapper with bounded specialist-role calls."""
 
     def __init__(self, api_key: str = None, model: str = "gemini-3.5-flash"):
         self.api_key = api_key or os.getenv("GEMINI_API_KEY", "YOUR_GEMINI_API_KEY_HERE")
@@ -48,14 +111,12 @@ class GeminiBrain:
         self.url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.model}:generateContent"
 
     def generate(self, prompt: str) -> str:
-        """Return Gemini text with bounded retry behavior, or an empty string."""
+        """Return Gemini text with three total attempts and bounded exponential backoff."""
         if not self.api_key or "YOUR_" in self.api_key:
             logger.error("Gemini API key is not configured.")
             return ""
 
         payload = {"contents": [{"parts": [{"text": prompt}]}]}
-
-        # Three total attempts with 1s then 2s bounded backoff on transient API failures.
         for attempt in range(3):
             try:
                 response = requests.post(
@@ -64,7 +125,6 @@ class GeminiBrain:
                     json=payload,
                     timeout=20,
                 )
-
                 if response.status_code == 200:
                     return response.json()["candidates"][0]["content"]["parts"][0]["text"].strip()
 
@@ -81,49 +141,150 @@ class GeminiBrain:
 
                 logger.error("Gemini API returned HTTP %s.", response.status_code)
                 return ""
-
             except (requests.RequestException, KeyError, IndexError, TypeError, ValueError) as error:
                 logger.error("Gemini API request failed: %s", error)
+                if attempt < 2:
+                    time.sleep(2 ** attempt)
+                    continue
                 return ""
-
         return ""
 
+    @staticmethod
+    def _parse_json(raw: str) -> dict:
+        cleaned = (raw or "").replace("```json", "").replace("```", "").strip()
+        try:
+            value = json.loads(cleaned)
+            return value if isinstance(value, dict) else {}
+        except json.JSONDecodeError:
+            logger.error("Gemini returned non-JSON specialist output.")
+            return {}
+
     def analyze_error(self, command: str, stderr: str) -> str:
-        """Return Gemini's corrected command, or the original command on failure."""
         prompt = (
-            "Fix this bash command for Termux/Ubuntu. Return ONLY one corrected raw "
-            "bash command, with no Markdown or explanation.\n"
+            "Fix this bash command for Ubuntu/Termux. Return ONLY one corrected raw bash "
+            "command, with no Markdown or explanation. Do not use sudo, destructive commands, "
+            "credential access, or download-and-execute patterns.\n"
             f"Error: {stderr}\nCommand: {command}"
         )
         fixed_command = self.generate(prompt)
         return fixed_command.replace("```bash", "").replace("```", "").strip() or command
 
     def plan_task(self, goal: str) -> dict:
-        """Request a short, strict JSON plan for tools available on the device."""
-        prompt = f"""You are the planning component of GIGA PHONE AI on a low-resource Termux device.
+        """Planner role: produce a short executable plan with optional read-only checks."""
+        prompt = f"""You are the planner component of GIGA PHONE AI's Ubuntu worker.
 Create a safe, concise plan for this user goal: {goal}
 
 Return ONLY valid JSON with this exact structure:
-{{"summary":"short summary","steps":[{{"tool":"run_bash","command":"command","purpose":"reason"}}]}}
+{{"summary":"short summary","steps":[{{"tool":"run_bash","command":"command","purpose":"reason","verify":"optional read-only verification command"}}]}}
 
 Rules:
-- Use only the tool name "run_bash".
-- Include 1 to 5 steps, each command no more than 1000 characters.
-- Prefer read-only diagnostics and actions in the current user workspace.
-- Never propose sudo, su, rm -rf, mkfs, dd, reboot, shutdown, poweroff, fork bombs, curl/wget piped to a shell, credential access, or destructive commands.
-- If the goal would require a forbidden action, return an empty steps array and explain why in summary.
+- Use only the tool name run_bash.
+- Include 1 to 5 steps; each command must be no more than 1000 characters.
+- Prefer the current workspace and read-only diagnostics.
+- The optional verify command must be read-only and suitable for local policy verification.
+- Never propose sudo, su, rm -rf, mkfs, dd, reboot, shutdown, poweroff, fork bombs,
+  curl/wget piped to a shell, credential access, or destructive commands.
+- If the goal requires a forbidden action, return an empty steps array and explain why.
 """
         raw_plan = self.generate(prompt)
-        if not raw_plan:
-            return {}
+        return self._parse_json(raw_plan) if raw_plan else {}
 
-        try:
-            return json.loads(raw_plan.replace("```json", "").replace("```", "").strip())
-        except json.JSONDecodeError:
-            logger.error("Gemini returned a non-JSON task plan.")
-            return {}
+    def security_review(self, goal: str, steps: list) -> dict:
+        """Security-reviewer role: assess the plan independently of local policy."""
+        prompt = f"""You are the security reviewer for an Ubuntu coding worker.
+Review this proposed plan for the goal below.
+Goal: {goal}
+Plan: {json.dumps(steps, ensure_ascii=False)}
+
+Return ONLY valid JSON:
+{{"approved":true,"risk":"low|medium|high","issues":["..."],"required_confirmation":"none|operator"}}
+
+Reject plans containing destructive system operations, privilege escalation, secret access,
+download-and-execute behavior, or commands that can affect data outside the project workspace.
+"""
+        raw = self.generate(prompt)
+        return self._parse_json(raw) if raw else {"status": "unavailable"}
+
+    def verify_result(self, goal: str, command: str, stdout: str, stderr: str = "") -> dict:
+        """Verifier role: decide whether a successful tool result supports the goal."""
+        prompt = f"""You are the verification component of a coding agent.
+Determine whether this command result supports completion of the stated goal.
+Goal: {goal}
+Command: {command}
+STDOUT: {stdout[:3000]}
+STDERR: {stderr[:1500]}
+
+Return ONLY valid JSON:
+{{"verified":true,"confidence":"high|medium|low","reason":"short evidence-based reason"}}
+Do not invent evidence. If the output is insufficient, set verified to false.
+"""
+        raw = self.generate(prompt)
+        return self._parse_json(raw) if raw else {"status": "unavailable"}
 
 --- END OF core/ai_brain.py ---
+
+--- START OF core/audit_log.py ---
+import json
+import os
+import re
+import tempfile
+from datetime import datetime, timezone
+
+
+class AuditLog:
+    """Append-only JSONL audit trail with bounded storage and secret redaction."""
+
+    MAX_BYTES = 512 * 1024
+    MAX_VALUE = 1200
+    SECRET_PATTERNS = (
+        re.compile(r"(?i)(api[_-]?key|token|password|secret)\s*[:=]\s*[^\s,;]+"),
+        re.compile(r"\b\d{8,12}:[A-Za-z0-9_-]{20,}\b"),
+        re.compile(r"AIza[0-9A-Za-z_-]{20,}"),
+    )
+
+    def __init__(self, path: str):
+        self.path = path
+
+    @classmethod
+    def redact(cls, value) -> str:
+        text = str(value or "")[: cls.MAX_VALUE]
+        for pattern in cls.SECRET_PATTERNS:
+            text = pattern.sub("[REDACTED]", text)
+        return text
+
+    def record(self, event: str, **details) -> None:
+        payload = {
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "event": self.redact(event),
+            "details": {key: self.redact(value) for key, value in details.items()},
+        }
+        directory = os.path.dirname(self.path)
+        os.makedirs(directory, exist_ok=True)
+        try:
+            with open(self.path, "a", encoding="utf-8") as audit_file:
+                audit_file.write(json.dumps(payload, ensure_ascii=False, separators=(",", ":")) + "\n")
+            self._bound_size()
+        except OSError:
+            return
+
+    def _bound_size(self) -> None:
+        try:
+            if os.path.getsize(self.path) <= self.MAX_BYTES:
+                return
+            with open(self.path, "rb") as audit_file:
+                data = audit_file.read()
+            kept = data[-self.MAX_BYTES :]
+            newline = kept.find(b"\n")
+            if newline >= 0:
+                kept = kept[newline + 1 :]
+            fd, temporary_path = tempfile.mkstemp(prefix="audit_", dir=os.path.dirname(self.path))
+            with os.fdopen(fd, "wb") as temporary_file:
+                temporary_file.write(kept)
+            os.replace(temporary_path, self.path)
+        except OSError:
+            return
+
+--- END OF core/audit_log.py ---
 
 --- START OF core/executor.py ---
 import logging
@@ -137,9 +298,11 @@ logger = logging.getLogger("GigaExecutor")
 class CommandExecutor:
     """Minimal subprocess wrapper with strict timeouts and Termux shell support."""
 
-    def __init__(self, timeout: int = 30, max_retries: int = 3):
+    def __init__(self, timeout: int = 30, max_retries: int = 3, workspace: str = None, max_output: int = 8000):
         self.timeout = max(1, int(timeout))
         self.max_retries = max(1, int(max_retries))
+        self.workspace = os.path.abspath(workspace or os.getcwd())
+        self.max_output = max(1000, int(max_output))
         self.shell = self._find_shell()
 
     @staticmethod
@@ -168,8 +331,11 @@ class CommandExecutor:
                 text=True,
                 executable=self.shell,
                 timeout=self.timeout,
+                cwd=self.workspace,
             )
-            return result.returncode, result.stdout.strip(), result.stderr.strip()
+            stdout = (result.stdout or "").strip()[: self.max_output]
+            stderr = (result.stderr or "").strip()[: self.max_output]
+            return result.returncode, stdout, stderr
         except subprocess.TimeoutExpired:
             return -1, "", "Timeout"
         except OSError as error:
@@ -177,6 +343,71 @@ class CommandExecutor:
             return -1, "", str(error)
 
 --- END OF core/executor.py ---
+
+--- START OF core/memory.py ---
+import json
+import os
+import tempfile
+from datetime import datetime, timezone
+
+
+class CompactMemory:
+    """Small bounded memory index for recent task outcomes."""
+
+    MAX_ENTRIES = 40
+    MAX_FIELD = 1200
+
+    def __init__(self, path: str):
+        self.path = path
+
+    def _load(self):
+        try:
+            with open(self.path, "r", encoding="utf-8") as memory_file:
+                data = json.load(memory_file)
+            return data if isinstance(data, list) else []
+        except (OSError, json.JSONDecodeError):
+            return []
+
+    def _save(self, entries):
+        directory = os.path.dirname(self.path)
+        os.makedirs(directory, exist_ok=True)
+        fd, temporary_path = tempfile.mkstemp(prefix="memory_", suffix=".json", dir=directory)
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8") as memory_file:
+                json.dump(entries[-self.MAX_ENTRIES :], memory_file, ensure_ascii=False, separators=(",", ":"))
+            os.replace(temporary_path, self.path)
+        except OSError:
+            try:
+                os.unlink(temporary_path)
+            except OSError:
+                pass
+
+    def remember(self, task_id: str, goal: str, status: str, summary: str, results=None):
+        entry = {
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "task_id": str(task_id)[:100],
+            "goal": str(goal or "")[: self.MAX_FIELD],
+            "status": str(status or "")[:80],
+            "summary": str(summary or "")[: self.MAX_FIELD],
+            "results": results if isinstance(results, list) else [],
+        }
+        entries = self._load()
+        entries.append(entry)
+        self._save(entries)
+
+    def recent(self, limit: int = 5):
+        return self._load()[-max(1, min(int(limit), 10)) :]
+
+    def context_text(self, limit: int = 5) -> str:
+        lines = []
+        for entry in self.recent(limit):
+            lines.append(
+                f"{entry.get('task_id')}: {entry.get('status')} — "
+                f"{entry.get('goal', '')[:180]} — {entry.get('summary', '')[:180]}"
+            )
+        return "\n".join(lines) or "No previous task context."
+
+--- END OF core/memory.py ---
 
 --- START OF core/notifier.py ---
 import logging
@@ -255,31 +486,186 @@ class TelegramNotifier:
 
 --- END OF core/notifier.py ---
 
+--- START OF core/playbooks.py ---
+import os
+
+
+class PlaybookStore:
+    """Load only repository-local playbooks by allowlisted name."""
+
+    ALLOWED = {"debug", "review", "deploy", "n8n", "video"}
+
+    def __init__(self, directory: str):
+        self.directory = directory
+
+    def build_goal(self, name: str, request: str) -> str:
+        name = str(name or "").strip().lower()
+        request = str(request or "").strip()
+        if name not in self.ALLOWED:
+            return ""
+        if not request or len(request) > 1800:
+            return ""
+        path = os.path.join(self.directory, f"{name}.md")
+        try:
+            with open(path, "r", encoding="utf-8") as playbook_file:
+                guidance = playbook_file.read()[:5000]
+        except OSError:
+            return ""
+        return f"Apply the trusted {name} playbook below.\n\n{guidance}\n\nOperator request:\n{request}"
+
+--- END OF core/playbooks.py ---
+
+--- START OF core/policy.py ---
+import re
+
+
+class ToolPolicy:
+    """Small deterministic policy layer that runs before any shell tool."""
+
+    DENY_PATTERNS = (
+        "rm -rf",
+        "rm -fr",
+        "mkfs",
+        "dd if=",
+        "reboot",
+        "shutdown",
+        "poweroff",
+        ":(){",
+        "fork bomb",
+        "termux-wipe",
+        "curl | sh",
+        "curl | bash",
+        "wget | sh",
+        "wget | bash",
+        "curl -fssl",
+    )
+
+    REVIEW_PATTERNS = (
+        "git push",
+        "git commit",
+        "git reset",
+        "git clean",
+        "git checkout",
+        "git merge",
+        "git rebase",
+        "git clone",
+        "git apply",
+        "rm ",
+        "mv ",
+        "cp ",
+        "touch ",
+        "mkdir ",
+        "tee ",
+        "python ",
+        "python3 ",
+        "bash ",
+        "sh ",
+        "sed -i",
+        "perl -i",
+        "systemctl ",
+        "docker ",
+        "apt ",
+        "apt-get ",
+        "pkg ",
+        "pip ",
+        "npm ",
+        "pnpm ",
+        "yarn ",
+        "curl ",
+        "wget ",
+        "chmod ",
+        "chown ",
+    )
+
+    READ_ONLY_PREFIXES = (
+        "pwd",
+        "ls",
+        "cat ",
+        "head ",
+        "tail ",
+        "grep ",
+        "rg ",
+        "find ",
+        "wc ",
+        "which ",
+        "command -v ",
+        "stat ",
+        "du ",
+        "df ",
+        "free ",
+        "uname",
+        "whoami",
+        "id",
+        "date",
+        "git status",
+        "git log ",
+        "git diff --check",
+        "git diff --stat",
+        "python --version",
+        "python3 --version",
+        "test ",
+    )
+
+    def evaluate(self, command: str) -> str:
+        """Return one of allow, review, or deny using only local deterministic rules."""
+        normalized = re.sub(r"\s+", " ", str(command or "").strip().lower())
+        if not normalized or len(normalized) > 1000:
+            return "deny"
+        if any(pattern in normalized for pattern in self.DENY_PATTERNS):
+            return "deny"
+        if re.search(r"\b(sudo|su)\b", normalized):
+            return "deny"
+        if any(pattern in normalized for pattern in self.REVIEW_PATTERNS):
+            return "review"
+        if re.search(r"(^|[\s;&|])(>>?|[0-9]>>?|tee)(\s|$)", normalized):
+            return "review"
+        return "allow"
+
+    def is_read_only(self, command: str) -> bool:
+        """Allow verification only for simple read-only command chains."""
+        parts = re.split(r"\s*(?:&&|;|\|\|)\s*", str(command or "").strip().lower())
+        if not parts or any(not part for part in parts):
+            return False
+        return all(part.startswith(self.READ_ONLY_PREFIXES) for part in parts)
+
+    def verify_decision(self, command: str) -> bool:
+        return self.evaluate(command) == "allow" and self.is_read_only(command)
+
+--- END OF core/policy.py ---
+
 --- START OF core/self_corrector.py ---
 import logging
 
 from core.ai_brain import GeminiBrain
 from core.executor import CommandExecutor
+from core.policy import ToolPolicy
 
 logger = logging.getLogger("GigaSelfCorrector")
 
 
 class SelfCorrector:
-    """Retry failed commands after requesting a bounded Gemini correction."""
+    """Retry failed commands after bounded Gemini correction under local policy control."""
 
-    def __init__(self, executor: CommandExecutor, api_key: str = None, brain: GeminiBrain = None):
+    def __init__(self, executor: CommandExecutor, api_key: str = None, brain: GeminiBrain = None, policy=None):
         self.executor = executor
         self.brain = brain or GeminiBrain(api_key=api_key)
+        self.policy = policy or ToolPolicy()
 
     def execute(self, cmd: str) -> tuple[bool, str, str]:
-        current_cmd = cmd
+        current_cmd = str(cmd or "").strip()
         for attempt in range(self.executor.max_retries):
+            decision = self.policy.evaluate(current_cmd)
+            if decision == "deny":
+                return False, "", "Command blocked by the local safety policy."
+
             code, stdout, stderr = self.executor.run(current_cmd)
             if code == 0:
                 return True, stdout, stderr
 
             logger.warning("Retry %s for a failed command.", attempt + 1)
             corrected_cmd = self.brain.analyze_error(current_cmd, stderr)
+            if self.policy.evaluate(corrected_cmd) == "deny":
+                return False, "", "Gemini proposed a command blocked by the local safety policy."
             if corrected_cmd == current_cmd:
                 break
             current_cmd = corrected_cmd
@@ -296,34 +682,30 @@ class SelfCorrector:
 import json
 import logging
 import os
-import re
 import tempfile
+import time
+import uuid
+
+from core.policy import ToolPolicy
 
 logger = logging.getLogger("GigaTaskAgent")
 
 
 class TaskAgent:
-    """Gemini-planned task runner with one persisted, approval-gated task."""
+    """Approval-gated sequential task runner for the Ubuntu worker."""
 
     MAX_STEPS = 5
     MAX_COMMAND_LENGTH = 1000
     MAX_RESULT_LENGTH = 1200
-    FORBIDDEN_PATTERNS = (
-        "rm -rf",
-        "mkfs",
-        "dd if=",
-        "reboot",
-        "shutdown",
-        "poweroff",
-        ":(){",
-        "sudo ",
-        "su -",
-        "termux-wipe",
-    )
 
-    def __init__(self, brain, state_path):
+    def __init__(self, brain, state_path, policy=None, audit=None, memory=None, verifier=None, checkpoint_dir=None):
         self.brain = brain
         self.state_path = state_path
+        self.policy = policy or ToolPolicy()
+        self.audit = audit
+        self.memory = memory
+        self.verifier = verifier
+        self.checkpoint_dir = checkpoint_dir
 
     def _load(self):
         try:
@@ -350,64 +732,113 @@ class TaskAgent:
             return False
         return True
 
-    def _is_safe_command(self, command):
-        lowered = command.lower()
-        if not command or len(command) > self.MAX_COMMAND_LENGTH:
-            return False
-        if any(pattern in lowered for pattern in self.FORBIDDEN_PATTERNS):
-            return False
-        if re.search(r"\b(curl|wget)\b[^\n]*\|\s*(sh|bash)\b", lowered):
-            return False
-        return True
+    def _record(self, event, **details):
+        if self.audit:
+            self.audit.record(event, **details)
+
+    def _remember(self, state):
+        if self.memory:
+            self.memory.remember(
+                task_id=state.get("task_id", ""),
+                goal=state.get("goal", ""),
+                status=state.get("status", ""),
+                summary=state.get("summary", ""),
+                results=state.get("results", []),
+            )
 
     def _validate_plan(self, plan):
         if not isinstance(plan, dict):
-            return []
+            return [], "Gemini did not return a valid plan."
         raw_steps = plan.get("steps")
         if not isinstance(raw_steps, list):
-            return []
+            return [], "Gemini did not return executable steps."
 
         steps = []
         for raw_step in raw_steps[: self.MAX_STEPS]:
             if not isinstance(raw_step, dict) or raw_step.get("tool") != "run_bash":
-                return []
+                return [], "Plan contains an unsupported tool."
             command = str(raw_step.get("command", "")).strip()
             purpose = str(raw_step.get("purpose", "")).strip()[:240]
-            if not self._is_safe_command(command):
-                return []
-            steps.append({"tool": "run_bash", "command": command, "purpose": purpose})
-        return steps
+            verify = str(raw_step.get("verify", "")).strip()[: self.MAX_COMMAND_LENGTH]
+            if not command or len(command) > self.MAX_COMMAND_LENGTH:
+                return [], "Plan contains an empty or oversized command."
+            decision = self.policy.evaluate(command)
+            if decision == "deny":
+                self._record("plan_rejected", command=command, reason="local_policy_deny")
+                return [], "Plan rejected by the local safety policy."
+            if verify and not self.policy.verify_decision(verify):
+                return [], "Plan contains a verification command that is not read-only."
+            step = {
+                "tool": "run_bash",
+                "command": command,
+                "purpose": purpose,
+                "policy": decision,
+            }
+            if verify:
+                step["verify"] = verify
+            steps.append(step)
+        return steps, ""
+
+    def _requires_checkpoint(self, command: str) -> bool:
+        lowered = str(command or "").lower()
+        return any(token in lowered for token in ("git push", "git commit", "git reset", "git clean", "git merge", "git rebase"))
+
+    def _has_recent_checkpoint(self, created_at: float) -> bool:
+        if not self.checkpoint_dir or not os.path.isdir(self.checkpoint_dir):
+            return False
+        try:
+            return any(
+                name.endswith(".json") and os.path.getmtime(os.path.join(self.checkpoint_dir, name)) >= (created_at - 2.0)
+                for name in os.listdir(self.checkpoint_dir)
+            )
+        except OSError:
+            return False
 
     def create_task(self, goal):
-        """Ask Gemini for a plan and persist it until the owner approves or cancels."""
+        """Ask planner and security-reviewer roles for a plan and persist it for approval."""
         goal = str(goal or "").strip()
         if not goal or len(goal) > 2000:
             return {}, "Task must contain between 1 and 2000 characters."
 
         plan = self.brain.plan_task(goal)
-        steps = self._validate_plan(plan)
+        steps, validation_error = self._validate_plan(plan)
         if not steps:
-            summary = str(plan.get("summary", "Gemini did not return a safe executable plan."))[:500] if plan else "Gemini planning failed."
+            summary = str(plan.get("summary", validation_error))[:500] if plan else validation_error
             return {}, summary
 
+        security = {"status": "unavailable"}
+        if hasattr(self.brain, "security_review"):
+            security = self.brain.security_review(goal, steps) or security
+        if security.get("approved") is False:
+            self._record("plan_rejected", reason="security_review", issues=security.get("issues", []))
+            return {}, "Plan rejected by the security reviewer. " + "; ".join(security.get("issues", []))[:400]
+
+        task_id = f"task_{int(time.time())}_{uuid.uuid4().hex[:6]}"
         state = {
+            "task_id": task_id,
+            "created_at_epoch": time.time(),
             "status": "awaiting_approval",
             "goal": goal,
             "summary": str(plan.get("summary", "Task plan ready."))[:500],
+            "security": security,
             "steps": steps,
             "results": [],
         }
         if not self._save(state):
             return {}, "Unable to save the pending task."
+        self._record("task_created", task_id=task_id, goal=goal, steps=len(steps))
         return state, ""
 
     def get_status(self):
         return self._load()
 
-    def cancel(self):
+    def cancel(self, task_id=None):
         state = self._load()
         if state.get("status") != "awaiting_approval":
             return False
+        if task_id and task_id != state.get("task_id"):
+            return False
+        self._record("task_cancelled", task_id=state.get("task_id"))
         try:
             os.unlink(self.state_path)
             return True
@@ -415,19 +846,36 @@ class TaskAgent:
             logger.error("Unable to cancel task: %s", error)
             return False
 
-    def approve_and_execute(self, corrector):
-        """Execute the pending plan sequentially through the Gemini self-corrector."""
+    def approve_and_execute(self, corrector, task_id=None):
+        """Execute the pending plan sequentially through policy, corrector, and verifier roles."""
         state = self._load()
-        if state.get("status") != "awaiting_approval":
+        if state.get("status") not in {"awaiting_approval", "checkpoint_required"}:
             return {}, "There is no pending task awaiting approval."
+        if not task_id or task_id != state.get("task_id"):
+            return {}, "Approval requires the exact task ID shown in the plan."
 
         state["status"] = "running"
         state["results"] = []
         if not self._save(state):
             return {}, "Unable to mark the task as running."
+        self._record("task_approved", task_id=state.get("task_id"))
 
         for index, step in enumerate(state["steps"], start=1):
             command = step["command"]
+            decision = self.policy.evaluate(command)
+            if self._requires_checkpoint(command) and not self._has_recent_checkpoint(state.get("created_at_epoch", time.time())):
+                state["status"] = "checkpoint_required"
+                self._save(state)
+                self._remember(state)
+                self._record("checkpoint_required", task_id=state.get("task_id"), command=command)
+                return state, "Task paused: create /checkpoint <label> after reviewing this plan, then approve again."
+            if decision == "deny":
+                state["status"] = "blocked_by_policy"
+                self._save(state)
+                self._remember(state)
+                self._record("step_blocked", task_id=state.get("task_id"), command=command)
+                return state, "Task stopped by the local safety policy."
+
             success, stdout, stderr = corrector.execute(command)
             output = stdout if success else stderr
             output = (output or "(no output)")[: self.MAX_RESULT_LENGTH]
@@ -436,35 +884,211 @@ class TaskAgent:
                 "command": command,
                 "success": success,
                 "output": output,
+                "policy": decision,
             }
+            if decision == "review":
+                result["warning"] = "Command matched a review-sensitive pattern; execution required this explicit task approval."
+
+            if success and self.verifier and step.get("verify"):
+                verification = self.verifier.run(step["verify"])
+                result["verification"] = verification
+                if not verification.get("verified"):
+                    state["results"].append(result)
+                    state["status"] = "verification_failed"
+                    self._save(state)
+                    self._remember(state)
+                    return state, "Task stopped because declared verification failed."
+            elif success and hasattr(self.brain, "verify_result"):
+                ai_verification = self.brain.verify_result(state.get("goal", ""), command, stdout, stderr)
+                if ai_verification and ai_verification.get("status") != "unavailable":
+                    result["ai_verification"] = ai_verification
+                    if ai_verification.get("verified") is False:
+                        state["results"].append(result)
+                        state["status"] = "verification_failed"
+                        self._save(state)
+                        self._remember(state)
+                        return state, "Task stopped because Gemini could not verify the result."
+
             state["results"].append(result)
+            self._record(
+                "step_completed" if success else "step_failed",
+                task_id=state.get("task_id"),
+                step=index,
+                command=command,
+                policy=decision,
+                output=output,
+            )
             if not success:
                 state["status"] = "failed"
                 self._save(state)
+                self._remember(state)
                 return state, "Task stopped after the first failed step."
 
         state["status"] = "completed"
         self._save(state)
-        return state, "Task completed."
+        self._remember(state)
+        self._record("task_completed", task_id=state.get("task_id"))
+        return state, "Task completed with verification evidence."
 
     @staticmethod
     def format_plan(state):
-        lines = [f"TASK PLAN\n{state.get('summary', '')}"]
+        lines = [
+            f"TASK PLAN [{state.get('task_id', 'unknown')}]",
+            str(state.get("summary", "")),
+        ]
+        security = state.get("security") or {}
+        if security.get("risk"):
+            lines.append(f"Security review: {security.get('risk')} risk")
         for index, step in enumerate(state.get("steps", []), start=1):
             purpose = f" — {step['purpose']}" if step.get("purpose") else ""
-            lines.append(f"{index}. $ {step['command']}{purpose}")
-        lines.append("Reply /approve to execute, or /cancel to discard.")
+            review = " [REVIEW]" if step.get("policy") == "review" else ""
+            lines.append(f"{index}. $ {step['command']}{review}{purpose}")
+            if step.get("verify"):
+                lines.append(f"   verify: $ {step['verify']}")
+        lines.append(f"Reply /approve {state.get('task_id')} to execute, or /cancel to discard.")
         return "\n".join(lines)
 
     @staticmethod
     def format_result(state, message):
-        lines = [message]
+        lines = [f"Task {state.get('task_id', 'unknown')} — {message}"]
         for result in state.get("results", []):
             label = "SUCCESS" if result.get("success") else "FAILED"
-            lines.append(f"\nStep {result.get('step')} {label}\n$ {result.get('command')}\n{result.get('output')}")
+            lines.append(f"\nStep {result.get('step')} {label}")
+            lines.append(f"$ {result.get('command')}")
+            if result.get("warning"):
+                lines.append(f"WARNING: {result['warning']}")
+            lines.append(str(result.get("output", "")))
+            verification = result.get("verification") or result.get("ai_verification")
+            if verification:
+                lines.append(
+                    f"Verification: {verification.get('status', 'checked')} — "
+                    f"{verification.get('reason', verification.get('evidence', ''))}"
+                )
         return "\n".join(lines)
 
 --- END OF core/task_agent.py ---
+
+--- START OF core/verifier.py ---
+class CommandVerifier:
+    """Runs declared read-only verification commands and records evidence."""
+
+    MAX_OUTPUT = 1200
+
+    def __init__(self, executor, policy):
+        self.executor = executor
+        self.policy = policy
+
+    def run(self, command: str) -> dict:
+        command = str(command or "").strip()
+        if not command:
+            return {"status": "not_declared", "verified": True, "evidence": ""}
+        if not self.policy.verify_decision(command):
+            return {
+                "status": "rejected",
+                "verified": False,
+                "evidence": "Verification command is not a local read-only command.",
+            }
+        code, stdout, stderr = self.executor.run(command)
+        evidence = (stdout if code == 0 else stderr) or "(no verification output)"
+        return {
+            "status": "passed" if code == 0 else "failed",
+            "verified": code == 0,
+            "command": command,
+            "evidence": evidence[: self.MAX_OUTPUT],
+        }
+
+--- END OF core/verifier.py ---
+
+--- START OF core/workspace_tools.py ---
+import json
+import os
+import re
+import tempfile
+from datetime import datetime, timezone
+
+
+class WorkspaceTools:
+    """Read-only workspace review plus bounded checkpoint snapshots."""
+
+    MAX_TEXT = 5000
+
+    def __init__(self, executor, policy, data_dir: str, task_state_path: str, memory_path: str):
+        self.executor = executor
+        self.policy = policy
+        self.data_dir = data_dir
+        self.task_state_path = task_state_path
+        self.memory_path = memory_path
+        self.checkpoint_dir = os.path.join(data_dir, "checkpoints")
+
+    def _read_only(self, command: str):
+        if not self.policy.verify_decision(command):
+            return {"command": command, "status": "rejected", "output": "Policy rejected review command."}
+        code, stdout, stderr = self.executor.run(command)
+        return {
+            "command": command,
+            "status": "passed" if code == 0 else "failed",
+            "output": (stdout or stderr or "(no output)")[: self.MAX_TEXT],
+        }
+
+    def review(self) -> dict:
+        checks = [
+            self._read_only("git status --short"),
+            self._read_only("git diff --stat"),
+            self._read_only("git diff --check"),
+            self._read_only("git log -1 --oneline"),
+        ]
+        return {
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "workspace": self.executor.workspace,
+            "checks": checks,
+            "risk": "attention_required" if any(item["status"] == "failed" for item in checks) else "reviewed",
+        }
+
+    @staticmethod
+    def format_review(report: dict) -> str:
+        lines = [f"WORKSPACE REVIEW — {report.get('risk', 'unknown')}", f"Workspace: {report.get('workspace', '')}"]
+        for check in report.get("checks", []):
+            lines.append(f"\n{check.get('command')} [{check.get('status')}]\n{check.get('output', '')}")
+        lines.append("\nReview evidence is informational; use /checkpoint <label> before risky operations.")
+        return "\n".join(lines)
+
+    def checkpoint(self, label: str = "manual") -> dict:
+        timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        safe_label = re.sub(r"[^a-zA-Z0-9_-]+", "_", str(label or "manual"))[:40] or "manual"
+        path = os.path.join(self.checkpoint_dir, f"{timestamp}_{safe_label}.json")
+        snapshot = {
+            "timestamp": timestamp,
+            "label": safe_label,
+            "workspace": self.executor.workspace,
+            "review": self.review(),
+            "pending_task": self._load_json(self.task_state_path),
+            "recent_memory": self._load_json(self.memory_path),
+        }
+        os.makedirs(self.checkpoint_dir, exist_ok=True)
+        fd, temporary_path = tempfile.mkstemp(prefix="checkpoint_", suffix=".json", dir=self.checkpoint_dir)
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8") as checkpoint_file:
+                json.dump(snapshot, checkpoint_file, ensure_ascii=False, indent=2)
+                checkpoint_file.write("\n")
+            os.replace(temporary_path, path)
+        except OSError:
+            try:
+                os.unlink(temporary_path)
+            except OSError:
+                pass
+            return {"ok": False, "error": "Unable to write checkpoint."}
+        return {"ok": True, "path": path, "snapshot": snapshot}
+
+    @staticmethod
+    def _load_json(path: str):
+        try:
+            with open(path, "r", encoding="utf-8") as input_file:
+                value = json.load(input_file)
+            return value
+        except (OSError, json.JSONDecodeError):
+            return None
+
+--- END OF core/workspace_tools.py ---
 
 --- START OF main.py ---
 import json
@@ -474,10 +1098,16 @@ import sys
 import time
 
 from core.ai_brain import GeminiBrain
+from core.audit_log import AuditLog
 from core.executor import CommandExecutor
+from core.memory import CompactMemory
 from core.notifier import TelegramNotifier
+from core.playbooks import PlaybookStore
+from core.policy import ToolPolicy
 from core.self_corrector import SelfCorrector
 from core.task_agent import TaskAgent
+from core.verifier import CommandVerifier
+from core.workspace_tools import WorkspaceTools
 
 logging.basicConfig(
     level=logging.INFO,
@@ -487,11 +1117,15 @@ logging.basicConfig(
 logger = logging.getLogger("GigaMain")
 
 HELP_TEXT = (
-    "GIGA PHONE AI commands:\n"
-    "/run <bash command> — run one command immediately\n"
-    "/task <goal> — ask Gemini for a plan; no command runs yet\n"
-    "/approve — execute the pending approved plan\n"
-    "/cancel — discard the pending plan\n"
+    "GIGA PHONE AI Hybrid Ubuntu Worker commands:\n"
+    "/run <bash command> — run a low-risk command immediately\n"
+    "/task <goal> — Gemini planner + security review; no command runs yet\n"
+    "/approve <task-id> — execute the exact approved plan\n"
+    "/cancel <task-id> — discard the pending plan\n"
+    "/explore <read-only command> — inspect safely without modifying files\n"
+    "/review — show Git/workspace evidence without changing files\n"
+    "/checkpoint [label] — snapshot state before risky work\n"
+    "/debug, /deploy, /n8n, /video, /review <request> — use a trusted playbook\n"
     "/status — show task status\n"
     "/help — show this message"
 )
@@ -531,12 +1165,25 @@ def command_from_text(text: str):
     text = (text or "").strip()
     if text in {"/start", "/help"}:
         return "help", ""
-    if text == "/approve":
-        return "approve", ""
-    if text == "/cancel":
-        return "cancel", ""
+    if text.startswith("/approve"):
+        parts = text.split(maxsplit=1)
+        return "approve", parts[1].strip() if len(parts) == 2 else ""
+    if text.startswith("/cancel"):
+        parts = text.split(maxsplit=1)
+        return "cancel", parts[1].strip() if len(parts) == 2 else ""
     if text == "/status":
         return "status", ""
+    if text == "/review":
+        return "review", ""
+    if text.startswith("/checkpoint"):
+        parts = text.split(maxsplit=1)
+        return "checkpoint", parts[1].strip() if len(parts) == 2 else "manual"
+    for playbook in ("debug", "review", "deploy", "n8n", "video"):
+        prefix = f"/{playbook} "
+        if text.startswith(prefix):
+            return "playbook", f"{playbook}|{text[len(prefix):].strip()}"
+    if text.startswith("/explore ") or text.startswith("/inspect "):
+        return "explore", text.split(" ", 1)[1].strip()
     if text.startswith("/run "):
         return "run", text[5:].strip()
     if text.startswith("/task "):
@@ -553,11 +1200,13 @@ def send_command_result(notifier, command, success, stdout, stderr):
 
 
 def main():
-    logger.info("Initializing GIGA PHONE AI Agent Core Modules...")
+    logger.info("Initializing GIGA PHONE AI Hybrid Ubuntu Worker...")
     settings = load_settings()
     telegram = settings.get("telegram", {})
     gemini = settings.get("gemini", {})
     execution = settings.get("execution", {})
+    base_dir = os.path.dirname(__file__)
+    data_dir = os.path.join(base_dir, "data")
 
     bot_token = telegram.get("bot_token", "YOUR_TELEGRAM_BOT_TOKEN_HERE")
     chat_id = telegram.get("chat_id", "YOUR_TELEGRAM_CHAT_ID_HERE")
@@ -567,21 +1216,46 @@ def main():
         logger.error("Telegram allowed_user_id is not configured; listener will not start.")
         return
 
+    policy = ToolPolicy()
+    configured_workspace = str(execution.get("workspace", "."))
+    workspace = configured_workspace if os.path.isabs(configured_workspace) else os.path.join(base_dir, configured_workspace)
     executor = CommandExecutor(
         timeout=int(execution.get("timeout", 30)),
         max_retries=int(execution.get("max_retries", 3)),
+        workspace=workspace,
+        max_output=int(execution.get("max_output", 8000)),
     )
     brain = GeminiBrain(api_key=gemini.get("api_key"), model=gemini.get("model", "gemini-3.5-flash"))
-    corrector = SelfCorrector(executor, brain=brain)
+    corrector = SelfCorrector(executor, brain=brain, policy=policy)
     notifier = TelegramNotifier(token=bot_token, chat_id=chat_id)
-    task_state_path = os.path.join(os.path.dirname(__file__), "data", "pending_task.json")
-    task_agent = TaskAgent(brain, task_state_path)
+    audit = AuditLog(os.path.join(data_dir, "audit.jsonl"))
+    memory = CompactMemory(os.path.join(data_dir, "memory.json"))
+    verifier = CommandVerifier(executor, policy)
+    task_state_path = os.path.join(data_dir, "pending_task.json")
+    task_agent = TaskAgent(
+        brain,
+        task_state_path,
+        policy=policy,
+        audit=audit,
+        memory=memory,
+        verifier=verifier,
+        checkpoint_dir=os.path.join(data_dir, "checkpoints"),
+    )
+    workspace_tools = WorkspaceTools(
+        executor,
+        policy,
+        data_dir,
+        task_state_path,
+        os.path.join(data_dir, "memory.json"),
+    )
+    playbooks = PlaybookStore(os.path.join(base_dir, ".giga", "playbooks"))
 
     if not notifier.enabled:
         logger.error("Telegram bot_token or chat_id is not configured; listener will not start.")
         return
 
-    notifier.notify("GIGA PHONE AI tool-calling agent is online. Send /help for commands.")
+    notifier.notify("GIGA PHONE AI Hybrid Ubuntu Worker is online. Send /help for commands.")
+    audit.record("worker_started", allowed_user_id=allowed_user_id)
     logger.info("Telegram listener started for authorized user %s.", allowed_user_id)
 
     offset = None
@@ -604,7 +1278,7 @@ def main():
 
                 if str(user_id) != allowed_user_id:
                     if user_id is not None:
-                        logger.warning("Ignored command from unauthorized Telegram user %s.", user_id)
+                        audit.record("unauthorized_command", user_id=user_id)
                     continue
 
                 action, value = command_from_text(text)
@@ -618,19 +1292,68 @@ def main():
                     if not state:
                         notifier.notify("No pending or recorded task.")
                     else:
-                        notifier.notify(f"Task status: {state.get('status', 'unknown')}\nGoal: {state.get('goal', '')}")
+                        notifier.notify(
+                            f"Task {state.get('task_id', 'unknown')} status: {state.get('status', 'unknown')}\n"
+                            f"Goal: {state.get('goal', '')}"
+                        )
+                    continue
+                if action == "review":
+                    report = workspace_tools.review()
+                    audit.record("workspace_review", risk=report.get("risk"))
+                    notifier.notify(WorkspaceTools.format_review(report))
+                    continue
+                if action == "checkpoint":
+                    snapshot = workspace_tools.checkpoint(value or "manual")
+                    if snapshot.get("ok"):
+                        audit.record("checkpoint_created", path=snapshot.get("path"), label=value or "manual")
+                        notifier.notify(f"Checkpoint created: {snapshot.get('path')}")
+                    else:
+                        notifier.notify(snapshot.get("error", "Checkpoint failed."))
+                    continue
+                if action == "playbook":
+                    playbook_name, request = value.split("|", 1) if "|" in value else ("", "")
+                    goal = playbooks.build_goal(playbook_name, request)
+                    if not goal:
+                        notifier.notify("Playbook request is invalid or unavailable.")
+                    else:
+                        state, error = task_agent.create_task(goal)
+                        notifier.notify(TaskAgent.format_plan(state) if state else f"Task plan not created: {error}")
                     continue
                 if action == "cancel":
-                    notifier.notify("Pending task cancelled." if task_agent.cancel() else "No task was available to cancel.")
+                    if not value:
+                        notifier.notify("Usage: /cancel <task-id>")
+                    else:
+                        notifier.notify(
+                            "Pending task cancelled."
+                            if task_agent.cancel(value)
+                            else "Task ID does not match the pending task."
+                        )
                     continue
                 if action == "task":
                     state, error = task_agent.create_task(value)
                     notifier.notify(TaskAgent.format_plan(state) if state else f"Task plan not created: {error}")
                     continue
                 if action == "approve":
-                    notifier.notify("Approved task is running; this may take several minutes.")
-                    state, message_text = task_agent.approve_and_execute(corrector)
+                    if not value:
+                        notifier.notify("Usage: /approve <task-id>")
+                        continue
+                    notifier.notify("Approved task is running on the Ubuntu worker; this may take several minutes.")
+                    state, message_text = task_agent.approve_and_execute(corrector, value)
                     notifier.notify(TaskAgent.format_result(state, message_text) if state else message_text)
+                    continue
+                if action == "explore":
+                    if not value:
+                        notifier.notify("Usage: /explore <read-only command>")
+                        continue
+                    if not policy.verify_decision(value):
+                        notifier.notify("Explore rejected: only local read-only commands are allowed.")
+                        continue
+                    code, stdout, stderr = executor.run(value)
+                    audit.record("explore", command=value, success=code == 0, output=stdout or stderr)
+                    notifier.notify(
+                        f"EXPLORE {'SUCCESS' if code == 0 else 'FAILED'}\n$ {value}\n\n"
+                        f"{stdout or stderr or '(no output)'}"
+                    )
                     continue
 
                 command = value
@@ -640,9 +1363,18 @@ def main():
                 if len(command) > 1000:
                     notifier.notify("Command rejected: maximum command length is 1000 characters.")
                     continue
+                decision = policy.evaluate(command)
+                if decision == "deny":
+                    audit.record("direct_command_blocked", command=command)
+                    notifier.notify("Command rejected by the local safety policy.")
+                    continue
+                if decision == "review":
+                    notifier.notify("This command requires a task plan and explicit approval. Use /task <goal>.")
+                    continue
 
-                logger.info("Executing authorized Telegram command through self-correction.")
+                logger.info("Executing authorized low-risk command through self-correction.")
                 success, stdout, stderr = corrector.execute(command)
+                audit.record("direct_command", command=command, success=success, output=stdout or stderr)
                 send_command_result(notifier, command, success, stdout, stderr)
 
         except KeyboardInterrupt:
@@ -658,130 +1390,55 @@ if __name__ == "__main__":
 
 --- END OF main.py ---
 
---- START OF setup_termux.sh ---
-#!/data/data/com.termux/files/usr/bin/bash
-# Fresh-Termux bootstrap for GIGA PHONE AI. Run with: bash setup_termux.sh
+--- START OF start_worker.sh ---
+#!/usr/bin/env bash
+# Portable launcher for the GIGA PHONE AI worker.
 set -euo pipefail
 
-REPO_URL="https://github.com/mega674p-sudo/the-origin-ai.git"
-PROJECT_DIR="$HOME/the-origin-ai"
-
-say() {
-    printf '\n==> %s\n' "$1"
-}
-
-require_value() {
-    local prompt="$1"
-    local value=""
-    while [ -z "$value" ]; do
-        read -r -s -p "$prompt" value
-        printf '\n'
-    done
-    printf '%s' "$value"
-}
-
-say "Updating Termux and installing lightweight runtime packages"
-pkg update -y
-pkg upgrade -y
-pkg install -y git python python-requests
-
-say "Downloading the GIGA PHONE AI project"
-if [ -d "$PROJECT_DIR/.git" ]; then
-    git -C "$PROJECT_DIR" pull --ff-only origin main
-elif [ -e "$PROJECT_DIR" ]; then
-    printf 'Cannot use %s because it already exists and is not a Git repository.\n' "$PROJECT_DIR" >&2
-    exit 1
-else
-    git clone --depth 1 "$REPO_URL" "$PROJECT_DIR"
-fi
-
+PROJECT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 cd "$PROJECT_DIR"
 
-if ! python -c 'import requests' >/dev/null 2>&1; then
-    say "Installing the minimal Python dependency"
-    python -m pip install --no-cache-dir -r requirements.txt
+if [ ! -f "config/settings.local.json" ]; then
+    printf 'Missing config/settings.local.json. Run the platform setup script first.\n' >&2
+    exit 1
 fi
 
-say "Telegram setup"
-GEMINI_API_KEY="$(require_value 'Gemini API key: ')"
-TELEGRAM_BOT_TOKEN="$(require_value 'Telegram bot token: ')"
-export GEMINI_API_KEY TELEGRAM_BOT_TOKEN
+PYTHON_BIN="$(command -v python3 || command -v python || true)"
+if [ -z "$PYTHON_BIN" ]; then
+    printf 'Python was not found. Run the platform setup script again.\n' >&2
+    exit 1
+fi
 
-BOT_USERNAME="$(python - <<'PY'
-import json
-import os
-import urllib.request
+exec "$PYTHON_BIN" main.py
 
-url = f"https://api.telegram.org/bot{os.environ['TELEGRAM_BOT_TOKEN']}/getMe"
-with urllib.request.urlopen(url, timeout=15) as response:
-    payload = json.load(response)
-if not payload.get("ok") or not payload.get("result", {}).get("username"):
-    raise SystemExit("The Telegram bot token was rejected.")
-print(payload["result"]["username"])
-PY
-)"
+--- END OF start_worker.sh ---
 
-printf '\nOpen https://t.me/%s, send /start in a private chat, then press Enter here.\n' "$BOT_USERNAME"
-read -r _
+--- START OF start_giga.sh ---
+#!/usr/bin/env bash
+# Start GIGA PHONE AI directly in Termux or Ubuntu.
+set -eu
 
-TELEGRAM_IDENTITY="$(python - <<'PY'
-import json
-import os
-import urllib.parse
-import urllib.request
+PROJECT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+cd "$PROJECT_DIR"
 
-base = f"https://api.telegram.org/bot{os.environ['TELEGRAM_BOT_TOKEN']}/getUpdates"
-query = urllib.parse.urlencode({"timeout": 20})
-with urllib.request.urlopen(f"{base}?{query}", timeout=30) as response:
-    updates = json.load(response)
-
-for update in reversed(updates.get("result", [])):
-    message = update.get("message") or {}
-    chat = message.get("chat") or {}
-    sender = message.get("from") or {}
-    if chat.get("type") == "private" and chat.get("id") and sender.get("id"):
-        print(f"{chat['id']}:{sender['id']}")
-        break
-else:
-    raise SystemExit("No new private /start message was received. Run the installer again and send /start before pressing Enter.")
-PY
-)"
-IFS=':' read -r TELEGRAM_CHAT_ID ALLOWED_USER_ID <<EOF
-$TELEGRAM_IDENTITY
-EOF
-
-export TELEGRAM_CHAT_ID ALLOWED_USER_ID
-python - <<'PY'
-import json
-import os
-
-path = "config/settings.local.json"
-settings = {
-    "gemini": {"api_key": os.environ["GEMINI_API_KEY"]},
-    "telegram": {
-        "bot_token": os.environ["TELEGRAM_BOT_TOKEN"],
-        "chat_id": os.environ["TELEGRAM_CHAT_ID"],
-        "allowed_user_id": os.environ["ALLOWED_USER_ID"],
-    },
-}
-with open(path, "w", encoding="utf-8") as output:
-    json.dump(settings, output, ensure_ascii=False, indent=2)
-    output.write("\n")
-PY
-unset GEMINI_API_KEY TELEGRAM_BOT_TOKEN TELEGRAM_CHAT_ID ALLOWED_USER_ID
-chmod 600 config/settings.local.json
-
-say "Checking the local code before startup"
-python -m unittest test_long_polling.py test_self_correction.py test_task_agent.py
+if [ ! -f "config/settings.local.json" ]; then
+    printf 'Missing config/settings.local.json. Run the platform setup script first.\n' >&2
+    exit 1
+fi
 
 if command -v termux-wake-lock >/dev/null 2>&1; then
     termux-wake-lock
 fi
 
-say "Installation complete. Starting GIGA PHONE AI"
-exec bash start_giga.sh
+PYTHON_BIN="$(command -v python3 || command -v python || true)"
+if [ -z "$PYTHON_BIN" ]; then
+    printf 'Python was not found. Run the platform setup script again.\n' >&2
+    exit 1
+fi
 
---- END OF setup_termux.sh ---
+exec bash "$PROJECT_DIR/start_worker.sh"
+
+--- END OF start_giga.sh ---
 
 --- START OF setup_ubuntu.sh ---
 #!/usr/bin/env bash
@@ -905,45 +1562,589 @@ unset GEMINI_API_KEY TELEGRAM_BOT_TOKEN TELEGRAM_CHAT_ID ALLOWED_USER_ID
 chmod 600 config/settings.local.json
 
 say "Checking the local code before startup"
-python3 -m unittest test_settings_loading.py test_long_polling.py test_self_correction.py test_task_agent.py
+python3 -m unittest -v test_*.py
 
 say "Installation complete. Starting GIGA PHONE AI"
-exec bash start_giga.sh
+exec bash start_worker.sh
 
 --- END OF setup_ubuntu.sh ---
-
---- START OF start_giga.sh ---
-#!/data/data/com.termux/files/usr/bin/bash
-# Start GIGA PHONE AI directly in Termux.
-set -eu
-
-PROJECT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
-cd "$PROJECT_DIR"
-
-if [ ! -f "config/settings.local.json" ]; then
-    printf 'Missing config/settings.local.json. Run: bash setup_termux.sh\n' >&2
-    exit 1
-fi
-
-if command -v termux-wake-lock >/dev/null 2>&1; then
-    termux-wake-lock
-fi
-
-PYTHON_BIN="$(command -v python3 || command -v python || true)"
-if [ -z "$PYTHON_BIN" ]; then
-    printf 'Python was not found. Run the platform setup script again.\n' >&2
-    exit 1
-fi
-
-exec "$PYTHON_BIN" main.py
-
---- END OF start_giga.sh ---
 
 --- START OF requirements.txt ---
 requests>=2.31.0
 
 --- END OF requirements.txt ---
 
---- GEMINI REVIEW REQUEST ---
-Review this GIGA PHONE AI deployment for low-resource Termux and Ubuntu. Verify that setup_termux.sh and setup_ubuntu.sh safely configure a fresh device, automatically derive the private Telegram chat and authorized user from a just-sent /start message, keep secrets only in ignored config/settings.local.json, resolve the active shell and Python interpreter portably, and preserve Telegram authorization, /task approval gates, Gemini backoff, and RAM efficiency. Preserve placeholders and do not request real secrets.
---- END OF GEMINI REVIEW REQUEST ---
+--- START OF .gitignore ---
+__pycache__/
+*.py[cod]
+data/*.json
+data/*.jsonl
+data/*.log
+logs/*.log
+.env
+config/settings.local.json
+data/checkpoints/
+
+--- END OF .gitignore ---
+
+--- START OF .giga/playbooks/debug.md ---
+# Debug playbook
+
+Use this playbook when the operator asks to diagnose a failure.
+
+The planner should first inspect the workspace and relevant logs with read-only commands. It should state the suspected failure boundary, collect the smallest useful reproduction, and add a declared read-only verification command to each step when possible. Any file edit, dependency installation, service restart, or Git mutation must appear as a separate step and remain behind the task approval gate.
+
+The executor must stop after the first failed step unless Gemini provides a bounded correction that passes the local policy. The verifier must report the exact command output used as evidence. The final report must include the likely cause, changed files, tests run, remaining risks, and whether the issue is actually resolved.
+
+--- END OF .giga/playbooks/debug.md ---
+
+--- START OF .giga/playbooks/review.md ---
+# Review playbook
+
+Use this playbook when the operator asks for a change review before commit or deployment.
+
+The planner should gather `git status --short`, `git diff --stat`, and `git diff --check`, then inspect the relevant changed files. It must distinguish implemented evidence from assumptions. The final report should name changed files, tests actually executed, policy-sensitive commands, possible regressions, and a clear recommendation: safe to proceed, needs operator review, or blocked.
+
+Do not commit or push as part of a review unless the operator creates a separate approved task for that operation.
+
+--- END OF .giga/playbooks/review.md ---
+
+--- START OF .giga/playbooks/deploy.md ---
+# Deploy playbook
+
+Use this playbook for deployment or service changes on the Ubuntu worker.
+
+The planner must identify the target workspace, required dependencies, service lifecycle, health check, rollback point, and expected Telegram report. Before any package installation, permission change, service restart, or Git push, create a checkpoint and show the operation in the approval plan. Never combine a risky mutation with an opaque download-and-execute command.
+
+The verifier must run a read-only health check after the change. A deployment is not complete if the health check, test evidence, or rollback reference is missing.
+
+--- END OF .giga/playbooks/deploy.md ---
+
+--- START OF .giga/playbooks/n8n.md ---
+# n8n playbook
+
+Use this playbook for n8n installation, configuration, or health checks.
+
+The planner must treat package installation, Docker commands, network downloads, credential configuration, and service restarts as review-sensitive. The plan must never expose credentials in Telegram output or logs. It should create a checkpoint before a change, identify the n8n health endpoint or local service check, and include a read-only verification step after the change.
+
+If n8n is not already installed, the plan must state the exact dependency and storage impact before approval. A successful command alone is not proof of a working service; the verifier must capture a health response or an equivalent process/listener check.
+
+--- END OF .giga/playbooks/n8n.md ---
+
+--- START OF .giga/playbooks/video.md ---
+# Video pipeline playbook
+
+Use this playbook for automated video or YouTube production pipelines.
+
+The planner should split the work into small sequential stages such as input inspection, asset preparation, rendering, metadata generation, and final artifact checks. It must state expected disk usage, timeout risk, and the output path. Heavy tools should run on Ubuntu, not on the Redmi 10a. Any upload, credential use, or external publication must be a separate review-sensitive step and must not happen from an unapproved direct command.
+
+The verifier should confirm that the expected artifact exists, has a non-zero size, and can be inspected with a read-only command. The final report must include the artifact path, test or inspection evidence, and any unfinished publication step.
+
+--- END OF .giga/playbooks/video.md ---
+
+--- START OF test_executor.py ---
+import os
+import tempfile
+import unittest
+
+from core.executor import CommandExecutor
+
+
+class ExecutorTests(unittest.TestCase):
+    def test_commands_run_in_configured_workspace(self):
+        with tempfile.TemporaryDirectory() as workspace:
+            executor = CommandExecutor(timeout=5, workspace=workspace)
+            code, stdout, stderr = executor.run("pwd")
+
+            self.assertEqual(code, 0)
+            self.assertEqual(os.path.realpath(stdout), os.path.realpath(workspace))
+            self.assertEqual(stderr, "")
+
+    def test_output_is_bounded(self):
+        with tempfile.TemporaryDirectory() as workspace:
+            executor = CommandExecutor(timeout=5, workspace=workspace, max_output=1000)
+            code, stdout, stderr = executor.run("python3 -c \"print('x' * 5000)\"")
+
+            self.assertEqual(code, 0)
+            self.assertLessEqual(len(stdout), 1000)
+            self.assertEqual(stderr, "")
+
+
+if __name__ == "__main__":
+    unittest.main()
+
+--- END OF test_executor.py ---
+
+--- START OF test_long_polling.py ---
+import unittest
+from unittest.mock import patch
+
+from core.notifier import TelegramNotifier
+from main import command_from_text
+
+
+class FakeResponse:
+    def __init__(self, payload):
+        self.payload = payload
+
+    def raise_for_status(self):
+        return None
+
+    def json(self):
+        return self.payload
+
+
+class TelegramNotifierTests(unittest.TestCase):
+    def setUp(self):
+        self.notifier = TelegramNotifier("test-token", "123456")
+
+    @patch("core.notifier.requests.get")
+    def test_get_updates_uses_bounded_long_polling(self, mock_get):
+        mock_get.return_value = FakeResponse({"ok": True, "result": [{"update_id": 7}]})
+
+        updates = self.notifier.get_updates(offset=8, timeout=30)
+
+        self.assertEqual(updates, [{"update_id": 7}])
+        _, kwargs = mock_get.call_args
+        self.assertEqual(kwargs["timeout"], 30)
+        self.assertEqual(kwargs["params"], {"timeout": 25, "offset": 8})
+
+    @patch("core.notifier.requests.post")
+    def test_notify_posts_to_configured_chat(self, mock_post):
+        mock_post.return_value = FakeResponse({"ok": True, "result": {}})
+
+        self.assertTrue(self.notifier.notify("listener online"))
+        _, kwargs = mock_post.call_args
+        self.assertEqual(kwargs["json"]["chat_id"], "123456")
+        self.assertEqual(kwargs["json"]["text"], "listener online")
+
+
+class CommandParsingTests(unittest.TestCase):
+    def test_command_from_text(self):
+        self.assertEqual(command_from_text("/run uname -a"), ("run", "uname -a"))
+        self.assertEqual(command_from_text("/task inspect disk space"), ("task", "inspect disk space"))
+        self.assertEqual(command_from_text("/approve"), ("approve", ""))
+        self.assertEqual(command_from_text("/approve task_123"), ("approve", "task_123"))
+        self.assertEqual(command_from_text("/cancel"), ("cancel", ""))
+        self.assertEqual(command_from_text("/cancel task_123"), ("cancel", "task_123"))
+        self.assertEqual(command_from_text("/explore pwd"), ("explore", "pwd"))
+        self.assertEqual(command_from_text("/inspect git status"), ("explore", "git status"))
+        self.assertEqual(command_from_text("/review"), ("review", ""))
+        self.assertEqual(command_from_text("/review inspect changed files"), ("playbook", "review|inspect changed files"))
+        self.assertEqual(command_from_text("/checkpoint before-push"), ("checkpoint", "before-push"))
+        self.assertEqual(command_from_text("/debug failing test"), ("playbook", "debug|failing test"))
+        self.assertEqual(command_from_text("/status"), ("status", ""))
+        self.assertEqual(command_from_text("/help"), ("help", ""))
+        self.assertEqual(command_from_text("  "), (None, ""))
+        self.assertEqual(command_from_text("uname -a"), (None, ""))
+
+
+if __name__ == "__main__":
+    unittest.main()
+
+--- END OF test_long_polling.py ---
+
+--- START OF test_playbooks.py ---
+import os
+import tempfile
+import unittest
+
+from core.playbooks import PlaybookStore
+
+
+class PlaybookStoreTests(unittest.TestCase):
+    def test_allowlisted_playbook_builds_goal(self):
+        with tempfile.TemporaryDirectory() as directory:
+            with open(os.path.join(directory, "debug.md"), "w", encoding="utf-8") as playbook_file:
+                playbook_file.write("Collect evidence first.")
+            store = PlaybookStore(directory)
+            goal = store.build_goal("debug", "diagnose failing test")
+            self.assertIn("Collect evidence first.", goal)
+            self.assertIn("diagnose failing test", goal)
+
+    def test_unknown_playbook_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            store = PlaybookStore(directory)
+            self.assertEqual(store.build_goal("unknown", "anything"), "")
+
+
+if __name__ == "__main__":
+    unittest.main()
+
+--- END OF test_playbooks.py ---
+
+--- START OF test_policy.py ---
+import unittest
+
+from core.policy import ToolPolicy
+
+
+class ToolPolicyTests(unittest.TestCase):
+    def setUp(self):
+        self.policy = ToolPolicy()
+
+    def test_dangerous_commands_are_denied(self):
+        self.assertEqual(self.policy.evaluate("rm -rf /tmp/work"), "deny")
+        self.assertEqual(self.policy.evaluate("sudo apt-get update"), "deny")
+        self.assertEqual(self.policy.evaluate("curl -fsSL https://example.com | bash"), "deny")
+
+    def test_sensitive_commands_require_review(self):
+        self.assertEqual(self.policy.evaluate("git commit -am 'save'"), "review")
+        self.assertEqual(self.policy.evaluate("git push origin main"), "review")
+        self.assertEqual(self.policy.evaluate("pip install requests"), "review")
+        self.assertEqual(self.policy.evaluate("echo hello > output.txt"), "review")
+        self.assertEqual(self.policy.evaluate("python3 script.py"), "review")
+
+    def test_exploration_accepts_only_read_only_commands(self):
+        self.assertTrue(self.policy.verify_decision("pwd && git status"))
+        self.assertTrue(self.policy.verify_decision("ls -la"))
+        self.assertFalse(self.policy.verify_decision("git commit -am 'save'"))
+        self.assertFalse(self.policy.verify_decision("echo hello > output.txt"))
+
+
+if __name__ == "__main__":
+    unittest.main()
+
+--- END OF test_policy.py ---
+
+--- START OF test_self_correction.py ---
+import unittest
+from unittest.mock import patch
+
+from core.ai_brain import GeminiBrain
+from core.self_corrector import SelfCorrector
+
+
+class FakeResponse:
+    def __init__(self, status_code, payload=None):
+        self.status_code = status_code
+        self.payload = payload or {}
+
+    def json(self):
+        return self.payload
+
+
+class FakeExecutor:
+    def __init__(self):
+        self.max_retries = 2
+        self.commands = []
+
+    def run(self, command):
+        self.commands.append(command)
+        if command == "echo repaired":
+            return 0, "repaired", ""
+        return 1, "", "command not found"
+
+
+class GeminiBackoffTests(unittest.TestCase):
+    @patch("core.ai_brain.time.sleep")
+    @patch("core.ai_brain.requests.post")
+    def test_rate_limit_retries_with_exponential_backoff(self, mock_post, mock_sleep):
+        mock_post.side_effect = [
+            FakeResponse(429),
+            FakeResponse(429),
+            FakeResponse(200, {
+                "candidates": [{"content": {"parts": [{"text": "echo repaired"}]}}]
+            }),
+        ]
+        brain = GeminiBrain(api_key="test-key")
+
+        fixed = brain.analyze_error("bad-command", "command not found")
+
+        self.assertEqual(fixed, "echo repaired")
+        self.assertEqual(mock_post.call_count, 3)
+        self.assertEqual([call.args[0] for call in mock_sleep.call_args_list], [1, 2])
+
+    @patch("core.ai_brain.time.sleep")
+    @patch("core.ai_brain.requests.post")
+    def test_transient_server_error_is_retried(self, mock_post, mock_sleep):
+        mock_post.side_effect = [
+            FakeResponse(503),
+            FakeResponse(200, {
+                "candidates": [{"content": {"parts": [{"text": "echo recovered"}]}}]
+            }),
+        ]
+        brain = GeminiBrain(api_key="test-key")
+
+        fixed = brain.analyze_error("bad-command", "temporary service unavailable")
+
+        self.assertEqual(fixed, "echo recovered")
+        self.assertEqual(mock_post.call_count, 2)
+        self.assertEqual([call.args[0] for call in mock_sleep.call_args_list], [1])
+
+
+class SelfCorrectionTests(unittest.TestCase):
+    def test_failed_command_is_retried_with_gemini_suggestion(self):
+        executor = FakeExecutor()
+        corrector = SelfCorrector(executor, api_key="test-key")
+        corrector.brain.analyze_error = lambda command, stderr: "echo repaired"
+
+        success, stdout, stderr = corrector.execute("bad-command")
+
+        self.assertTrue(success)
+        self.assertEqual(stdout, "repaired")
+        self.assertEqual(stderr, "")
+        self.assertEqual(executor.commands, ["bad-command", "echo repaired"])
+
+
+if __name__ == "__main__":
+    unittest.main()
+
+--- END OF test_self_correction.py ---
+
+--- START OF test_settings_loading.py ---
+import json
+import os
+import unittest
+
+from main import load_settings
+
+
+class LocalSettingsTests(unittest.TestCase):
+    def setUp(self):
+        self.path = os.path.join(os.path.dirname(__file__), "config", "settings.local.json")
+        self.previous = None
+        if os.path.exists(self.path):
+            with open(self.path, "rb") as source:
+                self.previous = source.read()
+
+    def tearDown(self):
+        if self.previous is None:
+            try:
+                os.unlink(self.path)
+            except FileNotFoundError:
+                pass
+        else:
+            with open(self.path, "wb") as destination:
+                destination.write(self.previous)
+
+    def test_local_values_override_template_placeholders(self):
+        override = {
+            "gemini": {"api_key": "test-gemini-key"},
+            "telegram": {
+                "bot_token": "test-bot-token",
+                "chat_id": "111",
+                "allowed_user_id": "222",
+            },
+        }
+        with open(self.path, "w", encoding="utf-8") as destination:
+            json.dump(override, destination)
+
+        settings = load_settings()
+
+        self.assertEqual(settings["gemini"]["api_key"], "test-gemini-key")
+        self.assertEqual(settings["telegram"]["bot_token"], "test-bot-token")
+        self.assertEqual(settings["telegram"]["chat_id"], "111")
+        self.assertEqual(settings["telegram"]["allowed_user_id"], "222")
+
+
+if __name__ == "__main__":
+    unittest.main()
+
+--- END OF test_settings_loading.py ---
+
+--- START OF test_task_agent.py ---
+import os
+import tempfile
+import unittest
+
+from core.task_agent import TaskAgent
+
+
+class FakeBrain:
+    def __init__(self, plan):
+        self.plan = plan
+        self.goals = []
+
+    def plan_task(self, goal):
+        self.goals.append(goal)
+        return self.plan
+
+
+class FakeBrainWithRoles(FakeBrain):
+    def security_review(self, goal, steps):
+        return {"approved": True, "risk": "low", "issues": [], "required_confirmation": "none"}
+
+    def verify_result(self, goal, command, stdout, stderr=""):
+        return {"verified": True, "confidence": "high", "reason": "test evidence is present"}
+
+
+class FakeVerifier:
+    def run(self, command):
+        return {"status": "passed", "verified": True, "command": command, "evidence": "ok"}
+
+
+class FakeCorrector:
+    def __init__(self):
+        self.commands = []
+
+    def execute(self, command):
+        self.commands.append(command)
+        return True, f"completed: {command}", ""
+
+
+class TaskAgentTests(unittest.TestCase):
+    def setUp(self):
+        self.temp_dir = tempfile.TemporaryDirectory()
+        self.state_path = os.path.join(self.temp_dir.name, "pending_task.json")
+        self.plan = {
+            "summary": "Inspect available disk capacity.",
+            "steps": [
+                {"tool": "run_bash", "command": "pwd", "purpose": "confirm the workspace"},
+                {"tool": "run_bash", "command": "df -h", "purpose": "inspect disk capacity"},
+            ],
+        }
+
+    def tearDown(self):
+        self.temp_dir.cleanup()
+
+    def test_task_requires_approval_before_execution(self):
+        brain = FakeBrain(self.plan)
+        task_agent = TaskAgent(brain, self.state_path)
+        corrector = FakeCorrector()
+
+        state, error = task_agent.create_task("Inspect disk capacity")
+        self.assertEqual(error, "")
+        self.assertEqual(state["status"], "awaiting_approval")
+        self.assertTrue(state["task_id"].startswith("task_"))
+        self.assertEqual(corrector.commands, [])
+
+        pending_state, message = task_agent.approve_and_execute(corrector, "wrong-id")
+        self.assertEqual(pending_state, {})
+        self.assertIn("exact task ID", message)
+        self.assertEqual(corrector.commands, [])
+
+        completed, message = task_agent.approve_and_execute(corrector, state["task_id"])
+        self.assertEqual(message, "Task completed with verification evidence.")
+        self.assertEqual(completed["status"], "completed")
+        self.assertEqual(corrector.commands, ["pwd", "df -h"])
+
+    def test_role_pipeline_records_security_and_verification(self):
+        plan = {
+            "summary": "Inspect workspace.",
+            "steps": [{"tool": "run_bash", "command": "pwd", "purpose": "workspace", "verify": "pwd"}],
+        }
+        task_agent = TaskAgent(FakeBrainWithRoles(plan), self.state_path, verifier=FakeVerifier())
+        corrector = FakeCorrector()
+
+        state, error = task_agent.create_task("Inspect workspace")
+        self.assertEqual(error, "")
+        completed, message = task_agent.approve_and_execute(corrector, state["task_id"])
+
+        self.assertEqual(completed["status"], "completed")
+        self.assertEqual(completed["security"]["risk"], "low")
+        self.assertEqual(completed["results"][0]["verification"]["status"], "passed")
+        self.assertEqual(message, "Task completed with verification evidence.")
+
+    def test_git_mutation_requires_checkpoint(self):
+        git_plan = {
+            "summary": "Commit reviewed changes.",
+            "steps": [{"tool": "run_bash", "command": "git commit -am 'reviewed changes'", "purpose": "commit"}],
+        }
+        checkpoint_dir = os.path.join(self.temp_dir.name, "checkpoints")
+        task_agent = TaskAgent(FakeBrain(git_plan), self.state_path, checkpoint_dir=checkpoint_dir)
+        corrector = FakeCorrector()
+
+        state, error = task_agent.create_task("Commit reviewed changes")
+        self.assertEqual(error, "")
+        paused, message = task_agent.approve_and_execute(corrector, state["task_id"])
+
+        self.assertEqual(paused["status"], "checkpoint_required")
+        self.assertIn("checkpoint", message.lower())
+        self.assertEqual(corrector.commands, [])
+
+        os.makedirs(checkpoint_dir, exist_ok=True)
+        with open(os.path.join(checkpoint_dir, "before-git.json"), "w", encoding="utf-8") as checkpoint_file:
+            checkpoint_file.write("{}")
+        completed, message = task_agent.approve_and_execute(corrector, state["task_id"])
+        self.assertEqual(completed["status"], "completed")
+        self.assertEqual(corrector.commands, ["git commit -am 'reviewed changes'"])
+
+    def test_forbidden_plan_is_rejected(self):
+        dangerous_plan = {
+            "summary": "Unsafe plan.",
+            "steps": [{"tool": "run_bash", "command": "rm -rf /", "purpose": "unsafe"}],
+        }
+        task_agent = TaskAgent(FakeBrain(dangerous_plan), self.state_path)
+
+        state, error = task_agent.create_task("Delete everything")
+
+        self.assertEqual(state, {})
+        self.assertIn("Unsafe plan", error)
+        self.assertFalse(os.path.exists(self.state_path))
+
+    def test_cancel_requires_matching_task_id(self):
+        task_agent = TaskAgent(FakeBrain(self.plan), self.state_path)
+        state, _ = task_agent.create_task("Inspect disk capacity")
+
+        self.assertFalse(task_agent.cancel("wrong-id"))
+        self.assertTrue(task_agent.cancel(state["task_id"]))
+        self.assertEqual(task_agent.get_status(), {})
+
+
+if __name__ == "__main__":
+    unittest.main()
+
+--- END OF test_task_agent.py ---
+
+--- START OF test_workspace_tools.py ---
+import json
+import os
+import tempfile
+import unittest
+
+from core.policy import ToolPolicy
+from core.workspace_tools import WorkspaceTools
+
+
+class FakeExecutor:
+    workspace = "/tmp/giga-workspace"
+
+    def run(self, command):
+        outputs = {
+            "git status --short": " M main.py",
+            "git diff --stat": " main.py | 10 +++++",
+            "git diff --check": "",
+            "git log -1 --oneline": "abc123 test commit",
+        }
+        value = outputs.get(command, "")
+        return 0, value, ""
+
+
+class WorkspaceToolsTests(unittest.TestCase):
+    def test_review_collects_read_only_evidence(self):
+        with tempfile.TemporaryDirectory() as directory:
+            tools = WorkspaceTools(
+                FakeExecutor(),
+                ToolPolicy(),
+                directory,
+                os.path.join(directory, "pending.json"),
+                os.path.join(directory, "memory.json"),
+            )
+            report = tools.review()
+            self.assertEqual(report["risk"], "reviewed")
+            self.assertEqual(len(report["checks"]), 4)
+            self.assertIn("main.py", report["checks"][0]["output"])
+
+    def test_checkpoint_writes_snapshot(self):
+        with tempfile.TemporaryDirectory() as directory:
+            pending_path = os.path.join(directory, "pending.json")
+            with open(pending_path, "w", encoding="utf-8") as pending_file:
+                json.dump({"task_id": "task_test"}, pending_file)
+            tools = WorkspaceTools(
+                FakeExecutor(),
+                ToolPolicy(),
+                directory,
+                pending_path,
+                os.path.join(directory, "memory.json"),
+            )
+            result = tools.checkpoint("before-git")
+            self.assertTrue(result["ok"])
+            self.assertTrue(os.path.exists(result["path"]))
+            self.assertEqual(result["snapshot"]["pending_task"]["task_id"], "task_test")
+
+
+if __name__ == "__main__":
+    unittest.main()
+
+--- END OF test_workspace_tools.py ---

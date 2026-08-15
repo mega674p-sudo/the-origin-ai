@@ -1,6 +1,7 @@
 {
   "agent_name": "GIGA PHONE AI",
-  "environment": "termux-redmi10a",
+  "environment": "ubuntu-worker-with-telegram-control",
+  "worker_mode": "hybrid",
   "ai_provider": "gemini",
   "gemini": {
     "api_key": "YOUR_GEMINI_API_KEY_HERE",
@@ -14,6 +15,8 @@
   "execution": {
     "max_retries": 3,
     "timeout": 30,
+    "max_output": 8000,
+    "workspace": ".",
     "shell": "auto"
   },
   "logging": {

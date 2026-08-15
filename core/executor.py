@@ -9,9 +9,11 @@ logger = logging.getLogger("GigaExecutor")
 class CommandExecutor:
     """Minimal subprocess wrapper with strict timeouts and Termux shell support."""
 
-    def __init__(self, timeout: int = 30, max_retries: int = 3):
+    def __init__(self, timeout: int = 30, max_retries: int = 3, workspace: str = None, max_output: int = 8000):
         self.timeout = max(1, int(timeout))
         self.max_retries = max(1, int(max_retries))
+        self.workspace = os.path.abspath(workspace or os.getcwd())
+        self.max_output = max(1000, int(max_output))
         self.shell = self._find_shell()
 
     @staticmethod
@@ -40,8 +42,11 @@ class CommandExecutor:
                 text=True,
                 executable=self.shell,
                 timeout=self.timeout,
+                cwd=self.workspace,
             )
-            return result.returncode, result.stdout.strip(), result.stderr.strip()
+            stdout = (result.stdout or "").strip()[: self.max_output]
+            stderr = (result.stderr or "").strip()[: self.max_output]
+            return result.returncode, stdout, stderr
         except subprocess.TimeoutExpired:
             return -1, "", "Timeout"
         except OSError as error:

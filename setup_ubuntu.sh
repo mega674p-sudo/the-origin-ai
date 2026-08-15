@@ -119,7 +119,7 @@ unset GEMINI_API_KEY TELEGRAM_BOT_TOKEN TELEGRAM_CHAT_ID ALLOWED_USER_ID
 chmod 600 config/settings.local.json
 
 say "Checking the local code before startup"
-python3 -m unittest test_settings_loading.py test_long_polling.py test_self_correction.py test_task_agent.py
+python3 -m unittest -v test_*.py
 
 say "Installation complete. Starting GIGA PHONE AI"
-exec bash start_giga.sh
+exec bash start_worker.sh

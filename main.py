@@ -5,10 +5,16 @@ import sys
 import time
 
 from core.ai_brain import GeminiBrain
+from core.audit_log import AuditLog
 from core.executor import CommandExecutor
+from core.memory import CompactMemory
 from core.notifier import TelegramNotifier
+from core.playbooks import PlaybookStore
+from core.policy import ToolPolicy
 from core.self_corrector import SelfCorrector
 from core.task_agent import TaskAgent
+from core.verifier import CommandVerifier
+from core.workspace_tools import WorkspaceTools
 
 logging.basicConfig(
     level=logging.INFO,
@@ -18,11 +24,15 @@ logging.basicConfig(
 logger = logging.getLogger("GigaMain")
 
 HELP_TEXT = (
-    "GIGA PHONE AI commands:\n"
-    "/run <bash command> — run one command immediately\n"
-    "/task <goal> — ask Gemini for a plan; no command runs yet\n"
-    "/approve — execute the pending approved plan\n"
-    "/cancel — discard the pending plan\n"
+    "GIGA PHONE AI Hybrid Ubuntu Worker commands:\n"
+    "/run <bash command> — run a low-risk command immediately\n"
+    "/task <goal> — Gemini planner + security review; no command runs yet\n"
+    "/approve <task-id> — execute the exact approved plan\n"
+    "/cancel <task-id> — discard the pending plan\n"
+    "/explore <read-only command> — inspect safely without modifying files\n"
+    "/review — show Git/workspace evidence without changing files\n"
+    "/checkpoint [label] — snapshot state before risky work\n"
+    "/debug, /deploy, /n8n, /video, /review <request> — use a trusted playbook\n"
     "/status — show task status\n"
     "/help — show this message"
 )
@@ -62,12 +72,25 @@ def command_from_text(text: str):
     text = (text or "").strip()
     if text in {"/start", "/help"}:
         return "help", ""
-    if text == "/approve":
-        return "approve", ""
-    if text == "/cancel":
-        return "cancel", ""
+    if text.startswith("/approve"):
+        parts = text.split(maxsplit=1)
+        return "approve", parts[1].strip() if len(parts) == 2 else ""
+    if text.startswith("/cancel"):
+        parts = text.split(maxsplit=1)
+        return "cancel", parts[1].strip() if len(parts) == 2 else ""
     if text == "/status":
         return "status", ""
+    if text == "/review":
+        return "review", ""
+    if text.startswith("/checkpoint"):
+        parts = text.split(maxsplit=1)
+        return "checkpoint", parts[1].strip() if len(parts) == 2 else "manual"
+    for playbook in ("debug", "review", "deploy", "n8n", "video"):
+        prefix = f"/{playbook} "
+        if text.startswith(prefix):
+            return "playbook", f"{playbook}|{text[len(prefix):].strip()}"
+    if text.startswith("/explore ") or text.startswith("/inspect "):
+        return "explore", text.split(" ", 1)[1].strip()
     if text.startswith("/run "):
         return "run", text[5:].strip()
     if text.startswith("/task "):
@@ -84,11 +107,13 @@ def send_command_result(notifier, command, success, stdout, stderr):
 
 
 def main():
-    logger.info("Initializing GIGA PHONE AI Agent Core Modules...")
+    logger.info("Initializing GIGA PHONE AI Hybrid Ubuntu Worker...")
     settings = load_settings()
     telegram = settings.get("telegram", {})
     gemini = settings.get("gemini", {})
     execution = settings.get("execution", {})
+    base_dir = os.path.dirname(__file__)
+    data_dir = os.path.join(base_dir, "data")
 
     bot_token = telegram.get("bot_token", "YOUR_TELEGRAM_BOT_TOKEN_HERE")
     chat_id = telegram.get("chat_id", "YOUR_TELEGRAM_CHAT_ID_HERE")
@@ -98,21 +123,46 @@ def main():
         logger.error("Telegram allowed_user_id is not configured; listener will not start.")
         return
 
+    policy = ToolPolicy()
+    configured_workspace = str(execution.get("workspace", "."))
+    workspace = configured_workspace if os.path.isabs(configured_workspace) else os.path.join(base_dir, configured_workspace)
     executor = CommandExecutor(
         timeout=int(execution.get("timeout", 30)),
         max_retries=int(execution.get("max_retries", 3)),
+        workspace=workspace,
+        max_output=int(execution.get("max_output", 8000)),
     )
     brain = GeminiBrain(api_key=gemini.get("api_key"), model=gemini.get("model", "gemini-3.5-flash"))
-    corrector = SelfCorrector(executor, brain=brain)
+    corrector = SelfCorrector(executor, brain=brain, policy=policy)
     notifier = TelegramNotifier(token=bot_token, chat_id=chat_id)
-    task_state_path = os.path.join(os.path.dirname(__file__), "data", "pending_task.json")
-    task_agent = TaskAgent(brain, task_state_path)
+    audit = AuditLog(os.path.join(data_dir, "audit.jsonl"))
+    memory = CompactMemory(os.path.join(data_dir, "memory.json"))
+    verifier = CommandVerifier(executor, policy)
+    task_state_path = os.path.join(data_dir, "pending_task.json")
+    task_agent = TaskAgent(
+        brain,
+        task_state_path,
+        policy=policy,
+        audit=audit,
+        memory=memory,
+        verifier=verifier,
+        checkpoint_dir=os.path.join(data_dir, "checkpoints"),
+    )
+    workspace_tools = WorkspaceTools(
+        executor,
+        policy,
+        data_dir,
+        task_state_path,
+        os.path.join(data_dir, "memory.json"),
+    )
+    playbooks = PlaybookStore(os.path.join(base_dir, ".giga", "playbooks"))
 
     if not notifier.enabled:
         logger.error("Telegram bot_token or chat_id is not configured; listener will not start.")
         return
 
-    notifier.notify("GIGA PHONE AI tool-calling agent is online. Send /help for commands.")
+    notifier.notify("GIGA PHONE AI Hybrid Ubuntu Worker is online. Send /help for commands.")
+    audit.record("worker_started", allowed_user_id=allowed_user_id)
     logger.info("Telegram listener started for authorized user %s.", allowed_user_id)
 
     offset = None
@@ -135,7 +185,7 @@ def main():
 
                 if str(user_id) != allowed_user_id:
                     if user_id is not None:
-                        logger.warning("Ignored command from unauthorized Telegram user %s.", user_id)
+                        audit.record("unauthorized_command", user_id=user_id)
                     continue
 
                 action, value = command_from_text(text)
@@ -149,19 +199,68 @@ def main():
                     if not state:
                         notifier.notify("No pending or recorded task.")
                     else:
-                        notifier.notify(f"Task status: {state.get('status', 'unknown')}\nGoal: {state.get('goal', '')}")
+                        notifier.notify(
+                            f"Task {state.get('task_id', 'unknown')} status: {state.get('status', 'unknown')}\n"
+                            f"Goal: {state.get('goal', '')}"
+                        )
+                    continue
+                if action == "review":
+                    report = workspace_tools.review()
+                    audit.record("workspace_review", risk=report.get("risk"))
+                    notifier.notify(WorkspaceTools.format_review(report))
+                    continue
+                if action == "checkpoint":
+                    snapshot = workspace_tools.checkpoint(value or "manual")
+                    if snapshot.get("ok"):
+                        audit.record("checkpoint_created", path=snapshot.get("path"), label=value or "manual")
+                        notifier.notify(f"Checkpoint created: {snapshot.get('path')}")
+                    else:
+                        notifier.notify(snapshot.get("error", "Checkpoint failed."))
+                    continue
+                if action == "playbook":
+                    playbook_name, request = value.split("|", 1) if "|" in value else ("", "")
+                    goal = playbooks.build_goal(playbook_name, request)
+                    if not goal:
+                        notifier.notify("Playbook request is invalid or unavailable.")
+                    else:
+                        state, error = task_agent.create_task(goal)
+                        notifier.notify(TaskAgent.format_plan(state) if state else f"Task plan not created: {error}")
                     continue
                 if action == "cancel":
-                    notifier.notify("Pending task cancelled." if task_agent.cancel() else "No task was available to cancel.")
+                    if not value:
+                        notifier.notify("Usage: /cancel <task-id>")
+                    else:
+                        notifier.notify(
+                            "Pending task cancelled."
+                            if task_agent.cancel(value)
+                            else "Task ID does not match the pending task."
+                        )
                     continue
                 if action == "task":
                     state, error = task_agent.create_task(value)
                     notifier.notify(TaskAgent.format_plan(state) if state else f"Task plan not created: {error}")
                     continue
                 if action == "approve":
-                    notifier.notify("Approved task is running; this may take several minutes.")
-                    state, message_text = task_agent.approve_and_execute(corrector)
+                    if not value:
+                        notifier.notify("Usage: /approve <task-id>")
+                        continue
+                    notifier.notify("Approved task is running on the Ubuntu worker; this may take several minutes.")
+                    state, message_text = task_agent.approve_and_execute(corrector, value)
                     notifier.notify(TaskAgent.format_result(state, message_text) if state else message_text)
+                    continue
+                if action == "explore":
+                    if not value:
+                        notifier.notify("Usage: /explore <read-only command>")
+                        continue
+                    if not policy.verify_decision(value):
+                        notifier.notify("Explore rejected: only local read-only commands are allowed.")
+                        continue
+                    code, stdout, stderr = executor.run(value)
+                    audit.record("explore", command=value, success=code == 0, output=stdout or stderr)
+                    notifier.notify(
+                        f"EXPLORE {'SUCCESS' if code == 0 else 'FAILED'}\n$ {value}\n\n"
+                        f"{stdout or stderr or '(no output)'}"
+                    )
                     continue
 
                 command = value
@@ -171,9 +270,18 @@ def main():
                 if len(command) > 1000:
                     notifier.notify("Command rejected: maximum command length is 1000 characters.")
                     continue
+                decision = policy.evaluate(command)
+                if decision == "deny":
+                    audit.record("direct_command_blocked", command=command)
+                    notifier.notify("Command rejected by the local safety policy.")
+                    continue
+                if decision == "review":
+                    notifier.notify("This command requires a task plan and explicit approval. Use /task <goal>.")
+                    continue
 
-                logger.info("Executing authorized Telegram command through self-correction.")
+                logger.info("Executing authorized low-risk command through self-correction.")
                 success, stdout, stderr = corrector.execute(command)
+                audit.record("direct_command", command=command, success=success, output=stdout or stderr)
                 send_command_result(notifier, command, success, stdout, stderr)
 
         except KeyboardInterrupt:
