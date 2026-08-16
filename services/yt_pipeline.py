@@ -17,10 +17,16 @@ class YTPipeline:
     def generate_script(self, topic):
         logger.info(f"Generating script for topic: {topic}")
         prompt = (
-            f"Create a short viral video script about '{topic}'. "
+            f"Create a vertical 9:16 AI tool discovery script in Thai about '{topic}'. "
+            "Style: Fast-paced, curiosity-driven, similar to viral Facebook/TikTok reels. "
+            "Structure: "
+            "1. Hook (0-3s): 'Shocking' discovery or equation (e.g., Tool + Niche = $$$). "
+            "2. Problem/Solution (3-10s): Brief mention of the tool name. "
+            "3. Demo (10-25s): Showcase results/workflow. "
+            "4. CTA (25-35s): 'Comment [Keyword]' or 'Save for later'. "
             "Return ONLY a JSON object with the following structure: "
-            "{'title': '...', 'scenes': [{'text': '...', 'image_prompt': '...'}]}. "
-            "Keep it to 3-5 scenes. Each image_prompt should be descriptive for an AI image generator."
+            "{'title': '...', 'scenes': [{'text': 'narration', 'overlay_text': 'text on screen', 'image_prompt': 'AI image prompt'}]}. "
+            "Keep it to 5-7 scenes."
         )
         
         payload = {"contents": [{"parts": [{"text": prompt}]}]}
@@ -56,21 +62,32 @@ class YTPipeline:
             img_path = self.generate_image(scene["image_prompt"], i)
             image_paths.append(img_path)
             
-        # Create a simple video using ffmpeg
-        # For a real production, we'd add audio and transitions
-        # Here we create a 15-second video (3 seconds per image)
-        
+        # Create video clips with text overlays
+        clip_paths = []
+        for i, scene in enumerate(scenes):
+            img_path = image_paths[i]
+            clip_path = os.path.join(self.output_dir, f"clip_{i}.mp4")
+            overlay = scene.get("overlay_text", "").replace("'", "").replace(":", "")
+            
+            # Create a 3-second clip with text overlay
+            cmd = [
+                "ffmpeg", "-y", "-loop", "1", "-t", "3", "-i", img_path,
+                "-vf", f"scale=1080:1920,drawtext=text='{overlay}':fontcolor=white:fontsize=80:x=(w-text_w)/2:y=(h-text_h)/2:box=1:boxcolor=black@0.5:boxborderw=10",
+                "-c:v", "libx264", "-pix_fmt", "yuv420p", clip_path
+            ]
+            subprocess.run(cmd, check=True)
+            clip_paths.append(clip_path)
+
+        # Concatenate clips
         input_file = os.path.join(self.output_dir, "input.txt")
         with open(input_file, "w") as f:
-            for path in image_paths:
-                f.write(f"file '{os.path.abspath(path)}'\nduration 3\n")
-            # Last file needs to be repeated or ffmpeg might cut it
-            f.write(f"file '{os.path.abspath(image_paths[-1])}'\n")
+            for path in clip_paths:
+                f.write(f"file '{os.path.abspath(path)}'\n")
 
         output_video = os.path.join(self.output_dir, "final_video.mp4")
         cmd = [
             "ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", input_file,
-            "-vsync", "vfr", "-pix_fmt", "yuv420p", output_video
+            "-c", "copy", output_video
         ]
         
         subprocess.run(cmd, check=True)
