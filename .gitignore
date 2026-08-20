@@ -7,3 +7,7 @@ logs/*.log
 .env
 config/settings.local.json
 data/checkpoints/
+
+output_dm/
+output/
+token.pickle
