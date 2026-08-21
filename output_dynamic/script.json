@@ -1,39 +1,39 @@
 {
-  "narration": "คุณรู้ไหมว่า จักรวาลที่เราอาศัยอยู่อาจตั้งอยู่บน สภาวะสูญญากาศเทียม ที่ไม่เสถียร และมีภัยเงียบที่ร้ายแรงที่สุดซ่อนอยู่ นั่นคือ False Vacuum Decay เมื่อสนามฮิกกส์ยุบตัวลงสู่สภาวะพลังงานที่ต่ำกว่า จะเกิด ฟองคลื่นแห่งความตาย ขยายตัวออกไป มันจะลบเลือนมวล อะตอม และกฎทางฟิสิกส์ทั้งหมดด้วยความเร็วแสง โดยไม่มีสัญญาณเตือน และสิ่งที่น่ากลัวที่สุดคือ ฟองคลื่นนี้อาจกำลังพุ่งตรงมาหาเราในวินาทีนี้ โดยที่เราไม่มีวันรู้ตัวเลย",
+  "narration": "ในจักรวาลอันกว้างใหญ่ สิ่งที่เรามองเห็น ทั้งดาวเคราะห์ ดาวฤกษ์ และกาแล็กซี เป็นเพียงแค่ 5 เปอร์เซ็นต์เท่านั้นของเอกภพทั้งหมด แล้วอีก 85 เปอร์เซ็นต์ของมวลสารที่เหลือคืออะไร? วิทยาศาสตร์เรียกสิ่งนี้ว่า สสารมืด โครงสร้างปริศนาที่ไม่สะท้อน ไม่ดูดกลืน และไม่เปล่งแสงใดๆ แม้เราจะมองไม่เห็นมัน แต่นักดาราศาสตร์รู้ว่ามันมีอยู่จริง จากแรงโน้มถ่วงมหาศาลที่ยึดเหนี่ยวกาแล็กซีทั้งหมดไว้ไม่ให้หลุดออกจากกัน สสารมืดคือโครงกระดูกล่องหนของจักรวาล... ความลับที่ยิ่งใหญ่ที่สุด ซึ่งมนุษย์ยังคงพยายามค้นหาคำตอบใต้ความมืดมิดนี้",
   "scenes": [
     {
-      "image_prompt": "Cinematic vertical 9:16 shot of a mysterious glowing cosmic void, delicate web of galaxies floating in deep space, hyper-realistic, dark mysterious atmosphere, subtle quantum energy fluctuations, volumetric nebula lighting, 8k resolution, documentary film aesthetic"
+      "image_prompt": "Cinematic 8K vertical 9:16 photograph of deep cosmic space, glowing nebulae and distant galaxies, deep violet and navy blue tones, majestic and mysterious cinematic lighting, hyper-realistic documentary aesthetic"
     },
     {
-      "image_prompt": "Vertical 9:16 shot of a perfectly spherical expanding bubble of intense radiant blue-white energy tearing through cosmic dust and star clusters, quantum field collapse, epic sci-fi realism, cinematic lighting, ultra-detailed 8k"
+      "image_prompt": "Ultra-detailed 8K vertical 9:16 visualization of the cosmic web, faint ethereal translucent dark matter threads weaving across bright galaxy clusters, high contrast, mysterious sci-fi realism"
     },
     {
-      "image_prompt": "Vertical 9:16 visual representation of stars and molecular matter dissolving into absolute nothingness at the edge of an expanding luminous wall, atmospheric cosmic destruction, dramatic physics visual effect, photorealistic space, 8k"
+      "image_prompt": "Hyper-realistic 8K vertical 9:16 rendering of gravitational lensing in deep space, light from distant stars warping and bending around an invisible massive dark matter center, cinematic atmosphere"
     },
     {
-      "image_prompt": "Vertical 9:16 eerie visual of Planet Earth in the vast dark cosmos, a silent blinding wave of true vacuum decay looming dangerously close in the background, sense of imminent cosmic dread, ultra realistic detail, photorealistic sci-fi render, 8k"
+      "image_prompt": "Breathtaking 8K vertical 9:16 cosmic image of a spiral galaxy glowing brilliantly, surrounded by an invisible ghostly dark matter halo haloing through space, epic documentary film quality"
     }
   ],
   "subtitles": [
     {
       "start": 0.0,
       "end": 11.0,
-      "text": "คุณรู้ไหมว่า จักรวาลที่เราอาศัยอยู่อาจตั้งอยู่บน 'สภาวะสูญญากาศเทียม' ที่ไม่เสถียร"
+      "text": "ในจักรวาลอันกว้างใหญ่ สิ่งที่เรามองเห็นมีเพียงแค่ 5 เปอร์เซ็นต์เท่านั้นของเอกภพทั้งหมด"
     },
     {
       "start": 11.0,
       "end": 22.0,
-      "text": "นั่นคือ 'False Vacuum Decay' เมื่อสนามฮิกกส์ยุบตัว จะเกิด 'ฟองคลื่นแห่งความตาย' ขยายตัวออกไป"
+      "text": "แล้วมวลสารส่วนใหญ่คืออะไร? วิทยาศาสตร์เรียกสิ่งนี้ว่า \"สสารมืด\" โครงสร้างปริศนาที่ไม่เปล่งแสงใดๆ"
     },
     {
       "start": 22.0,
       "end": 33.0,
-      "text": "มันจะลบเลือนมวล อะตอม และกฎทางฟิสิกส์ทั้งหมดด้วยความเร็วแสง โดยไร้สัญญาณเตือน"
+      "text": "แม้จะมองไม่เห็น แต่มันมีอยู่จริง จากแรงโน้มถ่วงมหาศาลที่ยึดเหนี่ยวกาแล็กซีไว้ด้วยกัน"
     },
     {
       "start": 33.0,
       "end": 45.0,
-      "text": "และมันอาจกำลังพุ่งตรงมาหาเราในวินาทีนี้... โดยที่เราไม่มีวันรู้ตัวเลย"
+      "text": "สสารมืดคือโครงกระดูกล่องหนของจักรวาล... ความลับยิ่งใหญ่ที่เรายังคงค้นหาคำตอบ"
     }
   ]
 }
