@@ -57,11 +57,16 @@ def run_step(name, cmd):
 def main():
     logger.info("=== Starting Master Automation Run (End-to-End Charon TTS) ===")
     used = load_json(HISTORY_FILE)
-    used_str = ", ".join(used[-20:]) if used else "None"
+    # Use the full history for avoidance
+    used_str = ", ".join(used) if used else "None"
     
     topic_prompt = f"""
-    Generate one fascinating, mysterious, and engaging topic in Thai for a cinematic science YouTube Short (Blurr Content style), such as about space, quantum physics, black holes, time, parallel universes, or deep cosmos mysteries.
-    AVOID these recently used topics: {used_str}.
+    Generate one unique, fascinating, mysterious, and engaging topic in Thai for a cinematic science YouTube Short (Blurr Content style).
+    Focus on: Deep space mysteries, quantum paradoxes, theoretical physics, or cosmic anomalies.
+    
+    STRICT RULE: You MUST NOT repeat or generate anything similar to these previous topics: {used_str}.
+    We need something fresh and different from what we've done before.
+    
     Output ONLY the topic string in Thai, without quotes or extra text.
     """
     try:
@@ -72,7 +77,7 @@ def main():
         topic = response.text.strip()
         logger.info(f"Selected Topic: {topic}")
         used.append(topic)
-        save_json(HISTORY_FILE, used[-100:])
+        save_json(HISTORY_FILE, used[-500:])
     except Exception as e:
         logger.error(f"Failed to generate topic: {e}")
         return
