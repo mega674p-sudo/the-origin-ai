@@ -95,6 +95,8 @@ def main():
 
     # 3. Upload to YouTube
     yt_title = f"{topic} #Shorts #Science #BlurrContent"
+    if len(yt_title) > 100:
+        yt_title = yt_title[:97] + "..."
     yt_desc = f"สำรวจความลึกลับของจักรวาล: {topic} ในสไตล์ Cinematic Science ดำดิ่งสู่ปริศนาที่คุณคาดไม่ถึง"
     
     if not run_step("YouTube Upload", ["python3", "/home/ubuntu/the-origin-ai/services/uploader.py", video_path, yt_title, yt_desc]):
