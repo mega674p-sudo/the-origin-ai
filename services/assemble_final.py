@@ -100,7 +100,7 @@ def assemble_video():
     
     subprocess.run([
         "ffmpeg", "-y", "-i", video_with_subs, "-i", narration, "-i", bgm,
-        "-filter_complex", "[1:a]volume=2.0[a1];[2:a]volume=0.4[a2];[a1][a2]amix=inputs=2:duration=first[a]",
+        "-filter_complex", "[1:a]volume=6.0,compand=0.3|0.3:1|1:-90/-60|-60/-40|-40/-30|-20/-20:6:0:-90:0.2,alimiter=limit=0.9[a1];[2:a]volume=0.6[a2];[a1][a2]amix=inputs=2:duration=first[a]",
         "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", OUTPUT_FILE
     ], check=True)
     

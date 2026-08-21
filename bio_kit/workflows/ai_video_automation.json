@@ -1,0 +1,49 @@
+{
+  "name": "AI Video Automation Daily",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 24
+            }
+          ]
+        }
+      },
+      "name": "Schedule Trigger (Daily 18:00)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [
+        100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "export GEMINI_API_KEY=$GEMINI_API_KEY && python3 /home/ubuntu/the-origin-ai/services/master_automation.py"
+      },
+      "name": "Execute Master Pipeline",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        350,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger (Daily 18:00)": {
+      "main": [
+        [
+          {
+            "node": "Execute Master Pipeline",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

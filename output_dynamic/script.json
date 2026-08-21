@@ -1,0 +1,39 @@
+{
+  "narration": "คุณรู้ไหมว่า จักรวาลที่เราอาศัยอยู่อาจตั้งอยู่บน สภาวะสูญญากาศเทียม ที่ไม่เสถียร และมีภัยเงียบที่ร้ายแรงที่สุดซ่อนอยู่ นั่นคือ False Vacuum Decay เมื่อสนามฮิกกส์ยุบตัวลงสู่สภาวะพลังงานที่ต่ำกว่า จะเกิด ฟองคลื่นแห่งความตาย ขยายตัวออกไป มันจะลบเลือนมวล อะตอม และกฎทางฟิสิกส์ทั้งหมดด้วยความเร็วแสง โดยไม่มีสัญญาณเตือน และสิ่งที่น่ากลัวที่สุดคือ ฟองคลื่นนี้อาจกำลังพุ่งตรงมาหาเราในวินาทีนี้ โดยที่เราไม่มีวันรู้ตัวเลย",
+  "scenes": [
+    {
+      "image_prompt": "Cinematic vertical 9:16 shot of a mysterious glowing cosmic void, delicate web of galaxies floating in deep space, hyper-realistic, dark mysterious atmosphere, subtle quantum energy fluctuations, volumetric nebula lighting, 8k resolution, documentary film aesthetic"
+    },
+    {
+      "image_prompt": "Vertical 9:16 shot of a perfectly spherical expanding bubble of intense radiant blue-white energy tearing through cosmic dust and star clusters, quantum field collapse, epic sci-fi realism, cinematic lighting, ultra-detailed 8k"
+    },
+    {
+      "image_prompt": "Vertical 9:16 visual representation of stars and molecular matter dissolving into absolute nothingness at the edge of an expanding luminous wall, atmospheric cosmic destruction, dramatic physics visual effect, photorealistic space, 8k"
+    },
+    {
+      "image_prompt": "Vertical 9:16 eerie visual of Planet Earth in the vast dark cosmos, a silent blinding wave of true vacuum decay looming dangerously close in the background, sense of imminent cosmic dread, ultra realistic detail, photorealistic sci-fi render, 8k"
+    }
+  ],
+  "subtitles": [
+    {
+      "start": 0.0,
+      "end": 11.0,
+      "text": "คุณรู้ไหมว่า จักรวาลที่เราอาศัยอยู่อาจตั้งอยู่บน 'สภาวะสูญญากาศเทียม' ที่ไม่เสถียร"
+    },
+    {
+      "start": 11.0,
+      "end": 22.0,
+      "text": "นั่นคือ 'False Vacuum Decay' เมื่อสนามฮิกกส์ยุบตัว จะเกิด 'ฟองคลื่นแห่งความตาย' ขยายตัวออกไป"
+    },
+    {
+      "start": 22.0,
+      "end": 33.0,
+      "text": "มันจะลบเลือนมวล อะตอม และกฎทางฟิสิกส์ทั้งหมดด้วยความเร็วแสง โดยไร้สัญญาณเตือน"
+    },
+    {
+      "start": 33.0,
+      "end": 45.0,
+      "text": "และมันอาจกำลังพุ่งตรงมาหาเราในวินาทีนี้... โดยที่เราไม่มีวันรู้ตัวเลย"
+    }
+  ]
+}

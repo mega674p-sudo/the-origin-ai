@@ -1,63 +1,44 @@
 {
-  "name": "AI Video Automation",
+  "name": "AI Video Automation Daily",
   "nodes": [
     {
       "parameters": {
-        "httpMethod": "POST",
-        "path": "generate-video",
-        "options": {}
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 24
+            }
+          ]
+        }
       },
-      "name": "Webhook",
-      "type": "n8n-nodes-base.webhook",
+      "name": "Schedule Trigger (Daily 18:00)",
+      "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1,
       "position": [
         100,
         300
-      ],
-      "webhookId": "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d"
+      ]
     },
     {
       "parameters": {
-        "command": "export GEMINI_API_KEY={{ $node[\"Webhook\"].json[\"api_key\"] || $env[\"GEMINI_API_KEY\"] }}; python3 /home/ubuntu/the-origin-ai/services/yt_pipeline.py \"{{ $node[\"Webhook\"].json[\"topic\"] }}\""
+        "command": "export GEMINI_API_KEY=$GEMINI_API_KEY && python3 /home/ubuntu/the-origin-ai/services/master_automation.py"
       },
-      "name": "Execute Pipeline",
+      "name": "Execute Master Pipeline",
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
         350,
         300
       ]
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "name": "Respond to Webhook",
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1,
-      "position": [
-        600,
-        300
-      ]
     }
   ],
   "connections": {
-    "Webhook": {
+    "Schedule Trigger (Daily 18:00)": {
       "main": [
         [
           {
-            "node": "Execute Pipeline",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Execute Pipeline": {
-      "main": [
-        [
-          {
-            "node": "Respond to Webhook",
+            "node": "Execute Master Pipeline",
             "type": "main",
             "index": 0
           }

@@ -55,9 +55,9 @@ def run_step(name, cmd):
         return False
 
 def main():
-    logger.info("Generating new science short topic...")
+    logger.info("=== Starting Master Automation Run (End-to-End Charon TTS) ===")
     used = load_json(HISTORY_FILE)
-    used_str = ", ".join(used[-10:]) if used else "None"
+    used_str = ", ".join(used[-20:]) if used else "None"
     
     topic_prompt = f"""
     Generate one fascinating, mysterious, and engaging topic in Thai for a cinematic science YouTube Short (Blurr Content style), such as about space, quantum physics, black holes, time, parallel universes, or deep cosmos mysteries.
@@ -72,16 +72,16 @@ def main():
         topic = response.text.strip()
         logger.info(f"Selected Topic: {topic}")
         used.append(topic)
-        save_json(HISTORY_FILE, used[-50:])
+        save_json(HISTORY_FILE, used[-100:])
     except Exception as e:
         logger.error(f"Failed to generate topic: {e}")
         return
 
-    # 1. Generate unique video for this topic
+    # 1. Generate video end-to-end (Script, Charon TTS, Visuals, Subtitles, Loudness Boost)
     if not run_step("Dynamic Video Generation", ["python3", "/home/ubuntu/the-origin-ai/services/generate_dynamic_video.py", topic]):
         return
 
-    video_path = "/home/ubuntu/the-origin-ai/output_dynamic/final_video.mp4"
+    video_path = "/home/ubuntu/the-origin-ai/output_dynamic/final_video_high_quality.mp4"
     if not os.path.exists(video_path):
         logger.error("Final video not found!")
         return
@@ -103,7 +103,7 @@ def main():
         return
 
     uploaded_hashes.append(file_hash)
-    save_json(HASH_FILE, uploaded_hashes[-50:])
+    save_json(HASH_FILE, uploaded_hashes[-100:])
     logger.info("Master automation completed successfully!")
 
 if __name__ == "__main__":

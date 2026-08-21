@@ -1,0 +1,1196 @@
+2026-08-20 09:42:07,241 - INFO - Generating new science short topic...
+2026-08-20 09:42:07,241 - INFO - AFC is enabled with max remote calls: 10.
+2026-08-20 09:42:07,241 - WARNING - Direct use of automatic function calling (AFC) in Models.generate_content is not recommended. Instead, we recommend to use AFC in Chat.send_message. Similarly, direct use of AFC in Models.generate_content_stream is not recommended. Instead, we recommend to use AFC in Chat.send_message_stream.
+2026-08-20 09:42:22,522 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent "HTTP/1.1 200 OK"
+2026-08-20 09:42:22,526 - INFO - Selected Topic: ก่อนที่เวลาจะกำเนิด: ความลับสุดมืดมิดของสิ่งที่ดำรงอยู่ก่อนการเกิดบิ๊กแบง
+2026-08-20 09:42:22,526 - INFO - Starting step: Video Assembly
+2026-08-20 09:43:28,858 - INFO - Step Video Assembly completed successfully.
+2026-08-20 09:43:28,859 - INFO - Starting step: YouTube Upload
+2026-08-20 11:01:18,655 - INFO - Generating new science short topic...
+2026-08-20 11:01:18,656 - INFO - AFC is enabled with max remote calls: 10.
+2026-08-20 11:01:18,656 - WARNING - Direct use of automatic function calling (AFC) in Models.generate_content is not recommended. Instead, we recommend to use AFC in Chat.send_message. Similarly, direct use of AFC in Models.generate_content_stream is not recommended. Instead, we recommend to use AFC in Chat.send_message_stream.
+2026-08-20 11:01:26,296 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent "HTTP/1.1 200 OK"
+2026-08-20 11:01:26,298 - INFO - Selected Topic: ขอบฟ้าแห่งเหตุการณ์: ดินแดนลึกลับที่กฎแห่งฟิสิกส์และเวลาพังทลายลงสิ้นเชิง
+2026-08-20 11:01:26,298 - INFO - Starting step: Video Assembly
+2026-08-20 11:02:24,545 - INFO - Step Video Assembly output:
+ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers
+  built with gcc 13 (Ubuntu 13.2.0-23ubuntu3)
+  configuration: --prefix=/usr --extra-version=3ubuntu5 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --disable-omx --enable-gnutls --enable-libaom --enable-libass --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libdav1d --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libglslang --enable-libgme --enable-libgsm --enable-libharfbuzz --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzimg --enable-openal --enable-opencl --enable-opengl --disable-sndio --enable-libvpl --disable-libmfx --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-ladspa --enable-libbluray --enable-libjack --enable-libpulse --enable-librabbitmq --enable-librist --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libx264 --enable-libzmq --enable-libzvbi --enable-lv2 --enable-sdl2 --enable-libplacebo --enable-librav1e --enable-pocketsphinx --enable-librsvg --enable-libjxl --enable-shared
+  libavutil      58. 29.100 / 58. 29.100
+  libavcodec     60. 31.102 / 60. 31.102
+  libavformat    60. 16.100 / 60. 16.100
+  libavdevice    60.  3.100 / 60.  3.100
+  libavfilter     9. 12.100 /  9. 12.100
+  libswscale      7.  5.100 /  7.  5.100
+  libswresample   4. 12.100 /  4. 12.100
+  libpostproc    57.  3.100 / 57.  3.100
+Input #0, png_pipe, from '/home/ubuntu/the-origin-ai/output_dm/scene_1.png':
+  Duration: N/A, bitrate: N/A
+  Stream #0:0: Video: png, rgb24(pc, gbr/unknown/unknown), 1440x2560, 25 fps, 25 tbr, 25 tbn
+Stream mapping:
+  Stream #0:0 -> #0:0 (png (native) -> h264 (libx264))
+Press [q] to stop, [?] for help
+[libx264 @ 0x564835d7c480] using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX FMA3 BMI2 AVX2 AVX512
+[libx264 @ 0x564835d7c480] profile High, level 4.0, 4:2:0, 8-bit
+[libx264 @ 0x564835d7c480] 264 - core 164 r3108 31e19f9 - H.264/MPEG-4 AVC codec - Copyleft 2003-2023 - http://www.videolan.org/x264.html - options: cabac=1 ref=3 deblock=1:0:0 analyse=0x3:0x113 me=hex subme=7 psy=1 psy_rd=1.00:0.00 mixed_ref=1 me_range=16 chroma_me=1 trellis=1 8x8dct=1 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=-2 threads=9 lookahead_threads=1 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=3 b_pyramid=2 b_adapt=1 b_bias=0 direct=1 weightb=1 open_gop=0 weightp=2 keyint=250 keyint_min=25 scenecut=40 intra_refresh=0 rc_lookahead=40 rc=crf mbtree=1 crf=23.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 ip_ratio=1.40 aq=1:1.00
+Output #0, mp4, to '/home/ubuntu/the-origin-ai/output_dm/v2_scene_0.mp4':
+  Metadata:
+    encoder         : Lavf60.16.100
+  Stream #0:0: Video: h264 (avc1 / 0x31637661), yuv420p(progressive), 1080x1920, q=2-31, 25 fps, 12800 tbn
+    Metadata:
+      encoder         : Lavc60.31.102 libx264
+    Side data:
+      cpb: bitrate max/min/avg: 0/0/0 buffer size: 0 vbv_delay: N/A
+frame=    0 fps=0.0 q=0.0 size=       0kB time=N/A bitrate=N/A speed=N/A    
+frame=    0 fps=0.0 q=0.0 size=       0kB time=N/A bitrate=N/A speed=N/A    
+frame=    0 fps=0.0 q=0.0 size=       0kB time=N/A bitrate=N/A speed=N/A    
+frame=   19 fps= 11 q=28.0 size=     256kB time=00:00:00.64 bitrate=3277.4kbits/s speed=0.372x    
+frame=   41 fps= 18 q=28.0 size=     512kB time=00:00:01.52 bitrate=2759.7kbits/s speed=0.683x    
+frame=   63 fps= 23 q=28.0 size=     768kB time=00:00:02.40 bitrate=2621.6kbits/s speed=0.879x    
+[out#0/mp4 @ 0x564835d7b300] video:1560kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.148759%
+frame=  125 fps= 32 q=-1.0 Lsize=    1563kB time=00:00:04.88 bitrate=2623.4kbits/s speed=1.24x    
+[libx264 @ 0x564835d7c480] frame I:1     Avg QP:19.87  size:264206
+[libx264 @ 0x564835d7c480] frame P:31    Avg QP:20.55  size: 32030
+[libx264 @ 0x564835d7c480] frame B:93    Avg QP:23.73  size:  3657
+[libx264 @ 0x564835d7c480] consecutive B-frames:  0.8%  0.0%  0.0% 99.2%
+[libx264 @ 0x564835d7c480] mb I  I16..4: 10.6% 29.4% 60.0%
+[libx264 @ 0x564835d7c480] mb P  I16..4:  0.0%  0.1%  0.0%  P16..4: 43.8% 13.5% 11.3%  0.0%  0.0%    skip:31.2%
+[libx264 @ 0x564835d7c480] mb B  I16..4:  0.0%  0.0%  0.0%  B16..8: 44.6%  0.6%  0.1%  direct: 0.2%  skip:54.6%  L0:50.9% L1:48.1% BI: 1.0%
+[libx264 @ 0x564835d7c480] 8x8 transform intra:30.6% inter:57.1%
+[libx264 @ 0x564835d7c480] coded y,uvDC,uvAC intra: 80.4% 67.9% 36.0% inter: 6.0% 4.5% 0.1%
+[libx264 @ 0x564835d7c480] i16 v,h,dc,p: 20% 18% 30% 32%
+[libx264 @ 0x564835d7c480] i8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 23% 13% 22%  7%  8%  8%  6%  6%  6%
+[libx264 @ 0x564835d7c480] i4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 30% 14% 16%  8%  9%  7%  6%  5%  5%
+[libx264 @ 0x564835d7c480] i8c dc,h,v,p: 60% 17% 18%  5%
+[libx264 @ 0x564835d7c480] Weighted P-Frames: Y:0.0% UV:0.0%
+[libx264 @ 0x564835d7c480] ref P L0: 54.7%  7.1% 15.0% 23.2%
+[libx264 @ 0x564835d7c480] ref B L0: 72.9% 16.8% 10.2%
+[libx264 @ 0x564835d7c480] ref B L1: 83.7% 16.3%
+[libx264 @ 0x564835d7c480] kb/s:2555.52
+ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers
+  built with gcc 13 (Ubuntu 13.2.0-23ubuntu3)
+  configuration: --prefix=/usr --extra-version=3ubuntu5 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --disable-omx --enable-gnutls --enable-libaom --enable-libass --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libdav1d --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libglslang --enable-libgme --enable-libgsm --enable-libharfbuzz --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzimg --enable-openal --enable-opencl --enable-opengl --disable-sndio --enable-libvpl --disable-libmfx --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-ladspa --enable-libbluray --enable-libjack --enable-libpulse --enable-librabbitmq --enable-librist --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libx264 --enable-libzmq --enable-libzvbi --enable-lv2 --enable-sdl2 --enable-libplacebo --enable-librav1e --enable-pocketsphinx --enable-librsvg --enable-libjxl --enable-shared
+  libavutil      58. 29.100 / 58. 29.100
+  libavcodec     60. 31.102 / 60. 31.102
+  libavformat    60. 16.100 / 60. 16.100
+  libavdevice    60.  3.100 / 60.  3.100
+  libavfilter     9. 12.100 /  9. 12.100
+  libswscale      7.  5.100 /  7.  5.100
+  libswresample   4. 12.100 /  4. 12.100
+  libpostproc    57.  3.100 / 57.  3.100
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from '/home/ubuntu/the-origin-ai/assets/nasa_roman_zoom.mp4':
+  Metadata:
+    major_brand     : mp42
+    minor_version   : 1
+    compatible_brands: isommp41mp42
+    creation_time   : 2023-03-08T07:02:02.000000Z
+  Duration: 00:00:22.02, start: 0.000000, bitrate: 9638 kb/s
+  Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(tv, bt709, progressive), 1920x1080 [SAR 1:1 DAR 16:9], 9635 kb/s, 29.97 fps, 29.97 tbr, 30k tbn (default)
+    Metadata:
+      creation_time   : 2023-03-08T07:02:02.000000Z
+      handler_name    : Core Media Video
+      vendor_id       : [0][0][0][0]
+Stream mapping:
+  Stream #0:0 -> #0:0 (h264 (native) -> h264 (libx264))
+Press [q] to stop, [?] for help
+[libx264 @ 0x5579de9db0c0] using SAR=1/1
+[libx264 @ 0x5579de9db0c0] using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX FMA3 BMI2 AVX2 AVX512
+[libx264 @ 0x5579de9db0c0] profile High, level 4.0, 4:2:0, 8-bit
+[libx264 @ 0x5579de9db0c0] 264 - core 164 r3108 31e19f9 - H.264/MPEG-4 AVC codec - Copyleft 2003-2023 - http://www.videolan.org/x264.html - options: cabac=1 ref=3 deblock=1:0:0 analyse=0x3:0x113 me=hex subme=7 psy=1 psy_rd=1.00:0.00 mixed_ref=1 me_range=16 chroma_me=1 trellis=1 8x8dct=1 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=-2 threads=9 lookahead_threads=1 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=3 b_pyramid=2 b_adapt=1 b_bias=0 direct=1 weightb=1 open_gop=0 weightp=2 keyint=250 keyint_min=25 scenecut=40 intra_refresh=0 rc_lookahead=40 rc=crf mbtree=1 crf=23.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 ip_ratio=1.40 aq=1:1.00
+Output #0, mp4, to '/home/ubuntu/the-origin-ai/output_dm/v2_scene_1.mp4':
+  Metadata:
+    major_brand     : mp42
+    minor_version   : 1
+    compatible_brands: isommp41mp42
+    encoder         : Lavf60.16.100
+  Stream #0:0(und): Video: h264 (avc1 / 0x31637661), yuv420p(tv, bt709, progressive), 1080x1920 [SAR 10240:10239 DAR 1920:3413], q=2-31, 29.97 fps, 30k tbn (default)
+    Metadata:
+      creation_time   : 2023-03-08T07:02:02.000000Z
+      handler_name    : Core Media Video
+      vendor_id       : [0][0][0][0]
+      encoder         : Lavc60.31.102 libx264
+    Side data:
+      cpb: bitrate max/min/avg: 0/0/0 buffer size: 0 vbv_delay: N/A
+frame=    0 fps=0.0 q=0.0 size=       0kB time=N/A bitrate=N/A speed=N/A    
+frame=    0 fps=0.0 q=0.0 size=       0kB time=N/A bitrate=N/A speed=N/A    
+frame=   17 fps= 11 q=29.0 size=       0kB time=00:00:00.50 bitrate=   0.8kbits/s speed=0.335x    
+frame=   39 fps= 19 q=29.0 size=     256kB time=00:00:01.23 bitrate=1699.0kbits/s speed=0.615x    
+frame=   61 fps= 24 q=29.0 size=     512kB time=00:00:01.93 bitrate=2167.5kbits/s speed=0.763x    
+frame=   83 fps= 27 q=29.0 size=     768kB time=00:00:02.70 bitrate=2328.0kbits/s speed=0.886x    
+frame=  106 fps= 30 q=29.0 size=    1024kB time=00:00:03.47 bitrate=2417.5kbits/s speed=0.973x    
+frame=  126 fps= 31 q=29.0 size=    1024kB time=00:00:04.13 bitrate=2027.6kbits/s speed=   1x    
+frame=  148 fps= 32 q=29.0 size=    1536kB time=00:00:04.87 bitrate=2583.0kbits/s speed=1.04x    
+frame=  168 fps= 32 q=29.0 size=    1792kB time=00:00:05.53 bitrate=2650.4kbits/s speed=1.07x    
+frame=  189 fps= 33 q=29.0 size=    2048kB time=00:00:06.23 bitrate=2688.9kbits/s speed= 1.1x    
+frame=  209 fps= 34 q=29.0 size=    2304kB time=00:00:06.87 bitrate=2746.0kbits/s speed=1.11x    
+frame=  226 fps= 34 q=29.0 size=    2816kB time=00:00:07.47 bitrate=3086.5kbits/s speed=1.12x    
+frame=  246 fps= 34 q=29.0 size=    3072kB time=00:00:08.14 bitrate=3091.1kbits/s speed=1.13x    
+[out#0/mp4 @ 0x5579de9d1c40] video:4407kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.101121%
+frame=  300 fps= 36 q=-1.0 Lsize=    4411kB time=00:00:09.90 bitrate=3646.4kbits/s speed=1.19x    
+[libx264 @ 0x5579de9db0c0] frame I:2     Avg QP:20.53  size:110242
+[libx264 @ 0x5579de9db0c0] frame P:116   Avg QP:22.25  size: 29393
+[libx264 @ 0x5579de9db0c0] frame B:182   Avg QP:24.47  size:  4844
+[libx264 @ 0x5579de9db0c0] consecutive B-frames:  1.3% 53.3%  0.0% 45.3%
+[libx264 @ 0x5579de9db0c0] mb I  I16..4:  6.5% 79.7% 13.8%
+[libx264 @ 0x5579de9db0c0] mb P  I16..4:  0.7%  5.1%  0.2%  P16..4: 45.2% 14.2%  8.0%  0.0%  0.0%    skip:26.7%
+[libx264 @ 0x5579de9db0c0] mb B  I16..4:  0.0%  0.1%  0.0%  B16..8: 33.8%  0.7%  0.1%  direct: 0.3%  skip:64.9%  L0:29.5% L1:68.6% BI: 1.9%
+[libx264 @ 0x5579de9db0c0] 8x8 transform intra:83.6% inter:83.4%
+[libx264 @ 0x5579de9db0c0] coded y,uvDC,uvAC intra: 50.0% 40.4% 16.0% inter: 11.9% 11.1% 0.7%
+[libx264 @ 0x5579de9db0c0] i16 v,h,dc,p: 31% 22% 35% 11%
+[libx264 @ 0x5579de9db0c0] i8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 13% 12% 50%  4%  5%  4%  4%  4%  4%
+[libx264 @ 0x5579de9db0c0] i4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 22% 19% 23%  6%  9%  6%  6%  5%  4%
+[libx264 @ 0x5579de9db0c0] i8c dc,h,v,p: 69% 15% 14%  1%
+[libx264 @ 0x5579de9db0c0] Weighted P-Frames: Y:0.9% UV:0.9%
+[libx264 @ 0x5579de9db0c0] ref P L0: 73.1% 12.5% 10.5%  3.9%  0.0%
+[libx264 @ 0x5579de9db0c0] ref B L0: 91.3%  7.0%  1.7%
+[libx264 @ 0x5579de9db0c0] ref B L1: 98.8%  1.2%
+[libx264 @ 0x5579de9db0c0] kb/s:3605.78
+ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers
+  built with gcc 13 (Ubuntu 13.2.0-23ubuntu3)
+  configuration: --prefix=/usr --extra-version=3ubuntu5 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --disable-omx --enable-gnutls --enable-libaom --enable-libass --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libdav1d --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libglslang --enable-libgme --enable-libgsm --enable-libharfbuzz --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzimg --enable-openal --enable-opencl --enable-opengl --disable-sndio --enable-libvpl --disable-libmfx --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-ladspa --enable-libbluray --enable-libjack --enable-libpulse --enable-librabbitmq --enable-librist --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libx264 --enable-libzmq --enable-libzvbi --enable-lv2 --enable-sdl2 --enable-libplacebo --enable-librav1e --enable-pocketsphinx --enable-librsvg --enable-libjxl --enable-shared
+  libavutil      58. 29.100 / 58. 29.100
+  libavcodec     60. 31.102 / 60. 31.102
+  libavformat    60. 16.100 / 60. 16.100
+  libavdevice    60.  3.100 / 60.  3.100
+  libavfilter     9. 12.100 /  9. 12.100
+  libswscale      7.  5.100 /  7.  5.100
+  libswresample   4. 12.100 /  4. 12.100
+  libpostproc    57.  3.100 / 57.  3.100
+Input #0, png_pipe, from '/home/ubuntu/the-origin-ai/output_dm/scene_2.png':
+  Duration: N/A, bitrate: N/A
+  Stream #0:0: Video: png, rgb24(pc, gbr/unknown/unknown), 1440x2560, 25 fps, 25 tbr, 25 tbn
+Stream mapping:
+  Stream #0:0 -> #0:0 (png (native) -> h264 (libx264))
+Press [q] to stop, [?] for help
+[libx264 @ 0x564212da4480] using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX FMA3 BMI2 AVX2 AVX512
+[libx264 @ 0x564212da4480] profile High, level 4.0, 4:2:0, 8-bit
+[libx264 @ 0x564212da4480] 264 - core 164 r3108 31e19f9 - H.264/MPEG-4 AVC codec - Copyleft 2003-2023 - http://www.videolan.org/x264.html - options: cabac=1 ref=3 deblock=1:0:0 analyse=0x3:0x113 me=hex subme=7 psy=1 psy_rd=1.00:0.00 mixed_ref=1 me_range=16 chroma_me=1 trellis=1 8x8dct=1 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=-2 threads=9 lookahead_threads=1 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=3 b_pyramid=2 b_adapt=1 b_bias=0 direct=1 weightb=1 open_gop=0 weightp=2 keyint=250 keyint_min=25 scenecut=40 intra_refresh=0 rc_lookahead=40 rc=crf mbtree=1 crf=23.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 ip_ratio=1.40 aq=1:1.00
+Output #0, mp4, to '/home/ubuntu/the-origin-ai/output_dm/v2_scene_2.mp4':
+  Metadata:
+    encoder         : Lavf60.16.100
+  Stream #0:0: Video: h264 (avc1 / 0x31637661), yuv420p(progressive), 1080x1920, q=2-31, 25 fps, 12800 tbn
+    Metadata:
+      encoder         : Lavc60.31.102 libx264
+    Side data:
+      cpb: bitrate max/min/avg: 0/0/0 buffer size: 0 vbv_delay: N/A
+frame=    0 fps=0.0 q=0.0 size=       0kB time=N/A bitrate=N/A speed=N/A    
+frame=    0 fps=0.0 q=0.0 size=       0kB time=N/A bitrate=N/A speed=N/A    
+frame=    0 fps=0.0 q=28.0 size=       0kB time=-00:00:00.08 bitrate=  -0.0kbits/s speed=N/A    
+frame=   24 fps= 15 q=28.0 size=     512kB time=00:00:00.84 bitrate=4993.7kbits/s speed=0.532x    
+frame=   48 fps= 23 q=28.0 size=     768kB time=00:00:01.80 bitrate=3495.5kbits/s speed=0.863x    
+frame=   72 fps= 27 q=28.0 size=    1024kB time=00:00:02.76 bitrate=3039.5kbits/s speed=1.05x    
+[out#0/mp4 @ 0x564212da3300] video:1537kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.151037%
+frame=  125 fps= 35 q=-1.0 Lsize=    1539kB time=00:00:04.88 bitrate=2583.9kbits/s speed=1.38x    
+[libx264 @ 0x564212da4480] frame I:1     Avg QP:20.34  size:281022
+[libx264 @ 0x564212da4480] frame P:31    Avg QP:20.97  size: 31271
+[libx264 @ 0x564212da4480] frame B:93    Avg QP:23.93  size:  3470
+[libx264 @ 0x564212da4480] consecutive B-frames:  0.8%  0.0%  0.0% 99.2%
+[libx264 @ 0x564212da4480] mb I  I16..4:  7.4% 40.0% 52.6%
+[libx264 @ 0x564212da4480] mb P  I16..4:  0.0%  0.1%  0.0%  P16..4: 43.8% 12.5% 11.1%  0.0%  0.0%    skip:32.5%
+[libx264 @ 0x564212da4480] mb B  I16..4:  0.0%  0.0%  0.0%  B16..8: 44.1%  0.5%  0.1%  direct: 0.1%  skip:55.2%  L0:51.2% L1:47.9% BI: 0.9%
+[libx264 @ 0x564212da4480] 8x8 transform intra:40.6% inter:61.7%
+[libx264 @ 0x564212da4480] coded y,uvDC,uvAC intra: 81.8% 69.8% 37.0% inter: 5.7% 5.1% 0.2%
+[libx264 @ 0x564212da4480] i16 v,h,dc,p: 20% 15% 23% 42%
+[libx264 @ 0x564212da4480] i8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 21% 12% 17%  4% 13% 13% 10%  5%  5%
+[libx264 @ 0x564212da4480] i4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 23% 13% 15%  6% 14% 12%  9%  4%  5%
+[libx264 @ 0x564212da4480] i8c dc,h,v,p: 59% 17% 18%  6%
+[libx264 @ 0x564212da4480] Weighted P-Frames: Y:0.0% UV:0.0%
+[libx264 @ 0x564212da4480] ref P L0: 52.9%  8.2% 15.8% 23.1%
+[libx264 @ 0x564212da4480] ref B L0: 73.9% 15.7% 10.4%
+[libx264 @ 0x564212da4480] ref B L1: 85.5% 14.5%
+[libx264 @ 0x564212da4480] kb/s:2516.96
+ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers
+  built with gcc 13 (Ubuntu 13.2.0-23ubuntu3)
+  configuration: --prefix=/usr --extra-version=3ubuntu5 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --disable-omx --enable-gnutls --enable-libaom --enable-libass --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libdav1d --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libglslang --enable-libgme --enable-libgsm --enable-libharfbuzz --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzimg --enable-openal --enable-opencl --enable-opengl --disable-sndio --enable-libvpl --disable-libmfx --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-ladspa --enable-libbluray --enable-libjack --enable-libpulse --enable-librabbitmq --enable-librist --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libx264 --enable-libzmq --enable-libzvbi --enable-lv2 --enable-sdl2 --enable-libplacebo --enable-librav1e --enable-pocketsphinx --enable-librsvg --enable-libjxl --enable-shared
+  libavutil      58. 29.100 / 58. 29.100
+  libavcodec     60. 31.102 / 60. 31.102
+  libavformat    60. 16.100 / 60. 16.100
+  libavdevice    60.  3.100 / 60.  3.100
+  libavfilter     9. 12.100 /  9. 12.100
+  libswscale      7.  5.100 /  7.  5.100
+  libswresample   4. 12.100 /  4. 12.100
+  libpostproc    57.  3.100 / 57.  3.100
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from '/home/ubuntu/the-origin-ai/assets/dark_matter_lensing.mov':
+  Metadata:
+    major_brand     : qt  
+    minor_version   : 0
+    compatible_brands: qt  
+    creation_time   : 2016-07-15T18:24:36.000000Z
+  Duration: 00:00:15.00, start: 0.000000, bitrate: 15165 kb/s
+  Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(tv, bt709, progressive), 1920x1080 [SAR 1:1 DAR 16:9], 15158 kb/s, 30 fps, 30 tbr, 30 tbn (default)
+    Metadata:
+      creation_time   : 2016-07-15T18:24:36.000000Z
+      handler_name    : Core Media Video
+      vendor_id       : [0][0][0][0]
+      encoder         : H.264
+      timecode        : 00:00:00:00
+  Stream #0:1[0x2](und): Data: none (tmcd / 0x64636D74), 0 kb/s (default)
+    Metadata:
+      creation_time   : 2016-07-15T18:24:36.000000Z
+      handler_name    : Core Media Time Code
+      timecode        : 00:00:00:00
+Stream mapping:
+  Stream #0:0 -> #0:0 (h264 (native) -> h264 (libx264))
+Press [q] to stop, [?] for help
+[libx264 @ 0x55add30cd5c0] using SAR=1/1
+[libx264 @ 0x55add30cd5c0] using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX FMA3 BMI2 AVX2 AVX512
+[libx264 @ 0x55add30cd5c0] profile High, level 4.0, 4:2:0, 8-bit
+[libx264 @ 0x55add30cd5c0] 264 - core 164 r3108 31e19f9 - H.264/MPEG-4 AVC codec - Copyleft 2003-2023 - http://www.videolan.org/x264.html - options: cabac=1 ref=3 deblock=1:0:0 analyse=0x3:0x113 me=hex subme=7 psy=1 psy_rd=1.00:0.00 mixed_ref=1 me_range=16 chroma_me=1 trellis=1 8x8dct=1 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=-2 threads=9 lookahead_threads=1 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=3 b_pyramid=2 b_adapt=1 b_bias=0 direct=1 weightb=1 open_gop=0 weightp=2 keyint=250 keyint_min=25 scenecut=40 intra_refresh=0 rc_lookahead=40 rc=crf mbtree=1 crf=23.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 ip_ratio=1.40 aq=1:1.00
+Output #0, mp4, to '/home/ubuntu/the-origin-ai/output_dm/v2_scene_3.mp4':
+  Metadata:
+    major_brand     : qt  
+    minor_version   : 0
+    compatible_brands: qt  
+    encoder         : Lavf60.16.100
+  Stream #0:0(und): Video: h264 (avc1 / 0x31637661), yuv420p(tv, bt709, progressive), 1080x1920 [SAR 10240:10239 DAR 1920:3413], q=2-31, 30 fps, 15360 tbn (default)
+    Metadata:
+      creation_time   : 2016-07-15T18:24:36.000000Z
+      handler_name    : Core Media Video
+      vendor_id       : [0][0][0][0]
+      timecode        : 00:00:00:00
+      encoder         : Lavc60.31.102 libx264
+    Side data:
+      cpb: bitrate max/min/avg: 0/0/0 buffer size: 0 vbv_delay: N/A
+frame=    0 fps=0.0 q=0.0 size=       0kB time=N/A bitrate=N/A speed=N/A    
+frame=    0 fps=0.0 q=0.0 size=       0kB time=N/A bitrate=N/A speed=N/A    
+frame=   27 fps= 20 q=29.0 size=       0kB time=00:00:00.83 bitrate=   0.5kbits/s speed=0.622x    
+frame=   64 fps= 35 q=29.0 size=       0kB time=00:00:02.03 bitrate=   0.2kbits/s speed= 1.1x    
+frame=  102 fps= 43 q=29.0 size=     256kB time=00:00:03.33 bitrate= 629.3kbits/s speed=1.41x    
+frame=  134 fps= 47 q=29.0 size=     256kB time=00:00:04.40 bitrate= 476.7kbits/s speed=1.53x    
+frame=  163 fps= 48 q=29.0 size=     512kB time=00:00:05.36 bitrate= 781.6kbits/s speed=1.59x    
+frame=  194 fps= 50 q=29.0 size=     768kB time=00:00:06.40 bitrate= 983.1kbits/s speed=1.63x    
+frame=  221 fps= 50 q=29.0 size=     768kB time=00:00:07.30 bitrate= 861.9kbits/s speed=1.65x    
+frame=  246 fps= 50 q=29.0 size=    1024kB time=00:00:08.13 bitrate=1031.4kbits/s speed=1.64x    
+[out#0/mp4 @ 0x55add31e3500] video:1626kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.248677%
+frame=  300 fps= 54 q=-1.0 Lsize=    1630kB time=00:00:09.90 bitrate=1349.0kbits/s speed=1.77x    
+[libx264 @ 0x55add30cd5c0] frame I:2     Avg QP:18.72  size: 32316
+[libx264 @ 0x55add30cd5c0] frame P:186   Avg QP:22.04  size:  6424
+[libx264 @ 0x55add30cd5c0] frame B:112   Avg QP:24.39  size:  3617
+[libx264 @ 0x55add30cd5c0] consecutive B-frames: 39.3% 30.0%  8.0% 22.7%
+[libx264 @ 0x55add30cd5c0] mb I  I16..4:  8.9% 83.4%  7.7%
+[libx264 @ 0x55add30cd5c0] mb P  I16..4:  1.4%  4.1%  0.2%  P16..4: 20.2%  2.3%  1.2%  0.0%  0.0%    skip:70.7%
+[libx264 @ 0x55add30cd5c0] mb B  I16..4:  0.2%  0.4%  0.1%  B16..8: 22.5%  1.1%  0.1%  direct: 0.3%  skip:75.2%  L0:43.4% L1:55.3% BI: 1.2%
+[libx264 @ 0x55add30cd5c0] 8x8 transform intra:73.2% inter:91.2%
+[libx264 @ 0x55add30cd5c0] coded y,uvDC,uvAC intra: 14.3% 19.6% 4.8% inter: 2.1% 3.0% 0.0%
+[libx264 @ 0x55add30cd5c0] i16 v,h,dc,p: 48% 36%  7%  9%
+[libx264 @ 0x55add30cd5c0] i8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 19% 10% 58%  2%  2%  2%  3%  1%  2%
+[libx264 @ 0x55add30cd5c0] i4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 26% 16% 33%  3%  7%  4%  5%  3%  2%
+[libx264 @ 0x55add30cd5c0] i8c dc,h,v,p: 77% 13%  8%  1%
+[libx264 @ 0x55add30cd5c0] Weighted P-Frames: Y:0.0% UV:0.0%
+[libx264 @ 0x55add30cd5c0] ref P L0: 75.4%  4.9% 13.8%  5.9%
+[libx264 @ 0x55add30cd5c0] ref B L0: 88.4% 10.4%  1.2%
+[libx264 @ 0x55add30cd5c0] ref B L1: 98.9%  1.1%
+[libx264 @ 0x55add30cd5c0] kb/s:1331.62
+ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers
+  built with gcc 13 (Ubuntu 13.2.0-23ubuntu3)
+  configuration: --prefix=/usr --extra-version=3ubuntu5 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --disable-omx --enable-gnutls --enable-libaom --enable-libass --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libdav1d --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libglslang --enable-libgme --enable-libgsm --enable-libharfbuzz --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzimg --enable-openal --enable-opencl --enable-opengl --disable-sndio --enable-libvpl --disable-libmfx --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-ladspa --enable-libbluray --enable-libjack --enable-libpulse --enable-librabbitmq --enable-librist --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libx264 --enable-libzmq --enable-libzvbi --enable-lv2 --enable-sdl2 --enable-libplacebo --enable-librav1e --enable-pocketsphinx --enable-librsvg --enable-libjxl --enable-shared
+  libavutil      58. 29.100 / 58. 29.100
+  libavcodec     60. 31.102 / 60. 31.102
+  libavformat    60. 16.100 / 60. 16.100
+  libavdevice    60.  3.100 / 60.  3.100
+  libavfilter     9. 12.100 /  9. 12.100
+  libswscale      7.  5.100 /  7.  5.100
+  libswresample   4. 12.100 /  4. 12.100
+  libpostproc    57.  3.100 / 57.  3.100
+Input #0, png_pipe, from '/home/ubuntu/the-origin-ai/output_dm/scene_3.png':
+  Duration: N/A, bitrate: N/A
+  Stream #0:0: Video: png, rgb24(pc, gbr/unknown/unknown), 1440x2560, 25 fps, 25 tbr, 25 tbn
+Stream mapping:
+  Stream #0:0 -> #0:0 (png (native) -> h264 (libx264))
+Press [q] to stop, [?] for help
+[libx264 @ 0x5603c38e9480] using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX FMA3 BMI2 AVX2 AVX512
+[libx264 @ 0x5603c38e9480] profile High, level 4.0, 4:2:0, 8-bit
+[libx264 @ 0x5603c38e9480] 264 - core 164 r3108 31e19f9 - H.264/MPEG-4 AVC codec - Copyleft 2003-2023 - http://www.videolan.org/x264.html - options: cabac=1 ref=3 deblock=1:0:0 analyse=0x3:0x113 me=hex subme=7 psy=1 psy_rd=1.00:0.00 mixed_ref=1 me_range=16 chroma_me=1 trellis=1 8x8dct=1 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=-2 threads=9 lookahead_threads=1 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=3 b_pyramid=2 b_adapt=1 b_bias=0 direct=1 weightb=1 open_gop=0 weightp=2 keyint=250 keyint_min=25 scenecut=40 intra_refresh=0 rc_lookahead=40 rc=crf mbtree=1 crf=23.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 ip_ratio=1.40 aq=1:1.00
+Output #0, mp4, to '/home/ubuntu/the-origin-ai/output_dm/v2_scene_4.mp4':
+  Metadata:
+    encoder         : Lavf60.16.100
+  Stream #0:0: Video: h264 (avc1 / 0x31637661), yuv420p(progressive), 1080x1920, q=2-31, 25 fps, 12800 tbn
+    Metadata:
+      encoder         : Lavc60.31.102 libx264
+    Side data:
+      cpb: bitrate max/min/avg: 0/0/0 buffer size: 0 vbv_delay: N/A
+frame=    0 fps=0.0 q=0.0 size=       0kB time=N/A bitrate=N/A speed=N/A    
+frame=    0 fps=0.0 q=0.0 size=       0kB time=N/A bitrate=N/A speed=N/A    
+frame=    0 fps=0.0 q=0.0 size=       0kB time=N/A bitrate=N/A speed=N/A    
+frame=   18 fps= 11 q=28.0 size=     512kB time=00:00:00.64 bitrate=6554.2kbits/s speed=0.401x    
+frame=   43 fps= 20 q=28.0 size=    1024kB time=00:00:01.60 bitrate=5243.1kbits/s speed=0.761x    
+frame=   66 fps= 25 q=28.0 size=    1536kB time=00:00:02.52 bitrate=4993.4kbits/s speed=0.966x    
+[out#0/mp4 @ 0x5603c38e8300] video:2511kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.093071%
+frame=  125 fps= 33 q=-1.0 Lsize=    2513kB time=00:00:04.88 bitrate=4218.9kbits/s speed=1.29x    
+[libx264 @ 0x5603c38e9480] frame I:1     Avg QP:21.27  size:376585
+[libx264 @ 0x5603c38e9480] frame P:31    Avg QP:22.12  size: 58048
+[libx264 @ 0x5603c38e9480] frame B:93    Avg QP:26.82  size:  4241
+[libx264 @ 0x5603c38e9480] consecutive B-frames:  0.8%  0.0%  0.0% 99.2%
+[libx264 @ 0x5603c38e9480] mb I  I16..4:  4.4% 39.1% 56.5%
+[libx264 @ 0x5603c38e9480] mb P  I16..4:  0.0%  0.1%  0.0%  P16..4: 48.3% 15.4% 13.7%  0.0%  0.0%    skip:22.5%
+[libx264 @ 0x5603c38e9480] mb B  I16..4:  0.0%  0.0%  0.0%  B16..8: 40.3%  0.9%  0.2%  direct: 0.4%  skip:58.2%  L0:52.9% L1:44.2% BI: 2.9%
+[libx264 @ 0x5603c38e9480] 8x8 transform intra:39.7% inter:63.0%
+[libx264 @ 0x5603c38e9480] coded y,uvDC,uvAC intra: 87.1% 91.4% 75.3% inter: 9.0% 11.1% 3.6%
+[libx264 @ 0x5603c38e9480] i16 v,h,dc,p: 31% 35% 12% 22%
+[libx264 @ 0x5603c38e9480] i8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 21% 24% 16%  5%  6%  6%  7%  5% 10%
+[libx264 @ 0x5603c38e9480] i4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 27% 21%  9%  6%  7%  6% 10%  5%  8%
+[libx264 @ 0x5603c38e9480] i8c dc,h,v,p: 41% 24% 25% 11%
+[libx264 @ 0x5603c38e9480] Weighted P-Frames: Y:0.0% UV:0.0%
+[libx264 @ 0x5603c38e9480] ref P L0: 47.3%  8.6% 14.7% 29.4%
+[libx264 @ 0x5603c38e9480] ref B L0: 68.2% 19.6% 12.2%
+[libx264 @ 0x5603c38e9480] ref B L1: 81.7% 18.3%
+[libx264 @ 0x5603c38e9480] kb/s:4112.73
+ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers
+  built with gcc 13 (Ubuntu 13.2.0-23ubuntu3)
+  configuration: --prefix=/usr --extra-version=3ubuntu5 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --disable-omx --enable-gnutls --enable-libaom --enable-libass --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libdav1d --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libglslang --enable-libgme --enable-libgsm --enable-libharfbuzz --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzimg --enable-openal --enable-opencl --enable-opengl --disable-sndio --enable-libvpl --disable-libmfx --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-ladspa --enable-libbluray --enable-libjack --enable-libpulse --enable-librabbitmq --enable-librist --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libx264 --enable-libzmq --enable-libzvbi --enable-lv2 --enable-sdl2 --enable-libplacebo --enable-librav1e --enable-pocketsphinx --enable-librsvg --enable-libjxl --enable-shared
+  libavutil      58. 29.100 / 58. 29.100
+  libavcodec     60. 31.102 / 60. 31.102
+  libavformat    60. 16.100 / 60. 16.100
+  libavdevice    60.  3.100 / 60.  3.100
+  libavfilter     9. 12.100 /  9. 12.100
+  libswscale      7.  5.100 /  7.  5.100
+  libswresample   4. 12.100 /  4. 12.100
+  libpostproc    57.  3.100 / 57.  3.100
+Input #0, png_pipe, from '/home/ubuntu/the-origin-ai/output_dm/scene_4.png':
+  Duration: N/A, bitrate: N/A
+  Stream #0:0: Video: png, rgb24(pc, gbr/unknown/unknown), 1440x2560, 25 fps, 25 tbr, 25 tbn
+Stream mapping:
+  Stream #0:0 -> #0:0 (png (native) -> h264 (libx264))
+Press [q] to stop, [?] for help
+[libx264 @ 0x55805dcdc480] using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX FMA3 BMI2 AVX2 AVX512
+[libx264 @ 0x55805dcdc480] profile High, level 4.0, 4:2:0, 8-bit
+[libx264 @ 0x55805dcdc480] 264 - core 164 r3108 31e19f9 - H.264/MPEG-4 AVC codec - Copyleft 2003-2023 - http://www.videolan.org/x264.html - options: cabac=1 ref=3 deblock=1:0:0 analyse=0x3:0x113 me=hex subme=7 psy=1 psy_rd=1.00:0.00 mixed_ref=1 me_range=16 chroma_me=1 trellis=1 8x8dct=1 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=-2 threads=9 lookahead_threads=1 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=3 b_pyramid=2 b_adapt=1 b_bias=0 direct=1 weightb=1 open_gop=0 weightp=2 keyint=250 keyint_min=25 scenecut=40 intra_refresh=0 rc_lookahead=40 rc=crf mbtree=1 crf=23.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 ip_ratio=1.40 aq=1:1.00
+Output #0, mp4, to '/home/ubuntu/the-origin-ai/output_dm/v2_scene_5.mp4':
+  Metadata:
+    encoder         : Lavf60.16.100
+  Stream #0:0: Video: h264 (avc1 / 0x31637661), yuv420p(progressive), 1080x1920, q=2-31, 25 fps, 12800 tbn
+    Metadata:
+      encoder         : Lavc60.31.102 libx264
+    Side data:
+      cpb: bitrate max/min/avg: 0/0/0 buffer size: 0 vbv_delay: N/A
+frame=    0 fps=0.0 q=0.0 size=       0kB time=N/A bitrate=N/A speed=N/A    
+frame=    0 fps=0.0 q=0.0 size=       0kB time=N/A bitrate=N/A speed=N/A    
+frame=    0 fps=0.0 q=0.0 size=       0kB time=N/A bitrate=N/A speed=N/A    
+frame=   19 fps= 11 q=28.0 size=     512kB time=00:00:00.64 bitrate=6554.2kbits/s speed=0.372x    
+frame=   43 fps= 18 q=28.0 size=    1024kB time=00:00:01.60 bitrate=5243.1kbits/s speed=0.688x    
+frame=   67 fps= 23 q=28.0 size=    1536kB time=00:00:02.56 bitrate=4915.4kbits/s speed=0.893x    
+frame=   88 fps= 26 q=28.0 size=    1792kB time=00:00:03.40 bitrate=4317.8kbits/s speed=1.01x    
+frame=  111 fps= 28 q=28.0 size=    2304kB time=00:00:04.32 bitrate=4369.2kbits/s speed=1.11x    
+frame=  136 fps= 31 q=28.0 size=    2560kB time=00:00:05.32 bitrate=3942.1kbits/s speed= 1.2x    
+frame=  159 fps= 32 q=28.0 size=    3072kB time=00:00:06.24 bitrate=4033.0kbits/s speed=1.26x    
+frame=  183 fps= 34 q=28.0 size=    3328kB time=00:00:07.20 bitrate=3786.6kbits/s speed=1.32x    
+[out#0/mp4 @ 0x55805dcdb300] video:4063kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.092792%
+frame=  247 fps= 40 q=-1.0 Lsize=    4067kB time=00:00:09.76 bitrate=3413.8kbits/s speed=1.56x    
+[libx264 @ 0x55805dcdc480] frame I:1     Avg QP:20.98  size:399420
+[libx264 @ 0x55805dcdc480] frame P:62    Avg QP:20.55  size: 52287
+[libx264 @ 0x55805dcdc480] frame B:184   Avg QP:26.27  size:  2821
+[libx264 @ 0x55805dcdc480] consecutive B-frames:  0.4%  0.0%  2.4% 97.2%
+[libx264 @ 0x55805dcdc480] mb I  I16..4: 10.6% 30.8% 58.5%
+[libx264 @ 0x55805dcdc480] mb P  I16..4:  0.0%  0.0%  0.0%  P16..4: 42.2% 14.7% 13.2%  0.0%  0.0%    skip:29.8%
+[libx264 @ 0x55805dcdc480] mb B  I16..4:  0.0%  0.0%  0.0%  B16..8: 33.9%  0.6%  0.1%  direct: 0.2%  skip:65.1%  L0:49.1% L1:49.2% BI: 1.7%
+[libx264 @ 0x55805dcdc480] 8x8 transform intra:31.6% inter:48.9%
+[libx264 @ 0x55805dcdc480] coded y,uvDC,uvAC intra: 90.7% 78.0% 42.3% inter: 7.9% 6.0% 1.3%
+[libx264 @ 0x55805dcdc480] i16 v,h,dc,p: 11% 12% 33% 44%
+[libx264 @ 0x55805dcdc480] i8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 10% 21% 20%  8%  8%  6%  9%  7% 11%
+[libx264 @ 0x55805dcdc480] i4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 13% 17% 17% 10% 10%  7% 10%  7% 10%
+[libx264 @ 0x55805dcdc480] i8c dc,h,v,p: 51% 26% 16%  7%
+[libx264 @ 0x55805dcdc480] Weighted P-Frames: Y:0.0% UV:0.0%
+[libx264 @ 0x55805dcdc480] ref P L0: 50.7%  9.5% 13.7% 26.0%
+[libx264 @ 0x55805dcdc480] ref B L0: 64.2% 21.3% 14.5%
+[libx264 @ 0x55805dcdc480] ref B L1: 77.0% 23.0%
+[libx264 @ 0x55805dcdc480] kb/s:3368.62
+ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers
+  built with gcc 13 (Ubuntu 13.2.0-23ubuntu3)
+  configuration: --prefix=/usr --extra-version=3ubuntu5 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --disable-omx --enable-gnutls --enable-libaom --enable-libass --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libdav1d --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libglslang --enable-libgme --enable-libgsm --enable-libharfbuzz --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzimg --enable-openal --enable-opencl --enable-opengl --disable-sndio --enable-libvpl --disable-libmfx --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-ladspa --enable-libbluray --enable-libjack --enable-libpulse --enable-librabbitmq --enable-librist --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libx264 --enable-libzmq --enable-libzvbi --enable-lv2 --enable-sdl2 --enable-libplacebo --enable-librav1e --enable-pocketsphinx --enable-librsvg --enable-libjxl --enable-shared
+  libavutil      58. 29.100 / 58. 29.100
+  libavcodec     60. 31.102 / 60. 31.102
+  libavformat    60. 16.100 / 60. 16.100
+  libavdevice    60.  3.100 / 60.  3.100
+  libavfilter     9. 12.100 /  9. 12.100
+  libswscale      7.  5.100 /  7.  5.100
+  libswresample   4. 12.100 /  4. 12.100
+  libpostproc    57.  3.100 / 57.  3.100
+[mov,mp4,m4a,3gp,3g2,mj2 @ 0x5639a07b01c0] Auto-inserting h264_mp4toannexb bitstream filter
+Input #0, concat, from '/home/ubuntu/the-origin-ai/output_dm/concat_v2.txt':
+  Duration: N/A, start: 0.000000, bitrate: 2556 kb/s
+  Stream #0:0(und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 1080x1920, 2556 kb/s, 25 fps, 25 tbr, 12800 tbn
+    Metadata:
+      handler_name    : VideoHandler
+      vendor_id       : [0][0][0][0]
+      encoder         : Lavc60.31.102 libx264
+Output #0, mp4, to '/home/ubuntu/the-origin-ai/output_dm/combined_v2.mp4':
+  Metadata:
+    encoder         : Lavf60.16.100
+  Stream #0:0(und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 1080x1920, q=2-31, 2556 kb/s, 25 fps, 25 tbr, 12800 tbn
+    Metadata:
+      handler_name    : VideoHandler
+      vendor_id       : [0][0][0][0]
+      encoder         : Lavc60.31.102 libx264
+Stream mapping:
+  Stream #0:0 -> #0:0 (copy)
+Press [q] to stop, [?] for help
+size=       0kB time=-00:00:00.08 bitrate=  -0.0kbits/s speed=N/A    
+[mov,mp4,m4a,3gp,3g2,mj2 @ 0x5639a07b01c0] Auto-inserting h264_mp4toannexb bitstream filter
+    Last message repeated 1 times
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447297, current: 191104; changing to 447298. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447298, current: 191616; changing to 447299. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447299, current: 192128; changing to 447300. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447300, current: 192640; changing to 447301. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447301, current: 193152; changing to 447302. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447302, current: 193664; changing to 447303. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447303, current: 194176; changing to 447304. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447304, current: 194688; changing to 447305. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447305, current: 195200; changing to 447306. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447306, current: 195712; changing to 447307. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447307, current: 196224; changing to 447308. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447308, current: 196736; changing to 447309. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447309, current: 197248; changing to 447310. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447310, current: 197760; changing to 447311. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447311, current: 198272; changing to 447312. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447312, current: 198784; changing to 447313. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447313, current: 199296; changing to 447314. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447314, current: 199808; changing to 447315. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447315, current: 200320; changing to 447316. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447316, current: 200832; changing to 447317. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447317, current: 201344; changing to 447318. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447318, current: 201856; changing to 447319. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447319, current: 202368; changing to 447320. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447320, current: 202880; changing to 447321. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447321, current: 203392; changing to 447322. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447322, current: 203904; changing to 447323. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447323, current: 204416; changing to 447324. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447324, current: 204928; changing to 447325. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447325, current: 205440; changing to 447326. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447326, current: 205952; changing to 447327. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447327, current: 206464; changing to 447328. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447328, current: 206976; changing to 447329. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447329, current: 207488; changing to 447330. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447330, current: 208000; changing to 447331. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447331, current: 208512; changing to 447332. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447332, current: 209024; changing to 447333. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447333, current: 209536; changing to 447334. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447334, current: 210048; changing to 447335. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447335, current: 210560; changing to 447336. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447336, current: 211072; changing to 447337. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447337, current: 211584; changing to 447338. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447338, current: 212096; changing to 447339. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447339, current: 212608; changing to 447340. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447340, current: 213120; changing to 447341. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447341, current: 213632; changing to 447342. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447342, current: 214144; changing to 447343. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447343, current: 214656; changing to 447344. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447344, current: 215168; changing to 447345. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447345, current: 215680; changing to 447346. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447346, current: 216192; changing to 447347. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447347, current: 216704; changing to 447348. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447348, current: 217216; changing to 447349. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447349, current: 217728; changing to 447350. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447350, current: 218240; changing to 447351. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447351, current: 218752; changing to 447352. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447352, current: 219264; changing to 447353. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447353, current: 219776; changing to 447354. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447354, current: 220288; changing to 447355. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447355, current: 220800; changing to 447356. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447356, current: 221312; changing to 447357. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447357, current: 221824; changing to 447358. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447358, current: 222336; changing to 447359. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447359, current: 222848; changing to 447360. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447360, current: 223360; changing to 447361. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447361, current: 223872; changing to 447362. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447362, current: 224384; changing to 447363. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447363, current: 224896; changing to 447364. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447364, current: 225408; changing to 447365. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447365, current: 225920; changing to 447366. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447366, current: 226432; changing to 447367. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447367, current: 226944; changing to 447368. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447368, current: 227456; changing to 447369. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447369, current: 227968; changing to 447370. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447370, current: 228480; changing to 447371. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447371, current: 228992; changing to 447372. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447372, current: 229504; changing to 447373. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447373, current: 230016; changing to 447374. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447374, current: 230528; changing to 447375. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447375, current: 231040; changing to 447376. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447376, current: 231552; changing to 447377. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447377, current: 232064; changing to 447378. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447378, current: 232576; changing to 447379. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447379, current: 233088; changing to 447380. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447380, current: 233600; changing to 447381. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447381, current: 234112; changing to 447382. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447382, current: 234624; changing to 447383. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447383, current: 235136; changing to 447384. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447384, current: 235648; changing to 447385. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447385, current: 236160; changing to 447386. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447386, current: 236672; changing to 447387. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447387, current: 237184; changing to 447388. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447388, current: 237696; changing to 447389. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447389, current: 238208; changing to 447390. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447390, current: 238720; changing to 447391. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447391, current: 239232; changing to 447392. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447392, current: 239744; changing to 447393. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447393, current: 240256; changing to 447394. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447394, current: 240768; changing to 447395. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447395, current: 241280; changing to 447396. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447396, current: 241792; changing to 447397. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447397, current: 242304; changing to 447398. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447398, current: 242816; changing to 447399. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447399, current: 243328; changing to 447400. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447400, current: 243840; changing to 447401. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447401, current: 244352; changing to 447402. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447402, current: 244864; changing to 447403. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447403, current: 245376; changing to 447404. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447404, current: 245888; changing to 447405. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447405, current: 246400; changing to 447406. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447406, current: 246912; changing to 447407. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447407, current: 247424; changing to 447408. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447408, current: 247936; changing to 447409. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447409, current: 248448; changing to 447410. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447410, current: 248960; changing to 447411. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447411, current: 249472; changing to 447412. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447412, current: 249984; changing to 447413. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447413, current: 250496; changing to 447414. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447414, current: 251008; changing to 447415. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447415, current: 251520; changing to 447416. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447416, current: 252032; changing to 447417. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447417, current: 252544; changing to 447418. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447418, current: 253056; changing to 447419. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447419, current: 253568; changing to 447420. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447420, current: 254080; changing to 447421. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447421, current: 254592; changing to 447422. This may result in incorrect timestamps in the output file.
+[mov,mp4,m4a,3gp,3g2,mj2 @ 0x5639a07b01c0] Auto-inserting h264_mp4toannexb bitstream filter
+[in#0/concat @ 0x5639a07a6d40] New (null) stream with index 1 at pos:48 and DTS:3.41504s
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447422, current: 306330; changing to 447423. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447423, current: 306842; changing to 447424. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447424, current: 307354; changing to 447425. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447425, current: 307866; changing to 447426. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447426, current: 308378; changing to 447427. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447427, current: 308890; changing to 447428. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447428, current: 309402; changing to 447429. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447429, current: 309914; changing to 447430. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447430, current: 310426; changing to 447431. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447431, current: 310938; changing to 447432. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447432, current: 311450; changing to 447433. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447433, current: 311962; changing to 447434. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447434, current: 312474; changing to 447435. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447435, current: 312986; changing to 447436. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447436, current: 313498; changing to 447437. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447437, current: 314010; changing to 447438. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447438, current: 314522; changing to 447439. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447439, current: 315034; changing to 447440. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447440, current: 315546; changing to 447441. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447441, current: 316058; changing to 447442. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447442, current: 316570; changing to 447443. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447443, current: 317082; changing to 447444. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447444, current: 317594; changing to 447445. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447445, current: 318106; changing to 447446. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447446, current: 318618; changing to 447447. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447447, current: 319130; changing to 447448. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447448, current: 319642; changing to 447449. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447449, current: 320154; changing to 447450. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447450, current: 320666; changing to 447451. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447451, current: 321178; changing to 447452. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447452, current: 321690; changing to 447453. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447453, current: 322202; changing to 447454. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447454, current: 322714; changing to 447455. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447455, current: 323226; changing to 447456. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447456, current: 323738; changing to 447457. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447457, current: 324250; changing to 447458. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447458, current: 324762; changing to 447459. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447459, current: 325274; changing to 447460. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447460, current: 325786; changing to 447461. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447461, current: 326298; changing to 447462. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447462, current: 326810; changing to 447463. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447463, current: 327322; changing to 447464. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447464, current: 327834; changing to 447465. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447465, current: 328346; changing to 447466. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447466, current: 328858; changing to 447467. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447467, current: 329370; changing to 447468. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447468, current: 329882; changing to 447469. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447469, current: 330394; changing to 447470. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447470, current: 330906; changing to 447471. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447471, current: 331418; changing to 447472. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447472, current: 331930; changing to 447473. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447473, current: 332442; changing to 447474. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447474, current: 332954; changing to 447475. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447475, current: 333466; changing to 447476. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447476, current: 333978; changing to 447477. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447477, current: 334490; changing to 447478. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447478, current: 335002; changing to 447479. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447479, current: 335514; changing to 447480. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447480, current: 336026; changing to 447481. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447481, current: 336538; changing to 447482. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447482, current: 337050; changing to 447483. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447483, current: 337562; changing to 447484. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447484, current: 338074; changing to 447485. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447485, current: 338586; changing to 447486. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447486, current: 339098; changing to 447487. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447487, current: 339610; changing to 447488. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447488, current: 340122; changing to 447489. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447489, current: 340634; changing to 447490. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447490, current: 341146; changing to 447491. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447491, current: 341658; changing to 447492. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447492, current: 342170; changing to 447493. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447493, current: 342682; changing to 447494. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447494, current: 343194; changing to 447495. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447495, current: 343706; changing to 447496. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447496, current: 344218; changing to 447497. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447497, current: 344730; changing to 447498. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447498, current: 345242; changing to 447499. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447499, current: 345754; changing to 447500. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447500, current: 346266; changing to 447501. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447501, current: 346778; changing to 447502. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447502, current: 347290; changing to 447503. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447503, current: 347802; changing to 447504. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447504, current: 348314; changing to 447505. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447505, current: 348826; changing to 447506. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447506, current: 349338; changing to 447507. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447507, current: 349850; changing to 447508. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447508, current: 350362; changing to 447509. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447509, current: 350874; changing to 447510. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447510, current: 351386; changing to 447511. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447511, current: 351898; changing to 447512. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447512, current: 352410; changing to 447513. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447513, current: 352922; changing to 447514. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447514, current: 353434; changing to 447515. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447515, current: 353946; changing to 447516. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447516, current: 354458; changing to 447517. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447517, current: 354970; changing to 447518. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447518, current: 355482; changing to 447519. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447519, current: 355994; changing to 447520. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447520, current: 356506; changing to 447521. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447521, current: 357018; changing to 447522. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447522, current: 357530; changing to 447523. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447523, current: 358042; changing to 447524. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447524, current: 358554; changing to 447525. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447525, current: 359066; changing to 447526. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447526, current: 359578; changing to 447527. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447527, current: 360090; changing to 447528. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447528, current: 360602; changing to 447529. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447529, current: 361114; changing to 447530. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447530, current: 361626; changing to 447531. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447531, current: 362138; changing to 447532. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447532, current: 362650; changing to 447533. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447533, current: 363162; changing to 447534. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447534, current: 363674; changing to 447535. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447535, current: 364186; changing to 447536. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447536, current: 364698; changing to 447537. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447537, current: 365210; changing to 447538. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447538, current: 365722; changing to 447539. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447539, current: 366234; changing to 447540. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447540, current: 366746; changing to 447541. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447541, current: 367258; changing to 447542. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447542, current: 367770; changing to 447543. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447543, current: 368282; changing to 447544. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447544, current: 368794; changing to 447545. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447545, current: 369306; changing to 447546. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447546, current: 369818; changing to 447547. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447547, current: 370330; changing to 447548. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447548, current: 370842; changing to 447549. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447549, current: 371354; changing to 447550. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447550, current: 371866; changing to 447551. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447551, current: 372378; changing to 447552. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447552, current: 372890; changing to 447553. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447553, current: 373402; changing to 447554. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447554, current: 373914; changing to 447555. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447555, current: 374426; changing to 447556. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447556, current: 374938; changing to 447557. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447557, current: 375450; changing to 447558. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447558, current: 375962; changing to 447559. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447559, current: 376474; changing to 447560. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447560, current: 376986; changing to 447561. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447561, current: 377498; changing to 447562. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447562, current: 378010; changing to 447563. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447563, current: 378522; changing to 447564. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447564, current: 379034; changing to 447565. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447565, current: 379546; changing to 447566. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447566, current: 380058; changing to 447567. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447567, current: 380570; changing to 447568. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447568, current: 381082; changing to 447569. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447569, current: 381594; changing to 447570. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447570, current: 382106; changing to 447571. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447571, current: 382618; changing to 447572. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447572, current: 383130; changing to 447573. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447573, current: 383642; changing to 447574. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447574, current: 384154; changing to 447575. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447575, current: 384666; changing to 447576. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447576, current: 385178; changing to 447577. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447577, current: 385690; changing to 447578. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447578, current: 386202; changing to 447579. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447579, current: 386714; changing to 447580. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447580, current: 387226; changing to 447581. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447581, current: 387738; changing to 447582. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447582, current: 388250; changing to 447583. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447583, current: 388762; changing to 447584. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447584, current: 389274; changing to 447585. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447585, current: 389786; changing to 447586. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447586, current: 390298; changing to 447587. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447587, current: 390810; changing to 447588. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447588, current: 391322; changing to 447589. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447589, current: 391834; changing to 447590. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447590, current: 392346; changing to 447591. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447591, current: 392858; changing to 447592. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447592, current: 393370; changing to 447593. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447593, current: 393882; changing to 447594. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447594, current: 394394; changing to 447595. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447595, current: 394906; changing to 447596. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447596, current: 395418; changing to 447597. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447597, current: 395930; changing to 447598. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447598, current: 396442; changing to 447599. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447599, current: 396954; changing to 447600. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447600, current: 397466; changing to 447601. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447601, current: 397978; changing to 447602. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447602, current: 398490; changing to 447603. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447603, current: 399002; changing to 447604. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447604, current: 399514; changing to 447605. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447605, current: 400026; changing to 447606. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447606, current: 400538; changing to 447607. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447607, current: 401050; changing to 447608. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447608, current: 401562; changing to 447609. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447609, current: 402074; changing to 447610. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447610, current: 402586; changing to 447611. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447611, current: 403098; changing to 447612. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447612, current: 403610; changing to 447613. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447613, current: 404122; changing to 447614. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447614, current: 404634; changing to 447615. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447615, current: 405146; changing to 447616. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447616, current: 405658; changing to 447617. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447617, current: 406170; changing to 447618. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447618, current: 406682; changing to 447619. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447619, current: 407194; changing to 447620. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447620, current: 407706; changing to 447621. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447621, current: 408218; changing to 447622. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447622, current: 408730; changing to 447623. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447623, current: 409242; changing to 447624. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447624, current: 409754; changing to 447625. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447625, current: 410266; changing to 447626. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447626, current: 410778; changing to 447627. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447627, current: 411290; changing to 447628. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447628, current: 411802; changing to 447629. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447629, current: 412314; changing to 447630. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447630, current: 412826; changing to 447631. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447631, current: 413338; changing to 447632. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447632, current: 413850; changing to 447633. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447633, current: 414362; changing to 447634. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447634, current: 414874; changing to 447635. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447635, current: 415386; changing to 447636. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447636, current: 415898; changing to 447637. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447637, current: 416410; changing to 447638. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447638, current: 416922; changing to 447639. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447639, current: 417434; changing to 447640. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447640, current: 417946; changing to 447641. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447641, current: 418458; changing to 447642. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447642, current: 418970; changing to 447643. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447643, current: 419482; changing to 447644. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447644, current: 419994; changing to 447645. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447645, current: 420506; changing to 447646. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447646, current: 421018; changing to 447647. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447647, current: 421530; changing to 447648. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447648, current: 422042; changing to 447649. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447649, current: 422554; changing to 447650. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447650, current: 423066; changing to 447651. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447651, current: 423578; changing to 447652. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447652, current: 424090; changing to 447653. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447653, current: 424602; changing to 447654. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447654, current: 425114; changing to 447655. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447655, current: 425626; changing to 447656. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447656, current: 426138; changing to 447657. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447657, current: 426650; changing to 447658. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447658, current: 427162; changing to 447659. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447659, current: 427674; changing to 447660. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447660, current: 428186; changing to 447661. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447661, current: 428698; changing to 447662. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447662, current: 429210; changing to 447663. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447663, current: 429722; changing to 447664. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447664, current: 430234; changing to 447665. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447665, current: 430746; changing to 447666. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447666, current: 431258; changing to 447667. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447667, current: 431770; changing to 447668. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447668, current: 432282; changing to 447669. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447669, current: 432794; changing to 447670. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447670, current: 433306; changing to 447671. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447671, current: 433818; changing to 447672. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447672, current: 434330; changing to 447673. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447673, current: 434842; changing to 447674. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447674, current: 435354; changing to 447675. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447675, current: 435866; changing to 447676. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447676, current: 436378; changing to 447677. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447677, current: 436890; changing to 447678. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447678, current: 437402; changing to 447679. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447679, current: 437914; changing to 447680. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447680, current: 438426; changing to 447681. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447681, current: 438938; changing to 447682. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447682, current: 439450; changing to 447683. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447683, current: 439962; changing to 447684. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447684, current: 440474; changing to 447685. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447685, current: 440986; changing to 447686. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447686, current: 441498; changing to 447687. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447687, current: 442010; changing to 447688. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447688, current: 442522; changing to 447689. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447689, current: 443034; changing to 447690. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447690, current: 443546; changing to 447691. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447691, current: 444058; changing to 447692. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447692, current: 444570; changing to 447693. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447693, current: 445082; changing to 447694. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447694, current: 445594; changing to 447695. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447695, current: 446106; changing to 447696. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447696, current: 446618; changing to 447697. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447697, current: 447130; changing to 447698. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 447698, current: 447642; changing to 447699. This may result in incorrect timestamps in the output file.
+[mov,mp4,m4a,3gp,3g2,mj2 @ 0x5639a07b01c0] Auto-inserting h264_mp4toannexb bitstream filter
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459418, current: 383104; changing to 459419. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459419, current: 383616; changing to 459420. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459420, current: 384128; changing to 459421. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459421, current: 384640; changing to 459422. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459422, current: 385152; changing to 459423. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459423, current: 385664; changing to 459424. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459424, current: 386176; changing to 459425. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459425, current: 386688; changing to 459426. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459426, current: 387200; changing to 459427. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459427, current: 387712; changing to 459428. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459428, current: 388224; changing to 459429. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459429, current: 388736; changing to 459430. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459430, current: 389248; changing to 459431. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459431, current: 389760; changing to 459432. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459432, current: 390272; changing to 459433. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459433, current: 390784; changing to 459434. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459434, current: 391296; changing to 459435. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459435, current: 391808; changing to 459436. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459436, current: 392320; changing to 459437. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459437, current: 392832; changing to 459438. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459438, current: 393344; changing to 459439. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459439, current: 393856; changing to 459440. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459440, current: 394368; changing to 459441. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459441, current: 394880; changing to 459442. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459442, current: 395392; changing to 459443. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459443, current: 395904; changing to 459444. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459444, current: 396416; changing to 459445. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459445, current: 396928; changing to 459446. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459446, current: 397440; changing to 459447. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459447, current: 397952; changing to 459448. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459448, current: 398464; changing to 459449. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459449, current: 398976; changing to 459450. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459450, current: 399488; changing to 459451. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459451, current: 400000; changing to 459452. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459452, current: 400512; changing to 459453. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459453, current: 401024; changing to 459454. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459454, current: 401536; changing to 459455. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459455, current: 402048; changing to 459456. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459456, current: 402560; changing to 459457. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459457, current: 403072; changing to 459458. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459458, current: 403584; changing to 459459. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459459, current: 404096; changing to 459460. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459460, current: 404608; changing to 459461. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459461, current: 405120; changing to 459462. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459462, current: 405632; changing to 459463. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459463, current: 406144; changing to 459464. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459464, current: 406656; changing to 459465. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459465, current: 407168; changing to 459466. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459466, current: 407680; changing to 459467. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459467, current: 408192; changing to 459468. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459468, current: 408704; changing to 459469. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459469, current: 409216; changing to 459470. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459470, current: 409728; changing to 459471. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459471, current: 410240; changing to 459472. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459472, current: 410752; changing to 459473. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459473, current: 411264; changing to 459474. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459474, current: 411776; changing to 459475. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459475, current: 412288; changing to 459476. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459476, current: 412800; changing to 459477. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459477, current: 413312; changing to 459478. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459478, current: 413824; changing to 459479. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459479, current: 414336; changing to 459480. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459480, current: 414848; changing to 459481. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459481, current: 415360; changing to 459482. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459482, current: 415872; changing to 459483. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459483, current: 416384; changing to 459484. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459484, current: 416896; changing to 459485. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459485, current: 417408; changing to 459486. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459486, current: 417920; changing to 459487. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459487, current: 418432; changing to 459488. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459488, current: 418944; changing to 459489. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459489, current: 419456; changing to 459490. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459490, current: 419968; changing to 459491. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459491, current: 420480; changing to 459492. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459492, current: 420992; changing to 459493. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459493, current: 421504; changing to 459494. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459494, current: 422016; changing to 459495. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459495, current: 422528; changing to 459496. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459496, current: 423040; changing to 459497. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459497, current: 423552; changing to 459498. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459498, current: 424064; changing to 459499. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459499, current: 424576; changing to 459500. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459500, current: 425088; changing to 459501. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459501, current: 425600; changing to 459502. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459502, current: 426112; changing to 459503. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459503, current: 426624; changing to 459504. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459504, current: 427136; changing to 459505. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459505, current: 427648; changing to 459506. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459506, current: 428160; changing to 459507. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459507, current: 428672; changing to 459508. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459508, current: 429184; changing to 459509. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459509, current: 429696; changing to 459510. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459510, current: 430208; changing to 459511. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459511, current: 430720; changing to 459512. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459512, current: 431232; changing to 459513. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459513, current: 431744; changing to 459514. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459514, current: 432256; changing to 459515. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459515, current: 432768; changing to 459516. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459516, current: 433280; changing to 459517. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459517, current: 433792; changing to 459518. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459518, current: 434304; changing to 459519. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459519, current: 434816; changing to 459520. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459520, current: 435328; changing to 459521. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459521, current: 435840; changing to 459522. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459522, current: 436352; changing to 459523. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459523, current: 436864; changing to 459524. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459524, current: 437376; changing to 459525. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459525, current: 437888; changing to 459526. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459526, current: 438400; changing to 459527. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459527, current: 438912; changing to 459528. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459528, current: 439424; changing to 459529. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459529, current: 439936; changing to 459530. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459530, current: 440448; changing to 459531. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459531, current: 440960; changing to 459532. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459532, current: 441472; changing to 459533. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459533, current: 441984; changing to 459534. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459534, current: 442496; changing to 459535. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459535, current: 443008; changing to 459536. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459536, current: 443520; changing to 459537. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459537, current: 444032; changing to 459538. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459538, current: 444544; changing to 459539. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459539, current: 445056; changing to 459540. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459540, current: 445568; changing to 459541. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459541, current: 446080; changing to 459542. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459542, current: 446592; changing to 459543. This may result in incorrect timestamps in the output file.
+[mov,mp4,m4a,3gp,3g2,mj2 @ 0x5639a07b01c0] Auto-inserting h264_mp4toannexb bitstream filter
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459543, current: 447104; changing to 459544. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459544, current: 447616; changing to 459545. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459545, current: 448128; changing to 459546. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459546, current: 448640; changing to 459547. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459547, current: 449152; changing to 459548. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459548, current: 449664; changing to 459549. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459549, current: 450176; changing to 459550. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459550, current: 450688; changing to 459551. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459551, current: 451200; changing to 459552. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459552, current: 451712; changing to 459553. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459553, current: 452224; changing to 459554. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459554, current: 452736; changing to 459555. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459555, current: 453248; changing to 459556. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459556, current: 453760; changing to 459557. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459557, current: 454272; changing to 459558. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459558, current: 454784; changing to 459559. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459559, current: 455296; changing to 459560. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459560, current: 455808; changing to 459561. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459561, current: 456320; changing to 459562. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459562, current: 456832; changing to 459563. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459563, current: 457344; changing to 459564. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459564, current: 457856; changing to 459565. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459565, current: 458368; changing to 459566. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459566, current: 458880; changing to 459567. This may result in incorrect timestamps in the output file.
+[mp4 @ 0x5639a08b0140] Non-monotonic DTS in output stream 0:0; previous: 459567, current: 459392; changing to 459568. This may result in incorrect timestamps in the output file.
+[out#0/mp4 @ 0x5639a082c880] video:15705kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.071311%
+size=   15716kB time=00:00:44.77 bitrate=2875.7kbits/s speed= 199x    
+ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers
+  built with gcc 13 (Ubuntu 13.2.0-23ubuntu3)
+  configuration: --prefix=/usr --extra-version=3ubuntu5 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --disable-omx --enable-gnutls --enable-libaom --enable-libass --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libdav1d --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libglslang --enable-libgme --enable-libgsm --enable-libharfbuzz --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzimg --enable-openal --enable-opencl --enable-opengl --disable-sndio --enable-libvpl --disable-libmfx --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-ladspa --enable-libbluray --enable-libjack --enable-libpulse --enable-librabbitmq --enable-librist --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libx264 --enable-libzmq --enable-libzvbi --enable-lv2 --enable-sdl2 --enable-libplacebo --enable-librav1e --enable-pocketsphinx --enable-librsvg --enable-libjxl --enable-shared
+  libavutil      58. 29.100 / 58. 29.100
+  libavcodec     60. 31.102 / 60. 31.102
+  libavformat    60. 16.100 / 60. 16.100
+  libavdevice    60.  3.100 / 60.  3.100
+  libavfilter     9. 12.100 /  9. 12.100
+  libswscale      7.  5.100 /  7.  5.100
+  libswresample   4. 12.100 /  4. 12.100
+  libpostproc    57.  3.100 / 57.  3.100
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from '/home/ubuntu/the-origin-ai/output_dm/combined_v2.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf60.16.100
+  Duration: 00:00:44.89, start: 0.000000, bitrate: 2868 kb/s
+  Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 1080x1920, 2865 kb/s, 27.22 fps, 25 tbr, 12800 tbn (default)
+    Metadata:
+      handler_name    : VideoHandler
+      vendor_id       : [0][0][0][0]
+      encoder         : Lavc60.31.102 libx264
+Stream mapping:
+  Stream #0:0 -> #0:0 (h264 (native) -> h264 (libx264))
+Press [q] to stop, [?] for help
+[libx264 @ 0x56059ff909c0] using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX FMA3 BMI2 AVX2 AVX512
+[libx264 @ 0x56059ff909c0] profile High, level 4.0, 4:2:0, 8-bit
+[libx264 @ 0x56059ff909c0] 264 - core 164 r3108 31e19f9 - H.264/MPEG-4 AVC codec - Copyleft 2003-2023 - http://www.videolan.org/x264.html - options: cabac=1 ref=3 deblock=1:0:0 analyse=0x3:0x113 me=hex subme=7 psy=1 psy_rd=1.00:0.00 mixed_ref=1 me_range=16 chroma_me=1 trellis=1 8x8dct=1 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=-2 threads=9 lookahead_threads=1 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=3 b_pyramid=2 b_adapt=1 b_bias=0 direct=1 weightb=1 open_gop=0 weightp=2 keyint=250 keyint_min=25 scenecut=40 intra_refresh=0 rc_lookahead=40 rc=crf mbtree=1 crf=23.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 ip_ratio=1.40 aq=1:1.00
+Output #0, mp4, to '/home/ubuntu/the-origin-ai/output_dm/subbed_v2.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf60.16.100
+  Stream #0:0(und): Video: h264 (avc1 / 0x31637661), yuv420p(progressive), 1080x1920, q=2-31, 25 fps, 12800 tbn (default)
+    Metadata:
+      handler_name    : VideoHandler
+      vendor_id       : [0][0][0][0]
+      encoder         : Lavc60.31.102 libx264
+    Side data:
+      cpb: bitrate max/min/avg: 0/0/0 buffer size: 0 vbv_delay: N/A
+frame=    0 fps=0.0 q=0.0 size=       0kB time=N/A bitrate=N/A speed=N/A    
+frame=    0 fps=0.0 q=0.0 size=       0kB time=N/A bitrate=N/A speed=N/A    
+frame=   23 fps= 18 q=28.0 size=     256kB time=00:00:00.80 bitrate=2621.9kbits/s speed=0.616x    
+frame=   46 fps= 25 q=28.0 size=     512kB time=00:00:01.76 bitrate=2383.3kbits/s speed=0.952x    
+frame=   71 fps= 30 q=28.0 size=     768kB time=00:00:02.76 bitrate=2279.7kbits/s speed=1.16x    
+frame=  243 fps= 56 q=25.0 size=    1536kB time=00:00:09.60 bitrate=1310.8kbits/s dup=169 drop=0 speed=2.23x    
+frame=  281 fps= 58 q=28.0 size=    2048kB time=00:00:11.16 bitrate=1503.4kbits/s dup=188 drop=0 speed=2.32x    
+frame=  304 fps= 57 q=28.0 size=    2048kB time=00:00:12.08 bitrate=1388.9kbits/s dup=199 drop=0 speed=2.26x    
+frame=  333 fps= 57 q=28.0 size=    2304kB time=00:00:13.20 bitrate=1429.9kbits/s dup=213 drop=0 speed=2.26x    
+frame=  361 fps= 57 q=28.0 size=    2560kB time=00:00:14.36 bitrate=1460.4kbits/s dup=227 drop=0 speed=2.26x    
+frame=  390 fps= 57 q=28.0 size=    2560kB time=00:00:15.52 bitrate=1351.3kbits/s dup=241 drop=0 speed=2.25x    
+frame=  421 fps= 57 q=28.0 size=    2816kB time=00:00:16.72 bitrate=1379.7kbits/s dup=256 drop=0 speed=2.26x    
+frame=  447 fps= 56 q=28.0 size=    3072kB time=00:00:17.80 bitrate=1413.8kbits/s dup=269 drop=0 speed=2.24x    
+frame=  471 fps= 56 q=28.0 size=    3328kB time=00:00:18.76 bitrate=1453.3kbits/s dup=281 drop=0 speed=2.21x    
+frame=  494 fps= 55 q=28.0 size=    3328kB time=00:00:19.68 bitrate=1385.3kbits/s dup=292 drop=0 speed=2.19x    
+frame=  515 fps= 54 q=28.0 size=    3584kB time=00:00:20.52 bitrate=1430.8kbits/s dup=302 drop=0 speed=2.16x    
+frame=  537 fps= 54 q=28.0 size=    3840kB time=00:00:21.40 bitrate=1470.0kbits/s dup=313 drop=0 speed=2.14x    
+frame=  564 fps= 53 q=28.0 size=    4352kB time=00:00:22.48 bitrate=1585.9kbits/s dup=326 drop=0 speed=2.12x    
+frame=  588 fps= 53 q=28.0 size=    4608kB time=00:00:23.44 bitrate=1610.5kbits/s dup=338 drop=0 speed=2.11x    
+frame=  612 fps= 52 q=28.0 size=    4864kB time=00:00:24.36 bitrate=1635.7kbits/s dup=349 drop=0 speed=2.09x    
+frame=  636 fps= 52 q=28.0 size=    5120kB time=00:00:25.32 bitrate=1656.5kbits/s dup=361 drop=0 speed=2.07x    
+frame=  657 fps= 52 q=28.0 size=    5376kB time=00:00:26.24 bitrate=1678.4kbits/s dup=372 drop=0 speed=2.06x    
+frame=  682 fps= 51 q=28.0 size=    5632kB time=00:00:27.20 bitrate=1696.2kbits/s dup=384 drop=0 speed=2.05x    
+frame=  705 fps= 51 q=28.0 size=    5888kB time=00:00:28.12 bitrate=1715.3kbits/s dup=395 drop=0 speed=2.03x    
+frame=  729 fps= 51 q=28.0 size=    6400kB time=00:00:29.08 bitrate=1802.9kbits/s dup=407 drop=0 speed=2.02x    
+frame=  753 fps= 50 q=28.0 size=    6656kB time=00:00:30.00 bitrate=1817.5kbits/s dup=418 drop=0 speed=2.01x    
+frame=  774 fps= 50 q=28.0 size=    6912kB time=00:00:30.88 bitrate=1833.7kbits/s dup=429 drop=0 speed=1.99x    
+frame=  800 fps= 50 q=28.0 size=    7424kB time=00:00:31.88 bitrate=1907.7kbits/s dup=441 drop=0 speed=1.98x    
+frame=  820 fps= 49 q=28.0 size=    7680kB time=00:00:32.72 bitrate=1922.8kbits/s dup=451 drop=0 speed=1.97x    
+frame=  825 fps= 48 q=28.0 size=    7936kB time=00:00:32.88 bitrate=1977.3kbits/s dup=453 drop=171 speed=1.92x    
+frame=  833 fps= 47 q=28.0 size=    7936kB time=00:00:33.20 bitrate=1958.2kbits/s dup=453 drop=400 speed=1.88x    
+frame=  847 fps= 47 q=28.0 size=    8192kB time=00:00:33.76 bitrate=1987.8kbits/s dup=453 drop=432 speed=1.86x    
+frame=  856 fps= 46 q=28.0 size=    8192kB time=00:00:34.16 bitrate=1964.6kbits/s dup=453 drop=550 speed=1.83x    
+frame=  880 fps= 46 q=28.0 size=    8704kB time=00:00:35.08 bitrate=2032.6kbits/s dup=453 drop=550 speed=1.83x    
+frame=  902 fps= 46 q=28.0 size=    9216kB time=00:00:35.96 bitrate=2099.5kbits/s dup=453 drop=550 speed=1.82x    
+frame=  924 fps= 46 q=28.0 size=    9728kB time=00:00:36.84 bitrate=2163.2kbits/s dup=453 drop=550 speed=1.81x    
+frame=  947 fps= 45 q=28.0 size=    9984kB time=00:00:37.76 bitrate=2166.0kbits/s dup=453 drop=550 speed=1.81x    
+frame=  969 fps= 45 q=28.0 size=   10240kB time=00:00:38.68 bitrate=2168.7kbits/s dup=453 drop=550 speed=1.81x    
+frame=  990 fps= 45 q=28.0 size=   10752kB time=00:00:39.52 bitrate=2228.8kbits/s dup=453 drop=550 speed= 1.8x    
+frame= 1012 fps= 45 q=28.0 size=   11008kB time=00:00:40.40 bitrate=2232.1kbits/s dup=453 drop=550 speed= 1.8x    
+frame= 1034 fps= 45 q=28.0 size=   11520kB time=00:00:41.28 bitrate=2286.1kbits/s dup=453 drop=550 speed= 1.8x    
+frame= 1058 fps= 45 q=28.0 size=   11776kB time=00:00:42.24 bitrate=2283.8kbits/s dup=453 drop=550 speed= 1.8x    
+[out#0/mp4 @ 0x56059ff79740] video:12618kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.111547%
+frame= 1124 fps= 46 q=-1.0 Lsize=   12632kB time=00:00:44.84 bitrate=2307.8kbits/s dup=453 drop=551 speed=1.85x    
+[libx264 @ 0x56059ff909c0] frame I:6     Avg QP:16.41  size:250318
+[libx264 @ 0x56059ff909c0] frame P:290   Avg QP:19.10  size: 29811
+[libx264 @ 0x56059ff909c0] frame B:828   Avg QP:23.84  size:  3349
+[libx264 @ 0x56059ff909c0] consecutive B-frames:  1.1%  1.1%  3.2% 94.7%
+[libx264 @ 0x56059ff909c0] mb I  I16..4:  6.8% 57.0% 36.2%
+[libx264 @ 0x56059ff909c0] mb P  I16..4:  0.5%  2.8%  0.2%  P16..4: 38.7% 14.2%  8.4%  0.0%  0.0%    skip:35.2%
+[libx264 @ 0x56059ff909c0] mb B  I16..4:  0.0%  0.1%  0.0%  B16..8: 28.8%  0.7%  0.1%  direct: 0.2%  skip:70.1%  L0:51.3% L1:46.4% BI: 2.3%
+[libx264 @ 0x56059ff909c0] 8x8 transform intra:70.9% inter:73.8%
+[libx264 @ 0x56059ff909c0] coded y,uvDC,uvAC intra: 49.5% 48.4% 23.3% inter: 7.1% 6.8% 0.2%
+[libx264 @ 0x56059ff909c0] i16 v,h,dc,p: 34% 24% 32% 11%
+[libx264 @ 0x56059ff909c0] i8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 17% 14% 44%  4%  5%  4%  4%  3%  4%
+[libx264 @ 0x56059ff909c0] i4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 25% 19% 16%  7%  8%  6%  7%  5%  6%
+[libx264 @ 0x56059ff909c0] i8c dc,h,v,p: 64% 18% 15%  3%
+[libx264 @ 0x56059ff909c0] Weighted P-Frames: Y:0.0% UV:0.0%
+[libx264 @ 0x56059ff909c0] ref P L0: 62.9% 10.1% 18.2%  8.8%
+[libx264 @ 0x56059ff909c0] ref B L0: 85.8% 10.6%  3.6%
+[libx264 @ 0x56059ff909c0] ref B L1: 94.0%  6.0%
+[libx264 @ 0x56059ff909c0] kb/s:2298.99
+ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers
+  built with gcc 13 (Ubuntu 13.2.0-23ubuntu3)
+  configuration: --prefix=/usr --extra-version=3ubuntu5 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --disable-omx --enable-gnutls --enable-libaom --enable-libass --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libdav1d --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libglslang --enable-libgme --enable-libgsm --enable-libharfbuzz --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzimg --enable-openal --enable-opencl --enable-opengl --disable-sndio --enable-libvpl --disable-libmfx --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-ladspa --enable-libbluray --enable-libjack --enable-libpulse --enable-librabbitmq --enable-librist --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libx264 --enable-libzmq --enable-libzvbi --enable-lv2 --enable-sdl2 --enable-libplacebo --enable-librav1e --enable-pocketsphinx --enable-librsvg --enable-libjxl --enable-shared
+  libavutil      58. 29.100 / 58. 29.100
+  libavcodec     60. 31.102 / 60. 31.102
+  libavformat    60. 16.100 / 60. 16.100
+  libavdevice    60.  3.100 / 60.  3.100
+  libavfilter     9. 12.100 /  9. 12.100
+  libswscale      7.  5.100 /  7.  5.100
+  libswresample   4. 12.100 /  4. 12.100
+  libpostproc    57.  3.100 / 57.  3.100
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from '/home/ubuntu/the-origin-ai/output_dm/subbed_v2.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf60.16.100
+  Duration: 00:00:44.96, start: 0.000000, bitrate: 2301 kb/s
+  Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 1080x1920, 2299 kb/s, 25 fps, 25 tbr, 12800 tbn (default)
+    Metadata:
+      handler_name    : VideoHandler
+      vendor_id       : [0][0][0][0]
+      encoder         : Lavc60.31.102 libx264
+[aist#1:0/pcm_s16le @ 0x5640a5344580] Guessed Channel Layout: mono
+Input #1, wav, from '/home/ubuntu/the-origin-ai/output_dm/narration.wav':
+  Duration: 00:00:44.88, bitrate: 384 kb/s
+  Stream #1:0: Audio: pcm_s16le ([1][0][0][0] / 0x0001), 24000 Hz, 1 channels, s16, 384 kb/s
+[mp3 @ 0x5640a53462c0] Estimating duration from bitrate, this may be inaccurate
+Input #2, mp3, from '/home/ubuntu/the-origin-ai/output_dm/bgm.wav':
+  Duration: 00:02:52.33, start: 0.000000, bitrate: 192 kb/s
+  Stream #2:0: Audio: mp3, 44100 Hz, stereo, fltp, 192 kb/s
+Stream mapping:
+  Stream #1:0 (pcm_s16le) -> amix
+  Stream #2:0 (mp3float) -> volume:default
+  Stream #0:0 -> #0:0 (copy)
+  amix:default -> Stream #0:1 (aac)
+Press [q] to stop, [?] for help
+Output #0, mp4, to '/home/ubuntu/the-origin-ai/output_dm/final_video_v2.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf60.16.100
+  Stream #0:0(und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 1080x1920, q=2-31, 2299 kb/s, 25 fps, 25 tbr, 12800 tbn (default)
+    Metadata:
+      handler_name    : VideoHandler
+      vendor_id       : [0][0][0][0]
+      encoder         : Lavc60.31.102 libx264
+  Stream #0:1: Audio: aac (LC) (mp4a / 0x6134706D), 24000 Hz, mono, fltp, 69 kb/s
+    Metadata:
+      encoder         : Lavc60.31.102 aac
+size=       0kB time=-00:00:00.04 bitrate=  -0.0kbits/s speed=N/A    
+size=    4352kB time=00:00:22.24 bitrate=1603.1kbits/s speed=44.3x    
+[out#0/mp4 @ 0x5640a5348180] video:12611kB audio:418kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.217933%
+size=   13058kB time=00:00:44.84 bitrate=2385.5kbits/s speed=  47x    
+[aac @ 0x5640a5395440] Qavg: 815.663
+Video V2 assembled: /home/ubuntu/the-origin-ai/output_dm/final_video_v2.mp4
+
+2026-08-20 11:02:24,564 - INFO - Starting step: YouTube Upload
+2026-08-20 11:02:28,299 - INFO - Step YouTube Upload output:
+Video ID fUJj_9U1OdY was successfully uploaded.
+
+2026-08-20 11:02:28,299 - INFO - Master automation completed successfully!
+2026-08-21 01:42:32,517 - INFO - Generating new science short topic...
+2026-08-21 01:42:32,517 - INFO - AFC is enabled with max remote calls: 10.
+2026-08-21 01:42:32,518 - WARNING - Direct use of automatic function calling (AFC) in Models.generate_content is not recommended. Instead, we recommend to use AFC in Chat.send_message. Similarly, direct use of AFC in Models.generate_content_stream is not recommended. Instead, we recommend to use AFC in Chat.send_message_stream.
+2026-08-21 01:42:43,290 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent "HTTP/1.1 200 OK"
+2026-08-21 01:42:43,294 - INFO - Selected Topic: ปริศนา 'The Great Attractor' แรงดึงดูดไร้ตัวตนที่กำลังลากกาแล็กซีทางช้างเผือกไปสู่ความมืด
+2026-08-21 01:42:43,294 - INFO - Starting step: Video Assembly
+2026-08-21 01:43:45,403 - INFO - Step Video Assembly completed successfully.
+2026-08-21 01:43:45,403 - INFO - Starting step: YouTube Upload
+2026-08-21 01:43:49,047 - INFO - Step YouTube Upload completed successfully.
+2026-08-21 01:43:49,047 - INFO - Master automation completed successfully!
+2026-08-21 11:08:33,133 - INFO - Generating new science short topic...
+2026-08-21 11:08:33,134 - INFO - AFC is enabled with max remote calls: 10.
+2026-08-21 11:08:33,135 - WARNING - Direct use of automatic function calling (AFC) in Models.generate_content is not recommended. Instead, we recommend to use AFC in Chat.send_message. Similarly, direct use of AFC in Models.generate_content_stream is not recommended. Instead, we recommend to use AFC in Chat.send_message_stream.
+2026-08-21 11:08:41,890 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent "HTTP/1.1 200 OK"
+2026-08-21 11:08:41,893 - INFO - Selected Topic: ปริศนา 'Quasi-Star' ดาวฤกษ์อสูรกายโบราณที่มี 'หลุมดำ' กำลังกัดกินตัวเองจากภายใน
+2026-08-21 11:08:41,893 - INFO - Starting step: Dynamic Video Generation
+2026-08-21 11:09:42,038 - INFO - Step Dynamic Video Generation completed successfully.
+2026-08-21 11:09:42,056 - INFO - Starting step: YouTube Upload
+2026-08-21 11:09:43,090 - ERROR - Step YouTube Upload failed with error:
+Traceback (most recent call last):
+  File "/home/ubuntu/the-origin-ai/services/uploader.py", line 75, in <module>
+    upload_video(youtube, video_path, title, description)
+  File "/home/ubuntu/the-origin-ai/services/uploader.py", line 60, in upload_video
+    status, response = request.next_chunk()
+                       ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/googleapiclient/_helpers.py", line 130, in positional_wrapper
+    return wrapped(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/googleapiclient/http.py", line 1022, in next_chunk
+    raise ResumableUploadError(resp, content)
+googleapiclient.errors.ResumableUploadError: <HttpError 400 when requesting None returned "The request metadata specifies an invalid or empty video title.". Details: "[{'message': 'The request metadata specifies an invalid or empty video title.', 'domain': 'youtube.video', 'reason': 'invalidTitle', 'location': 'body.snippet.title', 'locationType': 'other'}]">
+
+2026-08-21 14:21:18,574 - INFO - === Starting Master Automation Run (End-to-End Charon TTS) ===
+2026-08-21 14:21:18,575 - INFO - AFC is enabled with max remote calls: 10.
+2026-08-21 14:21:18,575 - WARNING - Direct use of automatic function calling (AFC) in Models.generate_content is not recommended. Instead, we recommend to use AFC in Chat.send_message. Similarly, direct use of AFC in Models.generate_content_stream is not recommended. Instead, we recommend to use AFC in Chat.send_message_stream.
+2026-08-21 14:21:45,549 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent "HTTP/1.1 200 OK"
+2026-08-21 14:21:45,551 - INFO - Selected Topic: ปริศนา 'False Vacuum Decay' ฟองคลื่นแห่งความตายที่อาจกำลังกลืนกินจักรวาลด้วยความเร็วแสงโดยที่เราไม่รู้ตัว
+2026-08-21 14:21:45,552 - INFO - Starting step: Dynamic Video Generation
+2026-08-21 14:22:36,885 - INFO - Step Dynamic Video Generation completed successfully.
+2026-08-21 14:22:36,889 - INFO - Starting step: YouTube Upload
+2026-08-21 14:22:40,437 - INFO - Step YouTube Upload completed successfully.
+2026-08-21 14:22:40,438 - INFO - Master automation completed successfully!

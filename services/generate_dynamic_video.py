@@ -2,8 +2,9 @@ import os
 import sys
 import json
 import subprocess
+import base64
 from google import genai
-from gtts import gTTS
+from google.genai import types
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 if not GEMINI_API_KEY:
@@ -14,7 +15,7 @@ client = genai.Client(api_key=GEMINI_API_KEY)
 
 def generate_dynamic_video(topic, output_dir):
     os.makedirs(output_dir, exist_ok=True)
-    print(f"=== Generating Dynamic Video (Fixed Voice & Visuals) for Topic: {topic} ===")
+    print(f"=== Generating Dynamic Video (End-to-End with Charon Voice) for Topic: {topic} ===")
     
     # 1. Generate Script & Scenes & Subtitles
     prompt = f"""
@@ -58,21 +59,36 @@ def generate_dynamic_video(topic, output_dir):
     with open(os.path.join(output_dir, "script.json"), "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
     
-    # 2. Generate Thai Speech and Pitch-shift to Deep Charon Voice
-    print("Generating speech and applying Charon voice pitch shift...")
-    speech_path = os.path.join(output_dir, "narration_raw.mp3")
-    tts = gTTS(text=narration_text, lang='th', slow=False)
-    tts.save(speech_path)
+    # 2. Generate Authentic Charon Voice using Gemini TTS API
+    print("Generating authentic Charon voice via Gemini TTS...")
+    tts_prompt = f"Speak in a deep, mysterious, authoritative, and informative documentary style in Thai: {narration_text}"
     
-    wav_raw = os.path.join(output_dir, "narration_raw.wav")
-    subprocess.run(["ffmpeg", "-y", "-i", speech_path, "-ar", "24000", "-ac", "1", wav_raw], check=True)
+    tts_response = client.models.generate_content(
+        model="gemini-3.1-flash-tts-preview",
+        contents=tts_prompt,
+        config=types.GenerateContentConfig(
+            response_modalities=["AUDIO"],
+            speech_config=types.SpeechConfig(
+                voice_config=types.VoiceConfig(
+                    prebuilt_voice_config=types.PrebuiltVoiceConfig(
+                        voice_name='Charon',
+                    )
+                )
+            ),
+        )
+    )
     
-    # Pitch shift down to create deep, authoritative male voice (Charon style)
+    pcm_data = tts_response.candidates[0].content.parts[0].inline_data.data
+    pcm_bytes = base64.b64decode(pcm_data)
+    
+    pcm_raw_path = os.path.join(output_dir, "narration.pcm")
+    with open(pcm_raw_path, "wb") as f:
+        f.write(pcm_bytes)
+        
     wav_path = os.path.join(output_dir, "narration.wav")
     subprocess.run([
-        "ffmpeg", "-y", "-i", wav_raw,
-        "-af", "asetrate=24000*0.78,aresample=24000,atempo=1.28",
-        wav_path
+        "ffmpeg", "-y", "-f", "s16le", "-ar", "24000", "-ac", "1",
+        "-i", pcm_raw_path, wav_path
     ], check=True)
     
     # Get exact audio duration
@@ -83,7 +99,7 @@ def generate_dynamic_video(topic, output_dir):
     total_duration = float(probe.stdout.strip())
     print(f"Exact narration duration: {total_duration}s")
     
-    # 3. Generate 8K Cinematic Images (with robust fallback to NASA assets to prevent blue screen)
+    # 3. Generate 8K Cinematic Images (with robust fallback to NASA assets)
     print("Generating scene images / assets...")
     assets_dir = "/home/ubuntu/the-origin-ai/assets"
     nasa_roman = os.path.join(assets_dir, "nasa_roman_zoom.mp4")
@@ -111,20 +127,18 @@ def generate_dynamic_video(topic, output_dir):
             print(f"Imagen failed for scene {i+1} ({e}), using NASA stock fallback...")
             
         if not success:
-            # Use NASA stock video segment as fallback
             if i % 2 == 0 and os.path.exists(nasa_roman):
                 visual_sources.append({"type": "video", "path": nasa_roman, "start": i * 5})
             elif os.path.exists(nasa_lensing):
                 visual_sources.append({"type": "video", "path": nasa_lensing, "start": i * 5})
             else:
-                # Ultimate solid fallback with rich nebula color
                 subprocess.run([
                     "ffmpeg", "-y", "-f", "lavfi", "-i", "color=c=navy:s=1080x1920:d=1",
                     "-frames:v", "1", img_path
                 ], check=True)
                 visual_sources.append({"type": "image", "path": img_path})
 
-    # 4. Assemble video with exact duration matching
+    # 4. Assemble video clips
     print("Assembling video clips...")
     scene_dur = total_duration / 4.0
     
@@ -162,7 +176,7 @@ def generate_dynamic_video(topic, output_dir):
         "-c:v", "libx264", "-pix_fmt", "yuv420p", concat_video
     ], check=True)
     
-    # 5. Add Subtitles with professional styling
+    # 5. Add Subtitles
     print("Adding Thai subtitles...")
     FONT_PATH = "/usr/share/fonts/truetype/noto/NotoSansThai-Bold.ttf"
     drawtext_filters = []
@@ -192,7 +206,7 @@ def generate_dynamic_video(topic, output_dir):
     else:
         video_with_subs = concat_video
 
-    # 6. Mix Audio with Extreme Loudness Boost (Volume x6 + Compand + Limiter)
+    # 6. Mix Audio with Extreme Loudness Boost
     print("Mixing audio with Extreme Loudness Boost...")
     final_video = os.path.join(output_dir, "final_video_high_quality.mp4")
     bgm_path = os.path.join(output_dir, "bgm.wav")

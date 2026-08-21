@@ -1,0 +1,72 @@
+2026-08-20 15:03:25,479 - INFO - Starting batch production for 10 topics...
+2026-08-20 15:03:25,479 - INFO - 
+====================
+Processing Topic 1/10: ดาวเคราะห์ที่ฝนตกเป็นเพชร: ความจริงสุดขั้วบนดาวเนปจูน
+====================
+2026-08-20 15:03:25,480 - INFO - Starting step: Assemble Video 1
+2026-08-20 15:04:30,157 - INFO - Step Assemble Video 1 completed successfully.
+2026-08-20 15:04:30,169 - INFO - Saved to backlog: /home/ubuntu/the-origin-ai/backlog/backlog_video_01.mp4
+2026-08-20 15:04:30,170 - INFO - 
+====================
+Processing Topic 2/10: ทฤษฎีควอนตัม: วัตถุที่อยู่สองที่ได้ในเวลาเดียวกันจริงหรือ?
+====================
+2026-08-20 15:04:30,170 - INFO - Starting step: Assemble Video 2
+2026-08-20 15:05:32,170 - INFO - Step Assemble Video 2 completed successfully.
+2026-08-20 15:05:32,191 - INFO - Saved to backlog: /home/ubuntu/the-origin-ai/backlog/backlog_video_02.mp4
+2026-08-20 15:05:32,192 - INFO - 
+====================
+Processing Topic 3/10: อมตะมีจริง? ปริศนาแมงกะพรุนที่ไม่มีวันแก่และตาย
+====================
+2026-08-20 15:05:32,192 - INFO - Starting step: Assemble Video 3
+2026-08-20 15:06:34,956 - INFO - Step Assemble Video 3 completed successfully.
+2026-08-20 15:06:34,978 - INFO - Saved to backlog: /home/ubuntu/the-origin-ai/backlog/backlog_video_03.mp4
+2026-08-20 15:06:34,978 - INFO - 
+====================
+Processing Topic 4/10: กำแพงที่ใหญ่ที่สุดในจักรวาล: โครงข่ายสิ่งก่อสร้างยักษ์ที่มนุษย์ไม่เคยรู้
+====================
+2026-08-20 15:06:34,978 - INFO - Starting step: Assemble Video 4
+2026-08-20 15:07:38,322 - INFO - Step Assemble Video 4 completed successfully.
+2026-08-20 15:07:38,333 - INFO - Saved to backlog: /home/ubuntu/the-origin-ai/backlog/backlog_video_04.mp4
+2026-08-20 15:07:38,333 - INFO - 
+====================
+Processing Topic 5/10: ปรสิตควบคุมสมอง: เมื่อมดกลายเป็นซอมบี้กลางป่าดิบ
+====================
+2026-08-20 15:07:38,334 - INFO - Starting step: Assemble Video 5
+2026-08-20 15:08:42,208 - INFO - Step Assemble Video 5 completed successfully.
+2026-08-20 15:08:42,220 - INFO - Saved to backlog: /home/ubuntu/the-origin-ai/backlog/backlog_video_05.mp4
+2026-08-20 15:08:42,230 - INFO - 
+====================
+Processing Topic 6/10: ความเร็วแสง: ทำไมเราถึงไม่มีวันเดินทางเร็วกว่าแสงได้?
+====================
+2026-08-20 15:08:42,230 - INFO - Starting step: Assemble Video 6
+2026-08-20 15:09:46,385 - INFO - Step Assemble Video 6 completed successfully.
+2026-08-20 15:09:46,399 - INFO - Saved to backlog: /home/ubuntu/the-origin-ai/backlog/backlog_video_06.mp4
+2026-08-20 15:09:46,399 - INFO - 
+====================
+Processing Topic 7/10: เสียงของหลุมดำ: คลื่นความถี่และเสียงคำรามที่น่าขนลุกที่สุดในจักรวาล
+====================
+2026-08-20 15:09:46,400 - INFO - Starting step: Assemble Video 7
+2026-08-20 15:10:51,060 - INFO - Step Assemble Video 7 completed successfully.
+2026-08-20 15:10:51,074 - INFO - Saved to backlog: /home/ubuntu/the-origin-ai/backlog/backlog_video_07.mp4
+2026-08-20 15:10:51,074 - INFO - 
+====================
+Processing Topic 8/10: ความลับของ DNA: ข้อมูลทั้งหมดในโลกเก็บได้ในเม็ดทรายเพียงเม็ดเดียว
+====================
+2026-08-20 15:10:51,074 - INFO - Starting step: Assemble Video 8
+2026-08-20 15:11:53,602 - INFO - Step Assemble Video 8 completed successfully.
+2026-08-20 15:11:53,615 - INFO - Saved to backlog: /home/ubuntu/the-origin-ai/backlog/backlog_video_08.mp4
+2026-08-20 15:11:53,616 - INFO - 
+====================
+Processing Topic 9/10: ดาวเคราะห์สีเลือด: โลกปริศนาที่อาจมีสิ่งมีชีวิตซ่อนอยู่ใต้พื้นน้ำแข็ง
+====================
+2026-08-20 15:11:53,616 - INFO - Starting step: Assemble Video 9
+2026-08-20 15:12:56,073 - INFO - Step Assemble Video 9 completed successfully.
+2026-08-20 15:12:56,086 - INFO - Saved to backlog: /home/ubuntu/the-origin-ai/backlog/backlog_video_09.mp4
+2026-08-20 15:12:56,086 - INFO - 
+====================
+Processing Topic 10/10: การย้อนเวลา: ปริศนาปู่ (Grandfather Paradox) ที่ฟิสิกส์ยังหาทางออกไม่ได้
+====================
+2026-08-20 15:12:56,087 - INFO - Starting step: Assemble Video 10
+2026-08-20 15:13:58,263 - INFO - Step Assemble Video 10 completed successfully.
+2026-08-20 15:13:58,278 - INFO - Saved to backlog: /home/ubuntu/the-origin-ai/backlog/backlog_video_10.mp4
+2026-08-20 15:13:58,278 - INFO - Batch generation process completed!
