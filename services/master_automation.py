@@ -3,6 +3,8 @@ import json
 import subprocess
 import hashlib
 import logging
+import time
+import glob
 from google import genai
 
 logging.basicConfig(
@@ -54,8 +56,50 @@ def run_step(name, cmd):
         logger.error(f"Step {name} failed with error:\n{e.stdout}")
         return False
 
+def validate_video(video_path, output_dir, run_started):
+    """Reject malformed, stale, silent, non-vertical, or obviously black output before upload."""
+    try:
+        probe = subprocess.run([
+            "ffprobe", "-v", "error", "-show_entries",
+            "format=duration,size:stream=codec_type,width,height",
+            "-of", "json", video_path
+        ], check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+        meta = json.loads(probe.stdout)
+        duration = float(meta.get("format", {}).get("duration", 0))
+        streams = meta.get("streams", [])
+        video_streams = [s for s in streams if s.get("codec_type") == "video"]
+        audio_streams = [s for s in streams if s.get("codec_type") == "audio"]
+        if not video_streams or not audio_streams:
+            raise ValueError("missing video or audio stream")
+        width = int(video_streams[0].get("width", 0))
+        height = int(video_streams[0].get("height", 0))
+        if width != 1080 or height != 1920:
+            raise ValueError(f"wrong dimensions {width}x{height}; expected 1080x1920")
+        if duration < 10 or duration > 180:
+            raise ValueError(f"invalid duration {duration:.2f}s")
+        if os.path.getsize(video_path) < 100000:
+            raise ValueError("output file is suspiciously small")
+        scene_files = sorted(glob.glob(os.path.join(output_dir, "scene_*.png")))
+        if len(scene_files) < 6:
+            raise ValueError(f"only {len(scene_files)} fresh scene images found")
+        stale = [p for p in scene_files if os.path.getmtime(p) < run_started]
+        if stale:
+            raise ValueError("stale scene image detected: " + ", ".join(os.path.basename(p) for p in stale))
+        black = subprocess.run([
+            "ffmpeg", "-v", "error", "-i", video_path,
+            "-vf", "blackdetect=d=1:pix_th=0.98", "-an", "-f", "null", "-"
+        ], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        if "black_start" in black.stderr:
+            raise ValueError("black-frame interval detected")
+        logger.info(f"Video quality gate passed: {width}x{height}, {duration:.1f}s, {len(scene_files)} fresh scenes, audio present")
+        return True
+    except Exception as exc:
+        logger.error(f"Video quality gate failed: {exc}")
+        return False
+
 def main():
     logger.info("=== Starting Master Automation Run (End-to-End Charon TTS) ===")
+    run_started = time.time()
     
     script_path = "/home/ubuntu/the-origin-ai/output_dynamic/script.json"
     wav_path = "/home/ubuntu/the-origin-ai/output_dynamic/narration.wav"
@@ -128,8 +172,13 @@ def main():
     if not os.path.exists(video_path):
         logger.error("Final video not found after generation!")
         return
+    
+    # 3. Validate the finished video before any external upload.
+    if not validate_video(video_path, "/home/ubuntu/the-origin-ai/output_dynamic", run_started):
+        logger.error("Upload blocked because the generated video failed quality validation.")
+        return
 
-    # 2. Check duplicate hash
+    # 4. Check duplicate hash
     file_hash = get_file_hash(video_path)
     uploaded_hashes = load_json(HASH_FILE)
     if file_hash in uploaded_hashes:
