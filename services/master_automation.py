@@ -56,39 +56,77 @@ def run_step(name, cmd):
 
 def main():
     logger.info("=== Starting Master Automation Run (End-to-End Charon TTS) ===")
-    used = load_json(HISTORY_FILE)
-    # Use the full history for avoidance
-    used_str = ", ".join(used) if used else "None"
     
-    topic_prompt = f"""
-    Generate one unique, fascinating, mysterious, and engaging topic in Thai for a cinematic science YouTube Short (Blurr Content style).
-    Focus on: Deep space mysteries, quantum paradoxes, theoretical physics, or cosmic anomalies.
-    
-    STRICT RULE: You MUST NOT repeat or generate anything similar to these previous topics: {used_str}.
-    We need something fresh and different from what we've done before.
-    
-    Output ONLY the topic string in Thai, without quotes or extra text.
-    """
-    try:
-        response = client.models.generate_content(
-            model="gemini-3.6-flash",
-            contents=topic_prompt,
-        )
-        topic = response.text.strip()
-        logger.info(f"Selected Topic: {topic}")
-        used.append(topic)
-        save_json(HISTORY_FILE, used[-500:])
-    except Exception as e:
-        logger.error(f"Failed to generate topic: {e}")
-        return
-
-    # 1. Generate video end-to-end (Script, Charon TTS, Visuals, Subtitles, Loudness Boost)
-    if not run_step("Dynamic Video Generation", ["python3", "/home/ubuntu/the-origin-ai/services/generate_dynamic_video.py", topic]):
-        return
-
+    script_path = "/home/ubuntu/the-origin-ai/output_dynamic/script.json"
+    wav_path = "/home/ubuntu/the-origin-ai/output_dynamic/narration.wav"
     video_path = "/home/ubuntu/the-origin-ai/output_dynamic/final_video_high_quality.mp4"
+    
+    topic = None
+    if os.path.exists(script_path):
+        try:
+            with open(script_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                topic = data.get("topic") # We'll need to add topic to script.json
+                logger.info(f"Resuming existing run for topic: {topic}")
+        except:
+            pass
+
+    if not topic:
+        # Start each new job from a clean workspace. Old scene images and intermediate
+        # videos must never be eligible for a new topic.
+        stale_prefixes = ("scene_", "v_scene_", "final_scene_")
+        stale_names = {
+            "final_video_high_quality.mp4", "final_video.mp4", "concat.txt",
+            "concat_final.txt", "concat_video.mp4", "temp_concat.mp4",
+            "temp_subs.mp4", "bgm.wav", "narration.wav", "narration.pcm",
+            "narration.mp3", "narration_raw.mp3", "narration_raw.wav",
+            "NEED_SPEECH.txt", "script.json"
+        }
+        output_dir = "/home/ubuntu/the-origin-ai/output_dynamic"
+        for name in os.listdir(output_dir):
+            if name in stale_names or name.startswith(stale_prefixes):
+                path = os.path.join(output_dir, name)
+                if os.path.isfile(path):
+                    os.remove(path)
+        
+        used = load_json(HISTORY_FILE)
+        used_str = ", ".join(used) if used else "None"
+        topic_prompt = f"""
+        Generate one unique, fascinating, mysterious, and engaging topic in Thai for a cinematic science YouTube Short (Blurr Content style).
+        Focus on: Deep space mysteries, quantum paradoxes, theoretical physics, or cosmic anomalies.
+        STRICT RULE: You MUST NOT repeat or generate anything similar to these previous topics: {used_str}.
+        Output ONLY the topic string in Thai.
+        """
+        try:
+            response = client.models.generate_content(model="gemini-3.6-flash", contents=topic_prompt)
+            topic = response.text.strip()
+            logger.info(f"Selected New Topic: {topic}")
+            used.append(topic)
+            save_json(HISTORY_FILE, used[-500:])
+            # Clean start
+            if os.path.exists(video_path): os.remove(video_path)
+            if os.path.exists(wav_path): os.remove(wav_path)
+        except Exception as e:
+            logger.error(f"Failed to generate topic: {e}")
+            return
+
+    # 2. Generate video (Script, Visuals, Assembly)
+    logger.info(f"Running Dynamic Video Generation for topic: {topic}")
+    result = subprocess.run(["python3", "/home/ubuntu/the-origin-ai/services/generate_dynamic_video.py", topic], 
+                            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    
+    print(result.stdout) # Show output to agent for Playbook actions
+    
+    if "[ACTION_REQUIRED]" in result.stdout:
+        logger.info("Speech generation required by playbook.")
+        return # Exit this run, agent will follow playbook
+        
+    if result.returncode != 0:
+        logger.error(f"Video generation failed:\n{result.stdout}")
+        return
+
     if not os.path.exists(video_path):
-        logger.error("Final video not found!")
+        logger.error("Final video not found after generation!")
         return
 
     # 2. Check duplicate hash
@@ -109,6 +147,11 @@ def main():
 
     uploaded_hashes.append(file_hash)
     save_json(HASH_FILE, uploaded_hashes[-100:])
+    
+    # Cleanup after successful upload
+    if os.path.exists(script_path): os.remove(script_path)
+    if os.path.exists(wav_path): os.remove(wav_path)
+    
     logger.info("Master automation completed successfully!")
 
 if __name__ == "__main__":

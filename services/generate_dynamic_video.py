@@ -50,6 +50,7 @@ def generate_dynamic_video(topic, output_dir):
         if text_resp.startswith("```json"): text_resp = text_resp[7:-3].strip()
         elif text_resp.startswith("```"): text_resp = text_resp[3:-3].strip()
         data = json.loads(text_resp)
+        data["topic"] = topic
         with open(script_path, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
     else:
@@ -74,24 +75,26 @@ def generate_dynamic_video(topic, output_dir):
     visual_sources = []
     for i, seg in enumerate(segments):
         img_path = os.path.join(output_dir, f"scene_{i+1}.png")
-        if not os.path.exists(img_path):
-            img_prompt = seg["image_prompt"] + ", cinematic 8k, photorealistic, extreme detail, atmospheric lighting, professional documentary style, vertical 9:16"
-            try:
-                result = client.models.generate_images(
-                    model='gemini-3.1-flash-image',
-                    prompt=img_prompt,
-                    config=dict(number_of_images=1, aspect_ratio="9:16", output_mime_type="image/png")
-                )
-                for generated_image in result.generated_images:
-                    with open(img_path, "wb") as f:
-                        f.write(generated_image.image.image_bytes)
-            except Exception as e:
-                print(f"Image {i+1} failed: {e}")
-        
+        # Always overwrite the scene asset. Reusing an existing filename is the
+        # source of stale visuals appearing in later uploads.
         if os.path.exists(img_path):
-            visual_sources.append({"type": "image", "path": img_path})
-        else:
-            visual_sources.append({"type": "video", "path": "/home/ubuntu/the-origin-ai/assets/nasa_roman_zoom.mp4", "start": i*5})
+            os.remove(img_path)
+        img_prompt = seg["image_prompt"] + ", cinematic 8k, photorealistic, extreme detail, atmospheric lighting, professional documentary style, vertical 9:16"
+        try:
+            result = client.models.generate_images(
+                model='gemini-3.1-flash-image',
+                prompt=img_prompt,
+                config=dict(number_of_images=1, aspect_ratio="9:16", output_mime_type="image/png")
+            )
+            for generated_image in result.generated_images:
+                with open(img_path, "wb") as f:
+                    f.write(generated_image.image.image_bytes)
+        except Exception as e:
+            print(f"Image {i+1} failed: {e}")
+
+        if not os.path.exists(img_path):
+            raise RuntimeError(f"Fresh image generation failed for scene {i+1}; refusing to use an old or generic fallback asset.")
+        visual_sources.append({"type": "image", "path": img_path})
 
     # 4. Assemble video clips
     print("Step 4: Assembling Video...")
@@ -146,9 +149,6 @@ def generate_dynamic_video(topic, output_dir):
     subprocess.run(["ffmpeg", "-y", "-i", video_with_subs, "-i", wav_path, "-i", bgm_path, "-filter_complex", "[1:a]volume=8.0,loudnorm=I=-16:TP=-1.5:LRA=11[a1];[2:a]volume=0.3,lowpass=f=200[a2];[a1][a2]amix=inputs=2:duration=first[a]", "-map", "0:v", "-map", "[a]", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", final_video], check=True)
     
     print(f"Dynamic video successfully created at: {final_video}")
-    # Cleanup for next run
-    if os.path.exists(script_path): os.remove(script_path)
-    if os.path.exists(wav_path): os.remove(wav_path)
     return final_video
 
 if __name__ == "__main__":
